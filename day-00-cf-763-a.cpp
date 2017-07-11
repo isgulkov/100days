@@ -8,12 +8,12 @@ int main()
     {
     private:
         std::vector<std::vector<int>> adj_lists;
-        std::vector<int> colors;
+        std::vector<int> vertex_color;
 
         int num_edges;
 
     public:
-        Graph(int n) : num_edges(n), adj_lists(n), colors(n)
+        Graph(int n) : num_edges(n), adj_lists(n), vertex_color(n)
         {
             for(std::vector<int>& v : adj_lists) {
                 v.reserve(100);
@@ -28,7 +28,7 @@ int main()
 
         void set_color(int v, int color)
         {
-            colors[v] = color;
+            vertex_color[v] = color;
         }
 
         /**
@@ -68,7 +68,7 @@ int main()
                     case -1:
                         return -2;
                     default:
-                        if(v_color != colors[v]) {
+                        if(v_color != vertex_color[v]) {
                             return -2;
                         }
                         else if(current_color == -3) {
@@ -81,7 +81,7 @@ int main()
             }
 
             if(current_color == -3) {
-                return colors[u];
+                return vertex_color[u];
             }
             else {
                 return current_color;
