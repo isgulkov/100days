@@ -68,13 +68,14 @@ int main()
                     case -1:
                         return -2;
                     default:
-                        if(current_color == -3) {
+                        if(v_color != colors[v]) {
+                            return -2;
+                        }
+                        else if(current_color == -3) {
                             current_color = v_color;
                         }
-                        else {
-                            if(current_color != v_color) {
-                                return -1;
-                            }
+                        else if(current_color != v_color) {
+                            return -1;
                         }
                 }
             }
@@ -113,7 +114,7 @@ int main()
     for(int i = 0; i < num_edges; i++) {
         if(g.subtrees_color(i) > 0) {
             std::cout << "YES" << std::endl;
-            std::cout << i + 1 << std::endl;
+            std::cout << (i + 1) << std::endl;
 
             return 0;
         }
