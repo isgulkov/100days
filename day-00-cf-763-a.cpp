@@ -31,6 +31,51 @@ int main()
             vertex_color[v] = color;
         }
 
+        /**
+         * Compacts the graph by merging all pairs of adjacent vertices that have the same color
+         *
+         * Time: O(n) (a least in a tree)
+         */
+        void compact()
+        {
+            for(int u = 0; u < num_nodes; u++) {
+                std::vector<int> to_be_merged;
+
+                for(int v : adj_lists[u]) {
+                    if(vertex_color[u] == vertex_color[v]) {
+                        to_be_merged.push_back(v);
+                    }
+                }
+
+                for(int v : to_be_merged) {
+                    merge_vertices(u, v);
+                }
+            }
+        }
+
+        /**
+         * @return Index of the node that is adjacent to every other connected node in the tree
+         */
+        int get_totally_adjacent_node()
+        {
+            int num_connected_nodes = 0;
+
+            for(std::vector<int>& adj_list : adj_lists) {
+                if(!adj_list.empty()) {
+                    num_connected_nodes += 1;
+                }
+            }
+
+
+            for(int v = 0; v < num_nodes; v++) {
+                if((int)adj_lists[v].size() == num_connected_nodes - 1) {
+                    return v;
+                }
+            }
+
+            return -1;
+        };
+
     private:
         /**
          * Merges `donor` vertex into `host` vertex, i.e.:
@@ -80,13 +125,16 @@ int main()
         g.set_color(i, c);
     }
 
-    g.hui();
+    g.compact();
 
-    g.merge_vertices(1, 0);
+    int node = g.get_totally_adjacent_node();
 
-    g.hui();
-
-    std::cout << "NO" << std::endl;
+    if(node == -1) {
+        std::cout << "NO" << std::endl;
+    }
+    else {
+        std::cout << "YES" << std::endl << node + 1 << std::endl;
+    }
 
     return 0;
 };
