@@ -10,10 +10,10 @@ int main()
         std::vector<std::vector<int>> adj_lists;
         std::vector<int> vertex_color;
 
-        int num_edges;
+        int num_nodes;
 
     public:
-        Graph(int n) : num_edges(n), adj_lists(n), vertex_color(n)
+        Graph(int n) : num_nodes(n), adj_lists(n), vertex_color(n)
         {
             for(std::vector<int>& v : adj_lists) {
                 v.reserve(100);
