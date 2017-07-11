@@ -30,6 +30,32 @@ int main()
         {
             vertex_color[v] = color;
         }
+
+    private:
+        /**
+         * Merges `donor` vertex into `host` vertex, i.e.:
+         * * connects all the vertices the `donor` node was previously connected to to the `host` node
+         * * disconnects the `donor` node from every node
+         * @param host The node for the `donor` node to be merged into
+         * @param donor The node to be merged into the `host` node
+         */
+        void merge_vertices(int host, int donor)
+        {
+            adj_lists[host].erase(std::remove(adj_lists[host].begin(), adj_lists[host].end(), donor));
+
+            for(int v : adj_lists[donor]) {
+                if(v == host) {
+                    continue;
+                }
+
+                adj_lists[host].push_back(v);
+                adj_lists[v].push_back(host);
+
+                adj_lists[v].erase(std::remove(adj_lists[v].begin(), adj_lists[v].end(), donor));
+            }
+
+            adj_lists[donor].clear();
+        }
     };
 
     int num_edges;
@@ -54,14 +80,11 @@ int main()
         g.set_color(i, c);
     }
 
-    for(int i = 0; i < num_edges; i++) {
-        if(g.subtrees_color(i) >= -1) {
-            std::cout << "YES" << std::endl;
-            std::cout << (i + 1) << std::endl;
+    g.hui();
 
-            return 0;
-        }
-    }
+    g.merge_vertices(1, 0);
+
+    g.hui();
 
     std::cout << "NO" << std::endl;
 
