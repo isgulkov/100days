@@ -112,7 +112,7 @@ int main()
     }
 
     for(int i = 0; i < num_edges; i++) {
-        if(g.subtrees_color(i) > 0) {
+        if(g.subtrees_color(i) >= -1) {
             std::cout << "YES" << std::endl;
             std::cout << (i + 1) << std::endl;
 
