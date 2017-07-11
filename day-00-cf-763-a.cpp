@@ -30,63 +30,6 @@ int main()
         {
             vertex_color[v] = color;
         }
-
-        /**
-         * Returns the color of all subtrees of the @param u tree
-         * @return If all the subtrees of the @param u tree have the same color, returns such color.
-         * If different subtrees of the @param u tree have different colors, returns -1.
-         * If any of the subtrees are discolored, returns -2.
-         */
-        int subtrees_color(int u)
-        {
-            std::vector<bool> visited(num_edges, false);
-
-            return subtrees_color(u, visited);
-        }
-
-    private:
-        int subtrees_color(int u, std::vector<bool>& visited)
-        {
-            /*
-             * Set the current subtrees color to the value `-3` which signifies that no colored subtrees of the current
-             * tree were processed
-             */
-            int current_color = -3;
-
-            visited[u] = true;
-
-            for(int v : adj_lists[u]) {
-                if(visited[v]) {
-                    continue;
-                }
-
-                int v_color = subtrees_color(v, visited);
-
-                switch(v_color) {
-                    case -2:
-                        return -2;
-                    case -1:
-                        return -2;
-                    default:
-                        if(v_color != vertex_color[v]) {
-                            return -2;
-                        }
-                        else if(current_color == -3) {
-                            current_color = v_color;
-                        }
-                        else if(current_color != v_color) {
-                            return -1;
-                        }
-                }
-            }
-
-            if(current_color == -3) {
-                return vertex_color[u];
-            }
-            else {
-                return current_color;
-            }
-        }
     };
 
     int num_edges;
