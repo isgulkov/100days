@@ -55,7 +55,9 @@ int main()
         }
 
         /**
-         * @return Index of the node that is adjacent to every other connected node in the tree
+         * @return Index of the node that is adjacent to every other connected node in the tree. If such node doesn't
+         * exits, return -1. If the has no nodes connected to other nodes (which means that there is only one node left
+         * after the compaction operation), return 0
          */
         int get_totally_adjacent_node()
         {
@@ -67,6 +69,9 @@ int main()
                 }
             }
 
+            if(num_connected_nodes == 0) {
+                return 0;
+            }
 
             for(int v = 0; v < num_nodes; v++) {
                 if((int)adj_lists[v].size() == num_connected_nodes - 1) {
