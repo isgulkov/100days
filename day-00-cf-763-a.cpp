@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <unordered_set>
 #include <algorithm>
 
 int main()
@@ -48,8 +49,45 @@ int main()
             return std::make_pair(-1, -1);
         };
 
-    private:
+        bool no_discolored_subtrees(int u)
+        {
+            for(int v : adj_lists[u]) {
+                std::unordered_set<int> visited;
 
+                visited.insert(u);
+
+                if(get_subtree_color(v, visited) == -1) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+    private:
+        /**
+         * @param u The root node of the subtree
+         * @param visited Set of visited nodes that is needed for tree traversal as the actual graph structure in this
+         * implementation is a bidirected graph
+         * @return The color that all the nodes of the subtree have. If there are nodes with different colors in the
+         * subtree, return -1
+         */
+        int get_subtree_color(int u, std::unordered_set<int> visited)
+        {
+            visited.insert(u);
+
+            for(int v : adj_lists[u]) {
+                if(visited.find(v) != visited.end()) {
+                    continue;
+                }
+
+                if(get_subtree_color(v, visited) != vertex_color[u]) {
+                    return -1;
+                }
+            }
+
+            return vertex_color[u];
+        }
     };
 
     int num_edges;
@@ -76,14 +114,22 @@ int main()
 
     std::pair<int, int> discolored_edge = g.get_discolored_edge();
 
+    int result = -1;
+
     if(discolored_edge.first == -1) {
-        std::cout << "YES" << std::endl << 1 << std::endl;
+        result = 1;
+    } else if(g.no_discolored_subtrees(discolored_edge.first)) {
+        result = discolored_edge.first;
+    } else if(g.no_discolored_subtrees(discolored_edge.second)) {
+        result = discolored_edge.second;
+    }
+
+    if(result != -1) {
+        std::cout << "YES" << std::endl << result + 1 << std::endl;
     }
     else {
-        std::cout << discolored_edge.first << " " << discolored_edge.second << std::endl;
+        std::cout << "NO" << std::endl;
     }
-
-
 
     return 0;
 };
