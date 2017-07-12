@@ -24,7 +24,10 @@ def max_sum(fs, shift):
 	for i in xrange(n - 1):
 		current_sum += fs[i]
 
-		if i % 2 == shift and current_sum < min_sifted_sum:
+		# If current sum is the new minimum and the current subarray ends at an
+		# index that is NOT of the specified `shift`, which means that the
+		# subrray after it will start at an index of the specified `shift`
+		if i % 2 != shift and current_sum < min_sifted_sum:
 			min_sifted_sum = current_sum
 
 		max_shifted_sum = max(max_shifted_sum, current_sum - min_sifted_sum)
