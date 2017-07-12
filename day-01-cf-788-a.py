@@ -5,19 +5,33 @@ xs = map(int, raw_input().split(' '))
 
 fs = map(lambda (x, y): abs(x - y), zip(xs, xs[1:]))
 
-max_sum = 0
+fs_start_even = [fs[i] * (-1) ** i for i in xrange(n - 1)]
+fs_start_odd = [fs[i] * (-1) ** (i + 1) for i in xrange(n - 1)]
 
-for l in xrange(n):
-	for r in xrange(l, n):
-		current_sum = 0
+'''
+Returns the maximum sum of a subarray of the `fs` array that starts at an odd or
+even index depending on value the `shift` paramenter
+'''
+def max_sum(fs, shift):
+	if shift not in [0, 1]:
+		raise Exception("yebanulsya?")
 
-		for i in xrange(l, r):
-			if (i - l) % 2 == 0:
-				current_sum += fs[i]
-			else:
-				current_sum -= fs[i]
+	min_sifted_sum = 0
+	max_shifted_sum = 0
 
-		if current_sum > max_sum:
-			max_sum = current_sum
+	current_sum = 0
 
-print max_sum
+	for i in xrange(n - 1):
+		current_sum += fs[i]
+
+		if i % 2 == shift and current_sum < min_sifted_sum:
+			min_sifted_sum = current_sum
+
+		max_shifted_sum = max(max_shifted_sum, current_sum - min_sifted_sum)
+
+	return max_shifted_sum
+
+max_even_starting_sum = max_sum(fs_start_even, shift=0)
+max_odd_starting_sum = max_sum(fs_start_odd, shift=1)
+
+print max(max_even_starting_sum, max_odd_starting_sum)
