@@ -9,12 +9,12 @@ int main()
     {
     private:
         std::vector<std::vector<int>> adj_lists;
-        std::vector<int> vertex_color;
+        std::vector<int> node_color;
 
         int num_nodes;
 
     public:
-        Graph(int n) : num_nodes(n), adj_lists(n), vertex_color(n)
+        Graph(int n) : num_nodes(n), adj_lists(n), node_color(n)
         {
             for(std::vector<int>& v : adj_lists) {
                 v.reserve(100);
@@ -29,7 +29,7 @@ int main()
 
         void set_color(int v, int color)
         {
-            vertex_color[v] = color;
+            node_color[v] = color;
         }
 
         /**
@@ -40,7 +40,7 @@ int main()
         {
             for(int u = 0; u < num_nodes; u++) {
                 for(int v : adj_lists[u]) {
-                    if(vertex_color[u] != vertex_color[v]) {
+                    if(node_color[u] != node_color[v]) {
                         return std::make_pair(u, v);
                     }
                 }
@@ -81,12 +81,12 @@ int main()
                     continue;
                 }
 
-                if(get_subtree_color(v, visited) != vertex_color[u]) {
+                if(get_subtree_color(v, visited) != node_color[u]) {
                     return -1;
                 }
             }
 
-            return vertex_color[u];
+            return node_color[u];
         }
     };
 
