@@ -90,13 +90,13 @@ int main()
         }
     };
 
-    int num_edges;
+    int num_nodes;
 
-    std::cin >> num_edges;
+    std::cin >> num_nodes;
 
-    Graph g(num_edges);
+    Graph g(num_nodes);
 
-    for(int i = 0; i < num_edges - 1; i++) {
+    for(int i = 0; i < num_nodes - 1; i++) {
         int u, v;
 
         std::cin >> u >> v;
@@ -104,7 +104,7 @@ int main()
         g.add_edge(u - 1, v - 1);
     }
 
-    for(int i = 0; i < num_edges; i++) {
+    for(int i = 0; i < num_nodes; i++) {
         int c;
 
         std::cin >> c;
