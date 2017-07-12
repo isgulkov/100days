@@ -3,4 +3,4 @@ n = int(raw_input())
 
 xs = map(int, raw_input().split(' '))
 
-print n, xs
+fs = map(lambda (x, y): abs(x - y), zip(xs, xs[1:]))
