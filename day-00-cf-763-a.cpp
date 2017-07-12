@@ -83,15 +83,15 @@ int main()
         };
 
     private:
-        /**
-         * Merges `donor` vertex into `host` vertex, i.e.:
-         * * connects all the vertices the `donor` node was previously connected to to the `host` node
-         * * disconnects the `donor` node from every node
-         * @param host The node for the `donor` node to be merged into
-         * @param donor The node to be merged into the `host` node
-         */
-        void merge_vertices(int host, int donor)
+        void merge_vertices(int u1, int u2)
         {
+            int host = u1;
+            int donor = u2;
+
+            if(adj_lists[host].size() < adj_lists[donor].size()) {
+                std::swap(host, donor);
+            }
+
             adj_lists[host].erase(donor);
 
             for(int v : adj_lists[donor]) {
