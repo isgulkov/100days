@@ -8,7 +8,7 @@ int main()
     struct Graph
     {
     private:
-        std::vector<std::unordered_set<int>> adj_lists;
+        std::vector<std::vector<int>> adj_lists;
         std::vector<int> vertex_color;
 
         int num_nodes;
@@ -16,15 +16,15 @@ int main()
     public:
         Graph(int n) : num_nodes(n), adj_lists(n), vertex_color(n)
         {
-            for(std::unordered_set<int>& v : adj_lists) {
+            for(std::vector<int>& v : adj_lists) {
                 v.reserve(100);
             }
         }
 
         void add_edge(int u, int v)
         {
-            adj_lists[u].insert(v);
-            adj_lists[v].insert(u);
+            adj_lists[u].push_back(v);
+            adj_lists[v].push_back(u);
         }
 
         void set_color(int v, int color)
@@ -33,79 +33,60 @@ int main()
         }
 
         /**
-         * Compacts the graph by merging all pairs of adjacent vertices that have the same color
-         *
-         * Time: O(n) (a least in a tree)
+         * @return Pair of nodes that are adjacent and have different colors. If there is no such pair in the graph,
+         * returns a pair of `-1`s
          */
-        void compact()
+        std::pair<int, int> get_discolored_edge()
         {
             for(int u = 0; u < num_nodes; u++) {
-                std::vector<int> to_be_merged;
-
                 for(int v : adj_lists[u]) {
-                    if(vertex_color[u] == vertex_color[v]) {
-                        to_be_merged.push_back(v);
+                    if(vertex_color[u] != vertex_color[v]) {
+                        return std::make_pair(u, v);
                     }
                 }
-
-                for(int v : to_be_merged) {
-                    merge_vertices(u, v);
-                }
-            }
-        }
-
-        /**
-         * @return Index of the node that is adjacent to every other connected node in the tree. If such node doesn't
-         * exits, return -1. If the has no nodes connected to other nodes (which means that there is only one node left
-         * after the compaction operation), return 0
-         */
-        int get_totally_adjacent_node()
-        {
-            int num_connected_nodes = 0;
-
-            for(std::unordered_set<int>& adjacent : adj_lists) {
-                if(!adjacent.empty()) {
-                    num_connected_nodes += 1;
-                }
             }
 
-            if(num_connected_nodes == 0) {
-                return 0;
-            }
-
-            for(int v = 0; v < num_nodes; v++) {
-                if((int)adj_lists[v].size() == num_connected_nodes - 1) {
-                    return v;
-                }
-            }
-
-            return -1;
+            return std::make_pair(-1, -1);
         };
 
-    private:
-        void merge_vertices(int u1, int u2)
+        bool no_discolored_subtrees(int u)
         {
-            int host = u1;
-            int donor = u2;
+            for(int v : adj_lists[u]) {
+                std::unordered_set<int> visited;
 
-            if(adj_lists[host].size() < adj_lists[donor].size()) {
-                std::swap(host, donor);
+                visited.insert(u);
+
+                if(get_subtree_color(v, visited) == -1) {
+                    return false;
+                }
             }
 
-            adj_lists[host].erase(donor);
+            return true;
+        }
 
-            for(int v : adj_lists[donor]) {
-                if(v == host) {
+    private:
+        /**
+         * @param u The root node of the subtree
+         * @param visited Set of visited nodes that is needed for tree traversal as the actual graph structure in this
+         * implementation is a bidirected graph
+         * @return The color that all the nodes of the subtree have. If there are nodes with different colors in the
+         * subtree, return -1
+         */
+        int get_subtree_color(int u, std::unordered_set<int> visited)
+        {
+            visited.insert(u);
+
+            for(int v : adj_lists[u]) {
+                if(visited.find(v) != visited.end()) {
                     continue;
                 }
 
-                adj_lists[host].insert(v);
-                adj_lists[v].insert(host);
-
-                adj_lists[v].erase(donor);
+                if(get_subtree_color(v, visited) != vertex_color[u]) {
+                    return -1;
+                }
             }
 
-            adj_lists[donor].clear();
+            return vertex_color[u];
         }
     };
 
@@ -131,15 +112,23 @@ int main()
         g.set_color(i, c);
     }
 
-    g.compact();
+    std::pair<int, int> discolored_edge = g.get_discolored_edge();
 
-    int node = g.get_totally_adjacent_node();
+    int result = -1;
 
-    if(node == -1) {
-        std::cout << "NO" << std::endl;
+    if(discolored_edge.first == -1) {
+        result = 1;
+    } else if(g.no_discolored_subtrees(discolored_edge.first)) {
+        result = discolored_edge.first;
+    } else if(g.no_discolored_subtrees(discolored_edge.second)) {
+        result = discolored_edge.second;
+    }
+
+    if(result != -1) {
+        std::cout << "YES" << std::endl << result + 1 << std::endl;
     }
     else {
-        std::cout << "YES" << std::endl << node + 1 << std::endl;
+        std::cout << "NO" << std::endl;
     }
 
     return 0;
