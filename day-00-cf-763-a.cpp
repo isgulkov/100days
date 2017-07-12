@@ -8,7 +8,7 @@ int main()
     struct Graph
     {
     private:
-        std::vector<std::vector<int>> adj_lists;
+        std::vector<std::unordered_set<int>> adj_lists;
         std::vector<int> vertex_color;
 
         int num_nodes;
@@ -16,15 +16,15 @@ int main()
     public:
         Graph(int n) : num_nodes(n), adj_lists(n), vertex_color(n)
         {
-            for(std::vector<int>& v : adj_lists) {
+            for(std::unordered_set<int>& v : adj_lists) {
                 v.reserve(100);
             }
         }
 
         void add_edge(int u, int v)
         {
-            adj_lists[u].push_back(v);
-            adj_lists[v].push_back(u);
+            adj_lists[u].insert(v);
+            adj_lists[v].insert(u);
         }
 
         void set_color(int v, int color)
@@ -63,8 +63,8 @@ int main()
         {
             int num_connected_nodes = 0;
 
-            for(std::vector<int>& adj_list : adj_lists) {
-                if(!adj_list.empty()) {
+            for(std::unordered_set<int>& adjacent : adj_lists) {
+                if(!adjacent.empty()) {
                     num_connected_nodes += 1;
                 }
             }
@@ -92,17 +92,17 @@ int main()
          */
         void merge_vertices(int host, int donor)
         {
-            adj_lists[host].erase(std::remove(adj_lists[host].begin(), adj_lists[host].end(), donor));
+            adj_lists[host].erase(donor);
 
             for(int v : adj_lists[donor]) {
                 if(v == host) {
                     continue;
                 }
 
-                adj_lists[host].push_back(v);
-                adj_lists[v].push_back(host);
+                adj_lists[host].insert(v);
+                adj_lists[v].insert(host);
 
-                adj_lists[v].erase(std::remove(adj_lists[v].begin(), adj_lists[v].end(), donor));
+                adj_lists[v].erase(donor);
             }
 
             adj_lists[donor].clear();
