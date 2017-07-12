@@ -31,6 +31,23 @@ int main()
             vertex_color[v] = color;
         }
 
+        /**
+         * @return Pair of nodes that are adjacent and have different colors. If there is no such pair in the graph,
+         * returns a pair of `-1`s
+         */
+        std::pair<int, int> get_discolored_edge()
+        {
+            for(int u = 0; u < num_nodes; u++) {
+                for(int v : adj_lists[u]) {
+                    if(vertex_color[u] != vertex_color[v]) {
+                        return std::make_pair(u, v);
+                    }
+                }
+            }
+
+            return std::make_pair(-1, -1);
+        };
+
     private:
 
     };
@@ -55,6 +72,15 @@ int main()
         std::cin >> c;
 
         g.set_color(i, c);
+    }
+
+    std::pair<int, int> discolored_edge = g.get_discolored_edge();
+
+    if(discolored_edge.first == -1) {
+        std::cout << "YES" << std::endl << 1 << std::endl;
+    }
+    else {
+        std::cout << discolored_edge.first << " " << discolored_edge.second << std::endl;
     }
 
 
