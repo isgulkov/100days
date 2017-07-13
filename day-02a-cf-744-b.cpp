@@ -11,14 +11,14 @@ int main()
     int mins[20];
 
     for(int i = 0; i < n; i++) {
-        std::cout << n << std::endl;
+        std::cout << n - 1 << std::endl;
 
         for(int j = 0; j < n; j++) {
             if(j == i) {
                 continue;
             }
 
-            std::cout << j - 1 << " ";
+            std::cout << j + 1 << " ";
         }
 
         std::cout << std::endl;
