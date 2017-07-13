@@ -45,6 +45,16 @@ class MainClass
 		int[] NodeComponent;
 		int NumComponents = 0;
 
+		public int MaxComponentSize { get; private set; }
+
+		public int NumNodesOutsideComponents
+		{
+			get
+			{
+				return NodeComponent.Count(x => x == 0);
+			}
+		}
+
 		public Graph(int num_nodes)
 		{
 			NumNodes = num_nodes;
@@ -56,6 +66,8 @@ class MainClass
 			}
 
 			NodeComponent = new int[NumNodes];
+
+			MaxComponentSize = 0;
 		}
 
 		public void AddEdge(int a, int b)
@@ -68,7 +80,13 @@ class MainClass
 		{
 			int componentNumber = ++NumComponents;
 
-			return FindComponent(u, componentNumber);
+			int componentSize = FindComponent(u, componentNumber);
+
+			if(componentSize > MaxComponentSize) {
+				MaxComponentSize = componentSize;
+			}
+
+			return componentSize;
 		}
 
 		public int GetNumEdgesInComponent(int u)
@@ -141,6 +159,16 @@ class MainClass
 			 */
 			result += componentSize * (componentSize - 1) / 2 - g.GetNumEdgesInComponent(capNode);
 		}
+
+		int numNodesOutsideComponents = g.NumNodesOutsideComponents;
+
+		/*
+		 * Add to the result the number of possible edges between nodes outside components and nodes in the largest
+		 * component, which is equal to (number of nodes in full graph with (`numNodesOutsideComponents`
+		 * + `largestComponentSize`) nodes) - (number of nodes in full graph with `largestComponentSize`) nodes. The
+		 * expression below is simplified
+		 */
+		result += numNodesOutsideComponents * (numNodesOutsideComponents + 2 * g.MaxComponentSize - 1) / 2;
 
 		Console.WriteLine(result);
 	}
