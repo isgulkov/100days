@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 /*
  * Generates all numbers up to a certain number that have certain bit set or unset
@@ -49,31 +50,26 @@ int main()
 
     std::cin >> n;
 
-    // i know this is wrong, ok?
+    int minimums[20][2];
 
-    int mins[20];
+    for(int bit = 0; bit < 10; bit++) {
+        for(bool val = false; val <= true; val++) {
+            NumbersWithCertainBitValueGenerator g(n, bit, val);
 
-    for(int i = 0; i < n; i++) {
-        std::cout << n - 1 << std::endl;
+            std::vector<int> indices;
+            indices.reserve(1000);
 
-        for(int j = 0; j < n; j++) {
-            if(j == i) {
-                continue;
+            while(g.has_next()) {
+                indices.push_back(g.get_next());
             }
 
-            std::cout << j + 1 << " ";
-        }
+            std::cout << indices.size() << std::endl;
 
-        std::cout << std::endl;
-
-        for(int j = 0; j < n; j++) {
-            int x;
-
-            std::cin >> x;
-
-            if(j == i) {
-                mins[j] = x;
+            for(int i : indices) {
+                std::cout << i + 1 << " ";
             }
+
+            std::cout << std::endl;
         }
     }
 
