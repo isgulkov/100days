@@ -1,5 +1,48 @@
 #include <iostream>
 
+/*
+ * Generates all numbers up to a certain number that have certain bit set or unset
+ */
+struct NumbersWithCertainBitValueGenerator
+{
+private:
+    int bit_pos;
+    bool bit_val;
+
+    int max_state;
+
+    int state = 0;
+
+public:
+    NumbersWithCertainBitValueGenerator(int up_to, int position, bool value)
+        : max_state(up_to), bit_pos(position), bit_val(value)
+    {
+        move_to_next();
+    }
+
+    bool has_next()
+    {
+        return state < max_state;
+    }
+
+    int get_next()
+    {
+        int next = state++;
+
+        move_to_next();
+
+        return next;
+    }
+
+private:
+    void move_to_next()
+    {
+        while(state < max_state && ((state >> bit_pos) & 1) != bit_val) {
+            state += 1;
+        }
+    }
+};
+
 int main()
 {
     int n;
