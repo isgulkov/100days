@@ -38,26 +38,49 @@ class MainClass
 		}
 	}
 
+	class Graph
+	{
+		int NumNodes;
+		List<int>[] AdjLists;
+
+		public Graph(int num_nodes)
+		{
+			NumNodes = num_nodes;
+
+			AdjLists = new List<int>[NumNodes];
+
+			for(int i = 0; i < num_nodes; i++) {
+				AdjLists[i] = new List<int>(100);
+			}
+		}
+
+		public void AddEdge(int a, int b)
+		{
+			AdjLists[a].Add(b);
+			AdjLists[b].Add(a);
+		}
+	}
+
 	public static void Main(string[] args)
 	{
 		int n, m, k;
 
 		ReadLine3Ints(out n, out m, out k);
 
-		Console.WriteLine($" {n} {m} {k}");
+		List<int> CapNodes = new List<int>();
 
 		foreach(int x in ReadLineNInts()) {
-			Console.Write($" {x} ");
+			CapNodes.Add(x);
 		}
 
-		Console.WriteLine();
+		Graph g = new Graph(n);
 
 		for(int i = 0; i < m; i++) {
 			int a, b;
 
 			ReadLine2Ints(out a, out b);
 
-			Console.WriteLine($" {a} {b}");
+			g.AddEdge(a, b);
 		}
 	}
 }
