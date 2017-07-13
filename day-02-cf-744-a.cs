@@ -55,6 +55,26 @@ class MainClass
 			}
 		}
 
+		public int NumEdgesOutsideComponents
+		{
+			get
+			{
+				int result = 0;
+
+				for(int i = 0; i < NumNodes; i++) {
+					if(NodeComponent[i] != 0) {
+						continue;
+					}
+
+					result += AdjLists[i].Count;
+				}
+
+				result /= 2;
+
+				return result;
+			}
+		}
+
 		public Graph(int num_nodes)
 		{
 			NumNodes = num_nodes;
@@ -163,12 +183,17 @@ class MainClass
 		int numNodesOutsideComponents = g.NumNodesOutsideComponents;
 
 		/*
-		 * Add to the result the number of possible edges between nodes outside components and nodes in the largest
-		 * component, which is equal to (number of nodes in full graph with (`numNodesOutsideComponents`
-		 * + `largestComponentSize`) nodes) - (number of nodes in full graph with `largestComponentSize`) nodes. The
-		 * expression below is simplified
+		 * Add to the result:
+		 * * number of possible edges between nodes in the largest component and nodes outside components
+		 * * number of possible edges between nodes outside components (number of edges in a corresponding full graph)
 		 */
-		result += numNodesOutsideComponents * (numNodesOutsideComponents + 2 * g.MaxComponentSize - 1) / 2;
+		result += g.MaxComponentSize * numNodesOutsideComponents;
+		result += numNodesOutsideComponents * (numNodesOutsideComponents - 1) / 2;
+
+		/*
+		 * Subtract the number of existing edges between nodes outside components from the result
+		 */
+		result -= g.NumEdgesOutsideComponents;
 
 		Console.WriteLine(result);
 	}
