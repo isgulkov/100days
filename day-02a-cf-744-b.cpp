@@ -82,7 +82,25 @@ int main()
         }
     }
 
+    std::cout << -1 << std::endl;
 
+    for(int i = 0; i < n; i++) {
+        int minimum_for_row = INT32_MAX;
+
+        for(int bit = 0; bit < 10; bit++) {
+            int bit_value = (i >> bit) & 1;
+
+            int next_minimum = minimums[std::make_pair(bit, bit_value)][i];
+
+            if(next_minimum < minimum_for_row) {
+                minimum_for_row = next_minimum;
+            }
+        }
+
+        std::cout << minimum_for_row << " ";
+    }
+
+    std::cout << std::endl;
 
     return 0;
 }
