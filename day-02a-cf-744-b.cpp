@@ -53,8 +53,8 @@ int main()
     int minimums[20][2];
 
     for(int bit = 0; bit < 10; bit++) {
-        for(bool val = false; val <= true; val++) {
-            NumbersWithCertainBitValueGenerator g(n, bit, val);
+        for(int val = 0; val <= 1; val++) {
+            NumbersWithCertainBitValueGenerator g(n, bit, (bool)val);
 
             std::vector<int> indices;
             indices.reserve(1000);
