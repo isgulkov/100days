@@ -51,7 +51,7 @@ int main()
 
     std::cin >> n;
 
-    std::map<std::pair<int, int>, std::vector<int>> minimums;
+    std::map<std::pair<int, int>, std::vector<int>> partial_minimums;
 
     for(int bit = 0; bit < 10; bit++) {
         for(int val = 0; val <= 1; val++) {
@@ -78,7 +78,7 @@ int main()
                 std::cin >> current_minimums[i];
             }
 
-            minimums[std::make_pair(bit, val)] = current_minimums;
+            partial_minimums[std::make_pair(bit, val)] = current_minimums;
         }
     }
 
@@ -90,7 +90,7 @@ int main()
         for(int bit = 0; bit < 10; bit++) {
             int bit_value = (i >> bit) & 1;
 
-            int next_minimum = minimums[std::make_pair(bit, bit_value)][i];
+            int next_minimum = partial_minimums[std::make_pair(bit, !bit_value)][i];
 
             if(next_minimum < minimum_for_row) {
                 minimum_for_row = next_minimum;
