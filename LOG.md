@@ -1,6 +1,6 @@
-## 100 Days Of Parasha Ebanaya — Log
+# 100 Days Of Parasha Ebanaya — Log
 
-### День 0: 11 июля 2017 года
+## День 0: 11 июля 2017 года
 
 **Задача**: [CF #395 (Div. 1) A](http://codeforces.com/contest/763/problem/A)
 
@@ -22,7 +22,7 @@
 - [ ] без решений
 - [ ] без разбора
 
-### День 1: 12 июля 2017 года
+## День 1: 12 июля 2017 года
 
 **Задача**: [CF #407 (Div. 1) A](http://codeforces.com/contest/788/problem/A)
 
@@ -42,7 +42,7 @@
 - [x] без решений
 - [x] без разбора
 
-### День 2: 13 июля 2017 года
+## День 2: 13 июля 2017 года
 
 **Задача**: [CF #385 (Div. 1) A](http://codeforces.com/contest/744/problem/A)
 
