@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <map>
 
 /*
  * Generates all numbers up to a certain number that have certain bit set or unset
@@ -50,7 +51,7 @@ int main()
 
     std::cin >> n;
 
-    int minimums[20][2];
+    std::map<std::pair<int, int>, std::vector<int>> minimums;
 
     for(int bit = 0; bit < 10; bit++) {
         for(int val = 0; val <= 1; val++) {
@@ -70,16 +71,18 @@ int main()
             }
 
             std::cout << std::endl;
+
+            std::vector<int> current_minimums(n);
+
+            for(int i = 0; i < n; i++) {
+                std::cin >> current_minimums[i];
+            }
+
+            minimums[std::make_pair(bit, val)] = current_minimums;
         }
     }
 
-    std::cout << -1 << std::endl;
 
-    for(int i = 0; i < n; i++) {
-        std::cout << mins[i] << " ";
-    }
-
-    std::cout << std::endl;
 
     return 0;
 }
