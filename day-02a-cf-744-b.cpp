@@ -71,18 +71,20 @@ int main()
                 indices.push_back(g.get_next());
             }
 
-            std::cout << indices.size() << std::endl;
+            std::vector<int> current_minimums(n, 0);
 
-            for(int i : indices) {
-                std::cout << i + 1 << " ";
-            }
+            if(!indices.empty()) {
+                std::cout << indices.size() << std::endl;
 
-            std::cout << std::endl;
+                for(int i : indices) {
+                    std::cout << i + 1 << " ";
+                }
 
-            std::vector<int> current_minimums(n);
+                std::cout << std::endl;
 
-            for(int i = 0; i < n; i++) {
-                std::cin >> current_minimums[i];
+                for(int i = 0; i < n; i++) {
+                    std::cin >> current_minimums[i];
+                }
             }
 
             partial_minimums[std::make_pair(bit, val)] = current_minimums;
