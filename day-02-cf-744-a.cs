@@ -11,8 +11,8 @@ class MainClass
 
 		MatchCollection matches = Regex.Matches(line, @"\d+");
 
-		a = int.Parse(matches[0].Groups[0].Value);
-		b = int.Parse(matches[1].Groups[0].Value);
+		a = int.Parse(matches[0].Value);
+		b = int.Parse(matches[1].Value);
 	}
 
 	static void ReadLine3Ints(out int a, out int b, out int c)
@@ -21,9 +21,9 @@ class MainClass
 
 		MatchCollection matches = Regex.Matches(line, @"\d+");
 
-		a = int.Parse(matches[0].Groups[0].Value);
-		b = int.Parse(matches[1].Groups[0].Value);
-		c = int.Parse(matches[2].Groups[0].Value);
+		a = int.Parse(matches[0].Value);
+		b = int.Parse(matches[1].Value);
+		c = int.Parse(matches[2].Value);
 	}
 
 	static IEnumerable<int> ReadLineNInts()
@@ -33,8 +33,7 @@ class MainClass
 		MatchCollection matches = Regex.Matches(line, @"\d+");
 
 		foreach(Match match in matches) {
-
-			yield return int.Parse(match.Groups[0].Value);
+			yield return int.Parse(match.Value);
 		}
 	}
 
