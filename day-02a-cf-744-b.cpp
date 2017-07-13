@@ -58,7 +58,7 @@ int main()
      */
     int bits_in_n = 0;
 
-    while(n >> (++bits_in_n)) { }
+    while((n - 1) >> (++bits_in_n)) { }
 
     for(int bit = 0; bit < bits_in_n; bit++) {
         for(int val = 0; val <= 1; val++) {
