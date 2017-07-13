@@ -71,7 +71,7 @@ int main()
                 indices.push_back(g.get_next());
             }
 
-            std::vector<int> current_minimums(n, 0);
+            std::vector<int> current_minimums(n, INT32_MAX);
 
             if(!indices.empty()) {
                 std::cout << indices.size() << std::endl;
