@@ -53,7 +53,14 @@ int main()
 
     std::map<std::pair<int, int>, std::vector<int>> partial_minimums;
 
-    for(int bit = 0; bit < 10; bit++) {
+    /*
+     * Count the number of significant bits in numbers up to n
+     */
+    int bits_in_n = 0;
+
+    while(n >> (++bits_in_n)) { }
+
+    for(int bit = 0; bit < bits_in_n; bit++) {
         for(int val = 0; val <= 1; val++) {
             NumbersWithCertainBitValueGenerator g(n, bit, (bool)val);
 
@@ -87,7 +94,7 @@ int main()
     for(int i = 0; i < n; i++) {
         int minimum_for_row = INT32_MAX;
 
-        for(int bit = 0; bit < 10; bit++) {
+        for(int bit = 0; bit < bits_in_n; bit++) {
             int bit_value = (i >> bit) & 1;
 
             int next_minimum = partial_minimums[std::make_pair(bit, !bit_value)][i];
