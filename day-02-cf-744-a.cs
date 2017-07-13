@@ -65,11 +65,30 @@ class MainClass
 			AdjLists[b].Add(a);
 		}
 
-		public int FindComponent(int u)
+		public int FindComponentSize(int u)
 		{
 			int componentNumber = ++NumComponents;
 
 			return FindComponent(u, componentNumber);
+		}
+
+		public int GetNumEdgesInComponent(int u)
+		{
+			int result = 0;
+
+			int componentNumber = NodeComponent[u];
+
+			for(int i = 0; i < NumNodes; i++) {
+				if(NodeComponent[i] != componentNumber) {
+					continue;
+				}
+
+				result += AdjLists[i].Count;
+			}
+
+			result /= 2;
+
+			return result;
 		}
 
 		int FindComponent(int u, int componentNumber)
@@ -112,8 +131,18 @@ class MainClass
 			g.AddEdge(a - 1, b - 1);
 		}
 
+		int result = 0;
+
 		foreach(int capNode in capNodes) {
-			Console.WriteLine(g.FindComponent(capNode));
+			int componentSize = g.FindComponentSize(capNode);
+
+			/*
+			 * Find the number of possible new edges inside the component: subtract the number of edges in the component
+			 * from the number of edges in a fully connected graph of size `componentSize`
+			 */
+			result += componentSize * (componentSize - 1) / 2 - g.GetNumEdgesInComponent(capNode);
 		}
+
+		Console.WriteLine(result);
 	}
 }
