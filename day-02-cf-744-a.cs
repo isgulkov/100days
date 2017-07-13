@@ -43,6 +43,9 @@ class MainClass
 		int NumNodes;
 		List<int>[] AdjLists;
 
+		int[] NodeComponent;
+		int NumComponents = 0;
+
 		public Graph(int num_nodes)
 		{
 			NumNodes = num_nodes;
@@ -52,12 +55,38 @@ class MainClass
 			for(int i = 0; i < num_nodes; i++) {
 				AdjLists[i] = new List<int>(100);
 			}
+
+			NodeComponent = new int[NumNodes];
 		}
 
 		public void AddEdge(int a, int b)
 		{
 			AdjLists[a].Add(b);
 			AdjLists[b].Add(a);
+		}
+
+		public int FindComponent(int u)
+		{
+			int componentNumber = ++NumComponents;
+
+			return FindComponent(u, componentNumber);
+		}
+
+		int FindComponent(int u, int componentNumber)
+		{
+			NodeComponent[u] = componentNumber;
+
+			int subtreeSize = 1;
+
+			foreach(int v in AdjLists[u]) {
+				if(NodeComponent[v] != 0) {
+					continue;
+				}
+
+				subtreeSize += FindComponent(v, componentNumber);
+			}
+
+			return subtreeSize;
 		}
 	}
 
@@ -67,10 +96,10 @@ class MainClass
 
 		ReadLine3Ints(out n, out m, out k);
 
-		List<int> CapNodes = new List<int>();
+		List<int> capNodes = new List<int>();
 
 		foreach(int x in ReadLineNInts()) {
-			CapNodes.Add(x);
+			capNodes.Add(x - 1);
 		}
 
 		Graph g = new Graph(n);
@@ -80,7 +109,11 @@ class MainClass
 
 			ReadLine2Ints(out a, out b);
 
-			g.AddEdge(a, b);
+			g.AddEdge(a - 1, b - 1);
+		}
+
+		foreach(int capNode in capNodes) {
+			Console.WriteLine(g.FindComponent(capNode));
 		}
 	}
 }
