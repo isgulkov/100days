@@ -32,30 +32,53 @@ int main()
     size_t t_length = strlen(t);
     size_t p_length = strlen(p);
 
+    int removals[200001];
+
+    for(int i = 0; i < t_length; i++) {
+        int removal;
+
+        scanf("%d", &removal);
+
+        removals[i] = removal - 1;
+    }
+
+    /*
+     * Inclusive boundaries of binary search
+     */
+    size_t left = 0, right = t_length;
+
+    size_t old_mid = 0;
+
     int t_removed_positions[200001];
 
     for(int i = 0; i < t_length; i++) {
         t_removed_positions[i] = 0;
     }
 
-    for(int i = 0; i < t_length; i++) {
-        int pos;
+    while(left != right) {
+        size_t mid = left + (right - left) / 2;
 
-        scanf("%d", &pos);
+        while(old_mid < mid) {
+            t_removed_positions[removals[old_mid++]] = 1;
+        }
 
-        t_removed_positions[pos - 1] = 1;
+        while(old_mid > mid) {
+            t_removed_positions[removals[--old_mid]] = 0;
+        }
 
-        if(!is_a_subsequence(p, t, t_removed_positions)) {
-            printf("%d", i);
-            break;
+        /*
+         * At this point removals at [0; mid) are applied, removals at [mid; t_length) are not applied
+         */
+
+        if(is_a_subsequence(p, t, t_removed_positions)) {
+            left = mid + 1;
+        }
+        else {
+            right = mid;
         }
     }
 
-    for(int i = 0; i < t_length; i++) {
-        int pos;
-
-        scanf("%d", &pos);
-    }
+    printf("%zu\n", left - 1);
 
     return 0;
 }
