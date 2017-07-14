@@ -30,7 +30,6 @@ int main()
     scanf("%s\n", p);
 
     size_t t_length = strlen(t);
-    size_t p_length = strlen(p);
 
     int removals[200001];
 
