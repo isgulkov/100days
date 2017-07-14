@@ -4,6 +4,8 @@
 /*
  * Returns whether string `p` is a subsequence of string `t` with characters skipped at positions for which
  * corresponding booleans in `t_removed_positions` are set
+ *
+ * Time complexity: O(|p| + |t|)
  */
 int is_a_subsequence(char* p, char* t, int* t_removed_positions)
 {
