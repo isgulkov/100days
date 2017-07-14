@@ -78,7 +78,7 @@ int main()
         }
     }
 
-    printf("%zu\n", left - 1);
+    printf("%lu\n", left - 1);
 
     return 0;
 }
