@@ -215,6 +215,70 @@ class VariableSystem
 
         bitwiseFunctions.put(varName, parseExpression(expressionString));
     }
+
+    /**
+     * @return Values of arguments that give correspondingly the minimum and the maximum value of the sum of all
+     * functions
+     */
+    MinMax getMinMaxArguments()
+    {
+        StringBuilder min = new StringBuilder(),
+                max = new StringBuilder();
+
+        for(int i = 0; i < nBits; i++) {
+            int onesIfSet = 0, onesIfUnset = 0;
+
+            for(UnaryBitwiseFunction function : bitwiseFunctions.values()) {
+                if(function.set(i)) {
+                    onesIfSet += 1;
+                }
+
+                if(function.unset(i)) {
+                    onesIfUnset += 1;
+                }
+            }
+
+            if(onesIfSet > onesIfUnset) {
+                max.append("1");
+                min.append("0");
+            }
+            else if(onesIfSet < onesIfUnset) {
+                max.append("0");
+                min.append("1");
+            }
+            else {
+                max.append("0");
+                min.append("0");
+            }
+        }
+
+        return new MinMax(min.toString(), max.toString());
+    }
+
+    /**
+     * Java equivalent of fucking Pair<String, String>
+     */
+    class MinMax
+    {
+        private String min;
+        private String max;
+
+        MinMax(String min, String max)
+        {
+            this.min = min;
+            this.max = max;
+        }
+
+        String getMin()
+        {
+            return min;
+        }
+
+        String getMax()
+        {
+            return max;
+        }
+    }
 }
 
 class Day03a
@@ -252,6 +316,9 @@ class Day03a
             vs.addStatement(stdin.nextLine());
         }
 
-        System.out.println(vs.toString());
+        VariableSystem.MinMax minMax = vs.getMinMaxArguments();
+
+        System.out.println(minMax.getMin());
+        System.out.println(minMax.getMax());
     }
 }
