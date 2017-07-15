@@ -3,9 +3,9 @@ import java.util.function.BinaryOperator;
 import java.util.regex.*;
 
 /**
- * Represents truth table of a particular variable with respect to Petya's answer
+ * Represents a bitwise function of Petya's answer
  */
-class TruthTable
+class UnaryBitwiseFunction
 {
     private int nBits;
 
@@ -19,14 +19,18 @@ class TruthTable
      */
     private boolean[] unset;
 
-    private TruthTable(int nBits, boolean[] set, boolean[] unset)
+    private UnaryBitwiseFunction(int nBits, boolean[] set, boolean[] unset)
     {
         this.nBits = nBits;
         this.set = set;
         this.unset = unset;
     }
 
-    static TruthTable fromConstant(String s)
+    /**
+     * @param s String of '1's and '0's
+     * @return Corresponding constant function
+     */
+    static UnaryBitwiseFunction fromConstant(String s)
     {
         int nBits = s.length();
 
@@ -38,10 +42,14 @@ class TruthTable
             unset[i] = s.charAt(i) == '1';
         }
 
-        return new TruthTable(nBits, set, unset);
+        return new UnaryBitwiseFunction(nBits, set, unset);
     }
 
-    static TruthTable identity(int nBits)
+    /**
+     * @param nBits ★★☆☆☆
+     * @return Identity function with the specified number of bits
+     */
+    static UnaryBitwiseFunction identity(int nBits)
     {
         boolean[] set = new boolean[nBits];
         boolean[] unset = new boolean[nBits];
@@ -51,10 +59,10 @@ class TruthTable
             unset[i] = false;
         }
 
-        return new TruthTable(nBits, set, unset);
+        return new UnaryBitwiseFunction(nBits, set, unset);
     }
 
-    private TruthTable applyOperator(TruthTable other, BinaryOperator<Boolean> op)
+    private UnaryBitwiseFunction applyOperation(UnaryBitwiseFunction other, BinaryOperator<Boolean> op)
     {
         boolean[] set = new boolean[nBits];
         boolean[] unset = new boolean[nBits];
@@ -64,22 +72,34 @@ class TruthTable
             unset[i] = op.apply(this.unset[i], other.unset[i]);
         }
 
-        return new TruthTable(nBits, set, unset);
+        return new UnaryBitwiseFunction(nBits, set, unset);
     }
 
-    TruthTable and(TruthTable other)
+    /**
+     * @param other Another function
+     * @return The result of bitwise "and" operation applied to the two functions
+     */
+    UnaryBitwiseFunction and(UnaryBitwiseFunction other)
     {
-        return applyOperator(other, (x, y) -> x && y);
+        return applyOperation(other, (x, y) -> x && y);
     }
 
-    TruthTable or(TruthTable other)
+    /**
+     * @param other Another function
+     * @return The result of bitwise "or" operation applied to the two functions
+     */
+    UnaryBitwiseFunction or(UnaryBitwiseFunction other)
     {
-        return applyOperator(other, (x, y) -> x || y);
+        return applyOperation(other, (x, y) -> x || y);
     }
 
-    TruthTable xor(TruthTable other)
+    /**
+     * @param other Another function
+     * @return The result of bitwise "xor" operation applied to the two functions
+     */
+    UnaryBitwiseFunction xor(UnaryBitwiseFunction other)
     {
-        return applyOperator(other, (x, y) -> x != y);
+        return applyOperation(other, (x, y) -> x != y);
     }
 }
 
@@ -88,7 +108,7 @@ class VariableSystem
     private static Pattern stmtPattern = Pattern.compile("([a-z]+) := (.+$)");
     private static Pattern exprPattern = Pattern.compile("(\\?|[a-z]+|[01]+) (AND|OR|XOR) (\\?|[a-z]+|[01]+)");
 
-    private HashMap<String, TruthTable> truthTables = new HashMap<>();
+    private HashMap<String, UnaryBitwiseFunction> bitwiseFunctions = new HashMap<>();
 
     private int nBits;
 
@@ -97,26 +117,26 @@ class VariableSystem
         this.nBits = nBits;
     }
 
-    private TruthTable parsePrimaryExpression(String primaryExpr)
+    private UnaryBitwiseFunction parsePrimaryExpression(String primaryExpr)
     {
         if(primaryExpr.equals("?")) {
-            return TruthTable.identity(nBits);
+            return UnaryBitwiseFunction.identity(nBits);
         }
         else if(primaryExpr.matches("^[01]+$")) {
-            return TruthTable.fromConstant(primaryExpr);
+            return UnaryBitwiseFunction.fromConstant(primaryExpr);
         }
         else {
-            return truthTables.get(primaryExpr);
+            return bitwiseFunctions.get(primaryExpr);
         }
     }
 
-    private TruthTable parseExpression(String expr)
+    private UnaryBitwiseFunction parseExpression(String expr)
     {
         Matcher m = exprPattern.matcher(expr);
 
         if(m.find()) {
-            TruthTable a = parsePrimaryExpression(m.group(1));
-            TruthTable b = parsePrimaryExpression(m.group(3));
+            UnaryBitwiseFunction a = parsePrimaryExpression(m.group(1));
+            UnaryBitwiseFunction b = parsePrimaryExpression(m.group(3));
 
             switch(m.group(2)) {
                 case "AND":
@@ -145,7 +165,7 @@ class VariableSystem
         String varName = m.group(1);
         String expressionString = m.group(2);
 
-        truthTables.put(varName, parseExpression(expressionString));
+        bitwiseFunctions.put(varName, parseExpression(expressionString));
     }
 }
 
