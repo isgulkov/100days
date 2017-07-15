@@ -101,6 +101,24 @@ class UnaryBitwiseFunction
     {
         return applyOperation(other, (x, y) -> x != y);
     }
+
+    @Override
+    public String toString()
+    {
+        String result = "";
+
+        for(boolean b : unset) {
+            result += b ? "1" : "0";
+        }
+
+        result += "/";
+
+        for(boolean b : set) {
+            result += b ? "1" : "0";
+        }
+
+        return result;
+    }
 }
 
 class VariableSystem
@@ -115,6 +133,18 @@ class VariableSystem
     VariableSystem(int nBits)
     {
         this.nBits = nBits;
+    }
+
+    @Override
+    public String toString()
+    {
+        String result = "";
+
+        for(String var : bitwiseFunctions.keySet()) {
+            result += var + bitwiseFunctions.get(var).toString() + "\n";
+        }
+
+        return result;
     }
 
     private UnaryBitwiseFunction parsePrimaryExpression(String primaryExpr)
@@ -203,5 +233,7 @@ class Day03a
         for(int i = 0; i < n; i++) {
             vs.addStatement(stdin.nextLine());
         }
+
+        System.out.println(vs.toString());
     }
 }
