@@ -1,5 +1,9 @@
 
 
+def insert_substring(target, arrow, start_index):
+	for i in xrange(len(arrow)):
+		target[start_index + i] = arrow[i]
+
 n = int(raw_input())
 
 substring_occurences = []
@@ -25,4 +29,17 @@ s = ["a"] * s_length
 
 substring_occurences.sort(key=lambda x: x[0])
 
-print substring_occurences
+last_unprocessed_symbol = 0
+
+for start_index, substring in substring_occurences:
+	if start_index + len(substring) - 1 < last_unprocessed_symbol:
+		continue
+
+	insert_substring(s, substring, start_index)
+
+	last_unprocessed_symbol = start_index + len(substring)
+
+	if last_unprocessed_symbol >= s_length:
+		break
+
+print "".join(s)
