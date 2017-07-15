@@ -16,7 +16,11 @@ class Day03a
         VariableSystem vs = new VariableSystem(m);
 
         for(int i = 0; i < n; i++) {
-            vs.addStatement(stdin.nextLine());
+            String varName = stdin.next();
+            stdin.next();
+            String expression = stdin.nextLine();
+
+            vs.addStatement(varName, expression);
         }
 
         VariableSystem.MinMax minMax = vs.getMinMaxArguments();
@@ -28,8 +32,7 @@ class Day03a
 
 class VariableSystem
 {
-    private static Pattern stmtPattern = Pattern.compile("([a-z]+) := (.+$)");
-    private static Pattern exprPattern = Pattern.compile("(\\?|[a-z]+|[01]+) (AND|OR|XOR) (\\?|[a-z]+|[01]+)");
+    private static Pattern exprPattern = Pattern.compile(" (\\?|[a-z]+|[01]+) (AND|OR|XOR) (\\?|[a-z]+|[01]+)");
 
     private HashMap<String, boolean[]> bitwiseFunctions = new HashMap<>();
 
@@ -116,22 +119,13 @@ class VariableSystem
             }
         }
         else {
-            return parsePrimaryExpression(expr);
+            return parsePrimaryExpression(expr.substring(1));
         }
     }
 
-    void addStatement(String stmt)
+    void addStatement(String varName, String expression)
     {
-        Matcher m = stmtPattern.matcher(stmt);
-
-        if(!m.find()) {
-            throw new IllegalArgumentException();
-        }
-
-        String varName = m.group(1);
-        String expressionString = m.group(2);
-
-        bitwiseFunctions.put(varName, parseExpression(expressionString));
+        bitwiseFunctions.put(varName, parseExpression(expression));
     }
 
     /**
