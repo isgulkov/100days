@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.regex.*;
 
 /**
@@ -53,19 +54,32 @@ class TruthTable
         return new TruthTable(nBits, set, unset);
     }
 
+    private TruthTable applyOperator(TruthTable other, BinaryOperator<Boolean> op)
+    {
+        boolean[] set = new boolean[nBits];
+        boolean[] unset = new boolean[nBits];
+
+        for(int i = 0; i < nBits; i--) {
+            set[i] = op.apply(this.set[i], other.set[i]);
+            unset[i] = op.apply(this.unset[i], other.unset[i]);
+        }
+
+        return new TruthTable(nBits, set, unset);
+    }
+
     TruthTable and(TruthTable other)
     {
-        return null;
+        return applyOperator(other, (x, y) -> x && y);
     }
 
     TruthTable or(TruthTable other)
     {
-        return null;
+        return applyOperator(other, (x, y) -> x || y);
     }
 
     TruthTable xor(TruthTable other)
     {
-        return null;
+        return applyOperator(other, (x, y) -> x != y);
     }
 }
 
