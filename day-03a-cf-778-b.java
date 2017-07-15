@@ -10,12 +10,12 @@ class UnaryBitwiseFunction
     private int nBits;
 
     /**
-     * Stores the value of ith bit of the variable if corresponding bit in Petya's answer is set
+     * Stores values of bits of the function if the corresponding bit in Petya's answer is set
      */
     private boolean[] set;
 
     /**
-     * Stores the value of ith bit of the variable if corresponding bit in Petya's answer is unset
+     * Stores values of bits of the function if the corresponding bit in Petya's answer is unset
      */
     private boolean[] unset;
 
@@ -24,6 +24,24 @@ class UnaryBitwiseFunction
         this.nBits = nBits;
         this.set = set;
         this.unset = unset;
+    }
+
+    /**
+     * @param i Bit position (MSB-based)
+     * @return Value of the ith bit if the corresponding bit of the argument is set
+     */
+    boolean set(int i)
+    {
+        return set[i];
+    }
+
+    /**
+     * @param i Bit position (MSB-based)
+     * @return Value of the ith bit if the corresponding bit of the argument is unset
+     */
+    boolean unset(int i)
+    {
+        return unset[i];
     }
 
     /**
