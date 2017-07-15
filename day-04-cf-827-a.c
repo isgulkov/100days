@@ -32,7 +32,7 @@ int main()
 
         scanf("%s %d", buf, &k);
 
-        char* substring = malloc(sizeof(char) * strlen(buf));
+        char* substring = malloc(sizeof(char) * (strlen(buf) + 1));
         strcpy(substring, buf);
 
         for(int j = 0; j < k; j++) {
