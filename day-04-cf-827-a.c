@@ -26,15 +26,14 @@ int main()
     substring_occurence* occurences = malloc(sizeof(substring_occurence) * 1000000);
     size_t num_occurences = 0;
 
-    char* buf = malloc(sizeof(char) * 1000001);
+    char* substring_buf = malloc(sizeof(char) * 1000001);
 
     for(int i = 0; i < n; i++) {
         int k;
 
-        scanf("%s %d", buf, &k);
+        scanf("%s %d", substring_buf, &k);
 
-        char* substring = malloc(sizeof(char) * (strlen(buf) + 1));
-        strcpy(substring, buf);
+        size_t substring_length = strlen(substring_buf);
 
         for(int j = 0; j < k; j++) {
             int start_index;
@@ -42,11 +41,13 @@ int main()
             scanf("%d", &start_index);
 
             occurences[num_occurences].start_index = start_index - 1; // Make indices zero-based
-            occurences[num_occurences].substring = substring;
-            occurences[num_occurences].substring_length = strlen(substring);
+            occurences[num_occurences].substring = substring_buf;
+            occurences[num_occurences].substring_length = substring_length;
 
             num_occurences += 1;
         }
+
+        substring_buf += substring_length + 1;
     }
 
     qsort(occurences, num_occurences, sizeof(substring_occurence), &compare_substring_occurences);
