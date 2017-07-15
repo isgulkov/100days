@@ -68,25 +68,18 @@ int main()
 
     char* result = malloc(sizeof(char) * (result_length + 1));
 
-    for(int i = 0; i < result_length; i++) {
-        result[i] = 'a';
-    }
-
     size_t last_unprocessed_symbol = 0;
 
     for(int i = 0; i < num_occurences; i++) {
-        if(occurences[i].start_index + occurences[i].substring_length - 1 < last_unprocessed_symbol) {
-            continue;
+        while(last_unprocessed_symbol < occurences[i].start_index) {
+            result[last_unprocessed_symbol++] = 'a';
         }
 
-        for(int j = 0; occurences[i].substring[j] != '\0'; j++) {
-            result[occurences[i].start_index + j] = occurences[i].substring[j];
-        }
+        while(last_unprocessed_symbol < occurences[i].start_index + occurences[i].substring_length) {
+            result[last_unprocessed_symbol]
+                    = occurences[i].substring[last_unprocessed_symbol - occurences[i].start_index];
 
-        last_unprocessed_symbol = occurences[i].start_index + occurences[i].substring_length;
-
-        if(last_unprocessed_symbol >= result_length) {
-            break;
+            last_unprocessed_symbol += 1;
         }
     }
 
