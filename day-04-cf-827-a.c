@@ -6,6 +6,7 @@ typedef struct substring_occurence
 {
     int start_index;
     char* substring;
+    size_t substring_length;
 } substring_occurence;
 
 int compare_substring_occurences(const void* one, const void* another)
@@ -42,6 +43,7 @@ int main()
 
             occurences[num_occurences].start_index = start_index - 1; // Make indices zero-based
             occurences[num_occurences].substring = substring;
+            occurences[num_occurences].substring_length = strlen(substring);
 
             num_occurences += 1;
         }
@@ -56,7 +58,7 @@ int main()
     size_t result_length = 0;
 
     for(int i = 0; i < num_occurences; i++) {
-        size_t candidate_length = occurences[i].start_index + strlen(occurences[i].substring);
+        size_t candidate_length = occurences[i].start_index + occurences[i].substring_length;
 
         if(candidate_length > result_length) {
             result_length = candidate_length;
@@ -72,7 +74,7 @@ int main()
     size_t last_unprocessed_symbol = 0;
 
     for(int i = 0; i < num_occurences; i++) {
-        if(occurences[i].start_index + strlen(occurences[i].substring) - 1 < last_unprocessed_symbol) {
+        if(occurences[i].start_index + occurences[i].substring_length - 1 < last_unprocessed_symbol) {
             continue;
         }
 
@@ -80,7 +82,7 @@ int main()
             result[occurences[i].start_index + j] = occurences[i].substring[j];
         }
 
-        last_unprocessed_symbol = occurences[i].start_index + strlen(occurences[i].substring);
+        last_unprocessed_symbol = occurences[i].start_index + occurences[i].substring_length;
 
         if(last_unprocessed_symbol >= result_length) {
             break;
