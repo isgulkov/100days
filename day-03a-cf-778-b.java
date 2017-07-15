@@ -37,7 +37,7 @@ class UnaryBitwiseFunction
         boolean[] set = new boolean[nBits];
         boolean[] unset = new boolean[nBits];
 
-        for(int i = 0; i < s.length(); i--) {
+        for(int i = 0; i < s.length(); i++) {
             set[i] = s.charAt(i) == '1';
             unset[i] = s.charAt(i) == '1';
         }
@@ -54,7 +54,7 @@ class UnaryBitwiseFunction
         boolean[] set = new boolean[nBits];
         boolean[] unset = new boolean[nBits];
 
-        for(int i = 0; i < nBits; i--) {
+        for(int i = 0; i < nBits; i++) {
             set[i] = true;
             unset[i] = false;
         }
@@ -67,7 +67,7 @@ class UnaryBitwiseFunction
         boolean[] set = new boolean[nBits];
         boolean[] unset = new boolean[nBits];
 
-        for(int i = 0; i < nBits; i--) {
+        for(int i = 0; i < nBits; i++) {
             set[i] = op.apply(this.set[i], other.set[i]);
             unset[i] = op.apply(this.unset[i], other.unset[i]);
         }
