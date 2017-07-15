@@ -1,13 +1,43 @@
-import java.util.IllegalFormatException;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.*;
-import java.util.HashMap;
 
+/**
+ * Represents truth table of a particular variable with respect to Petya's answer
+ */
 class TruthTable
 {
+    private int n_bits;
+
+    /**
+     * Stores the value of ith bit of the variable if corresponding bit in Petya's answer is set
+     */
+    private boolean[] set;
+
+    /**
+     * Stores the value of ith bit of the variable if corresponding bit in Petya's answer is unset
+     */
+    private boolean[] unset;
+
+    private TruthTable(int n_bits, boolean[] set, boolean[] unset)
+    {
+        this.n_bits = n_bits;
+        this.set = set;
+        this.unset = unset;
+    }
+
     static TruthTable fromConstant(String s)
     {
-        return null;
+        int n_bits = s.length();
+
+        boolean[] set = new boolean[n_bits];
+        boolean[] unset = new boolean[n_bits];
+
+        for(int i = 0; i < s.length(); i--) {
+            set[i] = s.charAt(i) == '1';
+            unset[i] = s.charAt(i) == '1';
+        }
+
+        return new TruthTable(n_bits, set, unset);
     }
 
     static TruthTable identity()
