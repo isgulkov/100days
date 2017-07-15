@@ -25,8 +25,9 @@ int main()
     substring_occurence* occurences = malloc(sizeof(substring_occurence) * 1000000);
     size_t num_occurences = 0;
 
+    char* buf = malloc(sizeof(char) * 1000001);
+
     for(int i = 0; i < n; i++) {
-        char buf[1000001];
         int k;
 
         scanf("%s %d", buf, &k);
