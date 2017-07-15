@@ -2,25 +2,27 @@
 
 n = int(raw_input())
 
-substrings = []
-substring_occurences = {}
+substring_occurences = []
 
 s_length = 0
 
 for i in xrange(n):
 	line = raw_input().split(' ')
 
-	current_substring = line[0]
-	current_occurences = map(int, line[2:])
+	substring = line[0]
+	occurences = map(int, line[2:])
 
-	candidate_length = len(current_substring) + current_occurences[-1] - 1
+	for occurence in occurences:
+		# Make string indices zero-based
+		substring_occurences.append((occurence - 1, substring, ))
+
+	candidate_length = len(substring) + occurences[-1] - 1
 
 	if candidate_length > s_length:
 		s_length = candidate_length
 
-	substrings.append(current_substring)
-	substring_occurences[line[0]] = current_occurences
+s = ["a"] * s_length
 
-print substrings
+substring_occurences.sort(key=lambda x: x[0])
+
 print substring_occurences
-print s_length
