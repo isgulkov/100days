@@ -136,8 +136,6 @@ class VariableSystem
 
     void addStatement(String stmt)
     {
-        TruthTable result;
-
         Matcher m = stmtPattern.matcher(stmt);
 
         if(!m.find()) {
