@@ -34,9 +34,14 @@ class VariableSystem
 {
     private static Pattern exprPattern = Pattern.compile(" (\\?|[a-z]+|[01]+) (AND|OR|XOR) (\\?|[a-z]+|[01]+)");
 
-    private HashMap<String, boolean[]> bitwiseFunctions = new HashMap<>();
-
     private int nBits;
+
+    /**
+     * Each boolean[] represents the truth table of a bitwise boolean function with respect to Petya's answer.
+     * Bits [0; nBits) correspond to the value of the function when the corresponding bits of the argument are set, bits
+     * [nBits; 2 * nBits) represent the same, but when bits of the argument are unset
+     */
+    private HashMap<String, boolean[]> bitwiseFunctions = new HashMap<>();
 
     VariableSystem(int nBits)
     {
@@ -87,6 +92,12 @@ class VariableSystem
         }
     }
 
+    /**
+     * @param one Truth table of one function
+     * @param another Truth table of another function
+     * @param op A binary boolean operation
+     * @return The result of application of the operation to the two functions
+     */
     private boolean[] applyOperation(boolean[] one, boolean[] another, BinaryOperator<Boolean> op)
     {
         boolean[] operationResult = new boolean[nBits * 2];
