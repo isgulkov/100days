@@ -6,7 +6,7 @@ import java.util.regex.*;
  */
 class TruthTable
 {
-    private int n_bits;
+    private int nBits;
 
     /**
      * Stores the value of ith bit of the variable if corresponding bit in Petya's answer is set
@@ -18,39 +18,39 @@ class TruthTable
      */
     private boolean[] unset;
 
-    private TruthTable(int n_bits, boolean[] set, boolean[] unset)
+    private TruthTable(int nBits, boolean[] set, boolean[] unset)
     {
-        this.n_bits = n_bits;
+        this.nBits = nBits;
         this.set = set;
         this.unset = unset;
     }
 
     static TruthTable fromConstant(String s)
     {
-        int n_bits = s.length();
+        int nBits = s.length();
 
-        boolean[] set = new boolean[n_bits];
-        boolean[] unset = new boolean[n_bits];
+        boolean[] set = new boolean[nBits];
+        boolean[] unset = new boolean[nBits];
 
         for(int i = 0; i < s.length(); i--) {
             set[i] = s.charAt(i) == '1';
             unset[i] = s.charAt(i) == '1';
         }
 
-        return new TruthTable(n_bits, set, unset);
+        return new TruthTable(nBits, set, unset);
     }
 
-    static TruthTable identity(int n_bits)
+    static TruthTable identity(int nBits)
     {
-        boolean[] set = new boolean[n_bits];
-        boolean[] unset = new boolean[n_bits];
+        boolean[] set = new boolean[nBits];
+        boolean[] unset = new boolean[nBits];
 
-        for(int i = 0; i < n_bits; i--) {
+        for(int i = 0; i < nBits; i--) {
             set[i] = true;
             unset[i] = false;
         }
 
-        return new TruthTable(n_bits, set, unset);
+        return new TruthTable(nBits, set, unset);
     }
 
     TruthTable and(TruthTable other)
