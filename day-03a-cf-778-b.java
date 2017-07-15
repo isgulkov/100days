@@ -49,7 +49,7 @@ class VariableSystem
     private static Pattern stmtPattern = Pattern.compile("([a-z]+) := (.+$)");
     private static Pattern exprPattern = Pattern.compile("(\\?|[a-z]+|[01]+) (AND|OR|XOR) (\\?|[a-z]+|[01]+)");
 
-    private HashMap<String, UnaryBitwiseFunction> bitwiseFunctions = new HashMap<>();
+    private HashMap<String, boolean[]> bitwiseFunctions = new HashMap<>();
 
     private int nBits;
 
@@ -58,46 +58,77 @@ class VariableSystem
         this.nBits = nBits;
     }
 
-    @Override
-    public String toString()
+    /**
+     * @return Bitwise truth table of identity function
+     */
+    private boolean[] identity()
     {
-        String result = "";
+        boolean[] identity = new boolean[nBits * 2];
 
-        for(String var : bitwiseFunctions.keySet()) {
-            result += var + bitwiseFunctions.get(var).toString() + "\n";
+        for(int i = 0; i < nBits; i++) {
+            identity[i] = true;
+            identity[nBits + i] = false;
         }
 
-        return result;
+        return identity;
     }
 
-    private UnaryBitwiseFunction parsePrimaryExpression(String primaryExpr)
+    /**
+     * @return Bitwise truth table of constant function
+     */
+    private boolean[] constant(String s)
+    {
+        assert s.length() == nBits;
+
+        boolean[] constant = new boolean[nBits * 2];
+
+        for(int i = 0; i < nBits; i++) {
+            constant[i] = constant[nBits + i] = s.charAt(i) == '1';
+        }
+
+        return constant;
+    }
+
+    private boolean[] parsePrimaryExpression(String primaryExpr)
     {
         if(primaryExpr.equals("?")) {
-            return UnaryBitwiseFunction.identity(nBits);
+            return identity();
         }
         else if(primaryExpr.matches("^[01]+$")) {
-            return UnaryBitwiseFunction.fromConstant(primaryExpr);
+            return constant(primaryExpr);
         }
         else {
             return bitwiseFunctions.get(primaryExpr);
         }
     }
 
-    private UnaryBitwiseFunction parseExpression(String expr)
+    private boolean[] applyOperation(boolean[] one, boolean[] another, BinaryOperator<Boolean> op)
+    {
+        boolean[] operationResult = new boolean[nBits * 2];
+
+        for(int i = 0; i < nBits; i++) {
+            operationResult[i] = op.apply(one[i], another[i]);
+            operationResult[nBits + i] = op.apply(one[nBits + i], another[nBits + i]);
+        }
+
+        return operationResult;
+    }
+
+    private boolean[] parseExpression(String expr)
     {
         Matcher m = exprPattern.matcher(expr);
 
         if(m.find()) {
-            UnaryBitwiseFunction a = parsePrimaryExpression(m.group(1));
-            UnaryBitwiseFunction b = parsePrimaryExpression(m.group(3));
+            boolean[] a = parsePrimaryExpression(m.group(1));
+            boolean[] b = parsePrimaryExpression(m.group(3));
 
             switch(m.group(2)) {
                 case "AND":
-                    return a.and(b);
+                    return applyOperation(a, b, (x, y) -> x && y);
                 case "OR":
-                    return a.or(b);
+                    return applyOperation(a, b, (x, y) -> x || y);
                 case "XOR":
-                    return a.xor(b);
+                    return applyOperation(a, b, (x, y) -> x != y);
                 default: // Never happens
                     throw new IllegalArgumentException("");
             }
@@ -133,12 +164,12 @@ class VariableSystem
         for(int i = 0; i < nBits; i++) {
             int onesIfSet = 0, onesIfUnset = 0;
 
-            for(UnaryBitwiseFunction function : bitwiseFunctions.values()) {
-                if(function.set(i)) {
+            for(boolean[] function : bitwiseFunctions.values()) {
+                if(function[i]) {
                     onesIfSet += 1;
                 }
 
-                if(function.unset(i)) {
+                if(function[nBits + i]) {
                     onesIfUnset += 1;
                 }
             }
