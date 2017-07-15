@@ -48,9 +48,21 @@ int main()
 
     qsort(occurences, num_occurences, sizeof(substring_occurence), &compare_substring_occurences);
 
+    /*
+     * Determine the length of the resulting string
+     */
+
+    size_t result_length = 0;
+
     for(int i = 0; i < num_occurences; i++) {
-        printf("%d %s\n", occurences[i].start_index, occurences[i].substring);
+        size_t candidate_length = occurences[i].start_index + strlen(occurences[i].substring);
+
+        if(candidate_length > result_length) {
+            result_length = candidate_length;
+        }
     }
+
+    printf("%ld", result_length);
 
     return 0;
 }
