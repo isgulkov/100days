@@ -40,9 +40,17 @@ class TruthTable
         return new TruthTable(n_bits, set, unset);
     }
 
-    static TruthTable identity()
+    static TruthTable identity(int n_bits)
     {
-        return null;
+        boolean[] set = new boolean[n_bits];
+        boolean[] unset = new boolean[n_bits];
+
+        for(int i = 0; i < n_bits; i--) {
+            set[i] = true;
+            unset[i] = false;
+        }
+
+        return new TruthTable(n_bits, set, unset);
     }
 
     TruthTable and(TruthTable other)
@@ -68,10 +76,17 @@ class VariableSystem
 
     private HashMap<String, TruthTable> truthTables = new HashMap<>();
 
+    private int nBits;
+
+    VariableSystem(int nBits)
+    {
+        this.nBits = nBits;
+    }
+
     private TruthTable parsePrimaryExpression(String primaryExpr)
     {
         if(primaryExpr.equals("?")) {
-            return TruthTable.identity();
+            return TruthTable.identity(nBits);
         }
         else if(primaryExpr.matches("^[01]+$")) {
             return TruthTable.fromConstant(primaryExpr);
@@ -151,7 +166,7 @@ class Day03a
             m = ab[1];
         }
 
-        VariableSystem vs = new VariableSystem();
+        VariableSystem vs = new VariableSystem(m);
 
         for(int i = 0; i < n; i++) {
             vs.addStatement(stdin.nextLine());
