@@ -101,7 +101,7 @@ class MainClass
 		 */
 		List<int> chainEnds = new List<int>();
 
-		for(int i = 0; i < 6; i++) {
+		for(int i = 0; i < 7; i++) {
 			List<int> chain = new List<int>();
 
 			for(int j = 0; j < 6 - i; j++) {
