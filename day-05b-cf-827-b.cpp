@@ -112,7 +112,7 @@ int main()
      * Print the maximum distance between leaves in the resulting tree, which is double the length of the longest branch
      * — 2 * ceil((n - 1) / k), subtract one if there's only one longest branch — (n - 1) % k == 1
      */
-    std::cout << 2 * ((n + k - 2) / k) - ((n - 1) % k == 1) << std::endl;
+    std::cout << 2 * ((n - 1) / k + ((n - 1) % k != 0)) - ((n - 1) % k == 1) << std::endl;
 
     /**
      * Print the edges of the resulting graph
