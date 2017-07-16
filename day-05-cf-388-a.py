@@ -25,7 +25,7 @@ while len(box_caps) != 0:
 	if selected_stack is not None:
 		selected_stack.append(current_cap)
 	else:
-		# If no stack found that the current element can hold, create a new stack with it at the top
+		# If no stack found that the current element can hold, create a new stack with the element at the top
 		stacks.append([current_cap])
 
 print len(stacks)
