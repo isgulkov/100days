@@ -1,34 +1,31 @@
+from sys import maxint
 
 raw_input()
 
 box_caps = map(int, raw_input().split(' '))
 
-box_caps.sort()
+box_caps.sort(key=lambda x: -x)
 
-num_stacks = 0
+stacks = []
 
 while len(box_caps) != 0:
 	current_cap = box_caps.pop()
 
-	i = len(box_caps) - 1
+	# Select for the current element a stack that it can hold with the lowest surplus capacity
+	selected_stack = None
+	min_surplus = maxint
 
-	while i >= 0:
-		if box_caps[i] >= current_cap:
-			i -= 1
+	for stack in stacks:
+		current_surplus = current_cap - len(stack)
 
-			continue
+		if current_surplus >= 0 and current_surplus < min_surplus:
+			min_surplus = current_surplus
+			selected_stack = stack
 
-		next_cap = box_caps[i]
-		del box_caps[i]
+	if selected_stack is not None:
+		selected_stack.append(current_cap)
+	else:
+		# If no stack found that the current element can hold, create a new stack with it at the top
+		stacks.append([current_cap])
 
-		current_cap -= 1
-
-		if next_cap < current_cap:
-			current_cap = next_cap
-
-		i -= 1
-
-	num_stacks += 1
-
-print num_stacks
-
+print len(stacks)
