@@ -196,7 +196,7 @@
 
 ### Бонусный трек
 
-**Задача**: [CF #228 (Div. 1) B](http://codeforces.com/contest/388/problem/A)
+**Задача**: [CF #228 (Div. 1) B](http://codeforces.com/contest/388/problem/B)
 
 #### Ход решения
 
