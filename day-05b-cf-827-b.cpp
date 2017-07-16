@@ -108,6 +108,15 @@ int main()
         free_nodes.pop_front();
     }
 
+    /**
+     * Print the maximum distance between leaves in the resulting tree, which is double the length of the longest branch
+     * — 2 * ceil((n - 1) / k), subtract one if there's only one longest branch — (n - 1) % k == 1
+     */
+    std::cout << 2 * ((n + k - 2) / k) - ((n - 1) % k == 1) << std::endl;
+
+    /**
+     * Print the edges of the resulting graph
+     */
     for(std::pair<int, int> edge : g.get_edges()) {
         std::cout << edge.first + 1 << " " << edge.second + 1 << std::endl;
     }
