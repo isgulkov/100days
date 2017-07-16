@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_set>
+#include <deque>
 
 int main()
 {
@@ -47,5 +48,45 @@ int main()
 
     std::cin >> n >> k;
 
-    std::cout << n << " " << k << std::endl;
+    Graph g(n);
+
+    std::deque<int> free_nodes;
+
+    for(int i = 1; i < n; i++) {
+        free_nodes.push_back(i);
+    }
+
+    /**
+     * Assign one node as the root of the tree
+     */
+    int root_node = 0;
+
+    std::vector<int> leaves;
+
+    for(int i = 0; i < k; i++) {
+        int free_node = free_nodes.front();
+
+        leaves.push_back(free_node);
+
+        free_nodes.pop_front();
+    }
+
+    /**
+     * Connect leaf nodes to the root
+     */
+    for(int leaf : leaves) {
+        g.add_edge(root_node, leaf);
+    }
+
+    /**
+     * Extend the branch between each leaf and the root in turn until there are no free nodes left, resulting in the
+     * difference between the shortest and the longest branch being less than or equal to one
+     */
+    for(size_t i = 0; !free_nodes.empty(); i = (i + 1) % leaves.size()) {
+        int free_node = free_nodes.front();
+
+        g.put_in_between(root_node, free_node, leaves[i]);
+
+        free_nodes.pop_front();
+    }
 }
