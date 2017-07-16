@@ -75,16 +75,19 @@ int main()
     }
 
     /**
-     * Assign one node as the root of the tree
+     * Select one node as the root of the tree
      */
     int root_node = 0;
 
-    std::vector<int> leaves;
+    /**
+     * Select `k` nodes as leaves
+     */
+    std::vector<int> branch_ends;
 
     for(int i = 0; i < k; i++) {
         int free_node = free_nodes.front();
 
-        leaves.push_back(free_node);
+        branch_ends.push_back(free_node);
 
         free_nodes.pop_front();
     }
@@ -92,7 +95,7 @@ int main()
     /**
      * Connect leaf nodes to the root
      */
-    for(int leaf : leaves) {
+    for(int leaf : branch_ends) {
         g.add_edge(root_node, leaf);
     }
 
@@ -100,10 +103,12 @@ int main()
      * Extend the branch between each leaf and the root in turn until there are no free nodes left, resulting in the
      * difference between the shortest and the longest branch being less than or equal to one
      */
-    for(size_t i = 0; !free_nodes.empty(); i = (i + 1) % leaves.size()) {
+    for(size_t i = 0; !free_nodes.empty(); i = (i + 1) % branch_ends.size()) {
         int free_node = free_nodes.front();
 
-        g.put_in_between(root_node, free_node, leaves[i]);
+        g.put_in_between(root_node, free_node, branch_ends[i]);
+
+        branch_ends[i] = free_node;
 
         free_nodes.pop_front();
     }
