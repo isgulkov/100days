@@ -139,6 +139,33 @@
 | TL #8 | Оказалось, есть куда. Локализовал сегфолт, и вот еб твою мать |
 | TL #8 | Чудеса оптимизации в виде сохранения устранения пары вызовов strlen() не спасли |
 | TL #8 | Чудеса оптимизации в виде отказа от маллока каждой строки тоже нихуя не подействовали |
+| AC | Подсмотрел у масиков то, что надо массив заполнять буквами "а" не заранее, а во время. Также переписал оттуда соответствующее копирование подстрок в строку в цикле "вайл". Дело, блять, оказалось, в нем. Чем мое копирование медленнее (оба приведены ниже) — в душе не ебу и лень проверять. Короче, пиздец |
+
+Мое:
+
+```cpp
+        if(occurences[i].start_index + occurences[i].substring_length - 1 < last_unprocessed_symbol) {
+            continue;
+        }
+
+        for(int j = 0; occurences[i].substring[j] != '\0'; j++) {
+            result[occurences[i].start_index + j] = occurences[i].substring[j];
+        }
+
+        last_unprocessed_symbol = occurences[i].start_index + occurences[i].substring_length;
+```
+
+Красноперого пидора (переписанное мной):
+
+```cpp
+        while(last_unprocessed_symbol < occurences[i].start_index + occurences[i].substring_length) {
+            result[last_unprocessed_symbol]
+                    = occurences[i].substring[last_unprocessed_symbol - occurences[i].start_index];
+
+            last_unprocessed_symbol += 1;
+        }
+```
+
 
 **Затраченное время**:
 
