@@ -49,8 +49,8 @@ class MainClass
 
 		const int n =
 			2 // nodes 0 and 1
-			+ 10 * 7 // decimal node layers
-			+ 7 + 6 + 5 + 4 + 3 + 2 + 1; // chains from layers to node 1
+			+ 10 * 10 // decimal node layers
+			+ 10 + 9 + 8 + 7 + 6 + 5 + 4 + 3 + 2 + 1; // chains from layers to node 1
 
 		Graph g = new Graph(n);
 
@@ -66,7 +66,7 @@ class MainClass
 		/**
 		 * Assign nodes to layers
 		 */
-		for(int i = 0; i < 7; i++) {
+		for(int i = 0; i < 10; i++) {
 			List<int> newLayer = new List<int>();
 
 			for(int j = 0; j < 10; j++) {
@@ -87,7 +87,7 @@ class MainClass
 		/**
 		 * Fully interconnect each layer with the previous one
 		 */
-		for(int i = 1; i < 7; i++) {
+		for(int i = 1; i < 10; i++) {
 			foreach(int nodePreviousLayer in layers[i - 1]) {
 				foreach(int nodeThisLayer in layers[i]) {
 					g.AddEdge(nodePreviousLayer, nodeThisLayer);
@@ -101,10 +101,10 @@ class MainClass
 		 */
 		List<int> chainEnds = new List<int>();
 
-		for(int i = 0; i < 7; i++) {
+		for(int i = 0; i < 10; i++) {
 			List<int> chain = new List<int>();
 
-			for(int j = 0; j < 6 - i; j++) {
+			for(int j = 0; j < 9 - i; j++) {
 				chain.Add(freeNodes[0]);
 				freeNodes.RemoveAt(0);
 			}
