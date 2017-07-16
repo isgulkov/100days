@@ -42,6 +42,24 @@ int main()
             add_edge(rock, u);
             add_edge(u, hard_place);
         }
+
+        /**
+         * @return Vector of all the edges in the graph (as pairs of adjacent nodes), each edge mentioned only once
+         */
+        std::vector<std::pair<int, int>> get_edges()
+        {
+            std::vector<std::pair<int, int>> edges;
+
+            for(int u = 0; u < num_nodes; u++) {
+                for(int v : adj_lists[u]) {
+                    if(u < v) {
+                        edges.push_back(std::make_pair(u, v));
+                    }
+                }
+            }
+
+            return edges;
+        }
     };
 
     int n, k;
@@ -88,5 +106,9 @@ int main()
         g.put_in_between(root_node, free_node, leaves[i]);
 
         free_nodes.pop_front();
+    }
+
+    for(std::pair<int, int> edge : g.get_edges()) {
+        std::cout << edge.first + 1 << " " << edge.second + 1 << std::endl;
     }
 }
