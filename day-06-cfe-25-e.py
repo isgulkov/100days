@@ -19,6 +19,8 @@ class DirectedGraph:
 
         next_label = self._num_nodes
 
+        # On each iteration, select a node with zero outdegree with the highest index (the latter is done to ensure
+        # lexicographically minimal label permutation)
         while len(zero_outflow_nodes) != 0:
             u = zero_outflow_nodes.pop()
 
@@ -29,6 +31,9 @@ class DirectedGraph:
             for v in self._reversed_adj_lists[u]:
                 self._outflow_rate[v] -= 1
 
+                # If the node is a new zero-outdegree node, insert it into the array maintaining the sorted order. In
+                # practice this `bisect_left`/`insert()` solution works faster than both `Queue.PriorityQueue` and
+                # `heapq`
                 if self._outflow_rate[v] == 0:
                     insertion_point = bisect_left(zero_outflow_nodes, v)
 
