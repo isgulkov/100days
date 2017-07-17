@@ -29,9 +29,20 @@ class DirectedGraph:
                 self._outflow_rate[v] -= 1
 
                 if self._outflow_rate[v] == 0:
-                    zero_outflow_nodes.append(v)
+                    inserted = False
 
-                    zero_outflow_nodes.sort()
+                    for i in xrange(len(zero_outflow_nodes)):
+                        if zero_outflow_nodes[i] >= v:
+                            zero_outflow_nodes.insert(i, v)
+
+                            inserted = True
+
+                            break
+
+                    if not inserted:
+                        zero_outflow_nodes.append(v)
+
+
 
         return labels
 
