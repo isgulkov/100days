@@ -1,5 +1,6 @@
 import heapq
 
+
 class DirectedGraph:
     def __init__(self, n):
         self._num_nodes = n
