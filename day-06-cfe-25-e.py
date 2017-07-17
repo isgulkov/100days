@@ -1,4 +1,4 @@
-from Queue import PriorityQueue
+import heapq
 
 class DirectedGraph:
 	def __init__(self, n):
@@ -17,17 +17,16 @@ class DirectedGraph:
 
 		labels = [None for i in xrange(self._num_nodes)]
 
-		outflow_rate = [len(self._adj_lists[i]) for i in xrange(self._num_nodes)]
+		outflow_rate = [len(self._adj_lists[u]) for u in xrange(self._num_nodes)]
 
-		zero_outflow_nodes = PriorityQueue()
+		zero_outflow_nodes = [-u for u in xrange(self._num_nodes) if outflow_rate[u] == 0]
 
-		for u in filter(lambda u: outflow_rate[u] == 0, xrange(self._num_nodes)):
-			zero_outflow_nodes.put((-u, u, ))
+		heapq.heapify(zero_outflow_nodes)
 
 		next_label = self._num_nodes
 
-		while not zero_outflow_nodes.empty():
-			u = zero_outflow_nodes.get()[1]
+		while len(zero_outflow_nodes) != 0:
+			u = -heapq.heappop(zero_outflow_nodes)
 
 			labels[u] = next_label
 
@@ -37,7 +36,7 @@ class DirectedGraph:
 				outflow_rate[v] -= 1
 
 				if outflow_rate[v] == 0:
-					zero_outflow_nodes.put((-v, v, ))
+					heapq.heappush(zero_outflow_nodes, -v)
 
 		return labels
 
