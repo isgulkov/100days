@@ -7,46 +7,39 @@
 /**
  * @param s String of specified size
  * @param size Size of the provided string
- * @return Last value of the prefix function of the provided string
+ * @param result Pointer to an array of the specified size for the values of the prefix function to be stored
  */
-size_t prefix_function_last(char* s, size_t size)
+void compute_prefix_function(char* s, size_t size, size_t* result)
 {
-    size_t prefix_function[size + 1];
-    prefix_function[0] = 0;
+    result[0] = 0;
 
     for(int i = 1; i <= size; i++) {
-        size_t j = prefix_function[i - 1];
+        size_t j = result[i - 1];
 
         while(j > 0 && s[i] != s[j]) {
-            j = prefix_function[j - 1];
+            j = result[j - 1];
         }
 
         if(s[i] == s[j]) {
             j += 1;
         }
 
-        prefix_function[i] = j;
+        result[i] = j;
     }
-
-    size_t prefix_last = prefix_function[size - 1];
-
-    return prefix_last;
 }
 
 /**
- * @param s String of specified size
- * @param size Size of the provided string
+ * @param length Length of the provided string
+ * @param p_last Last value of the provided string's prefix function
  * @return Length of the shortest period of string s
  */
-size_t min_period(char* s, size_t size)
+size_t min_period(size_t length, size_t p_last)
 {
-    size_t p_last = prefix_function_last(s, size);
-
-    if(size % (size - p_last) == 0) {
-        return size - p_last;
+    if(length % (length - p_last) == 0) {
+        return length - p_last;
     }
     else {
-        return size;
+        return length;
     }
 }
 
@@ -58,12 +51,27 @@ int main()
 
     size_t s_length = strlen(s);
 
-    size_t* dp = malloc(sizeof(size_t) * s_length);
-    dp[0] = 0;
+    /**
+     * Precompute the values of the prefix function for all suffixes of `s` so that prefix_function[i][j] stores the
+     * last value of prefix function of substring [i; j)
+     */
+    size_t* prefix_function[8000];
+
+    for(int i = 0; i < 8000; i++) {
+        prefix_function[i] = malloc(sizeof(size_t) * 8000);
+    }
+
+    for(int i = 0; i < s_length; i++) {
+        compute_prefix_function(s + i, s_length - i, prefix_function[i] + i);
+    }
 
     /**
      * dp[i] stores the minimum number of chars required for encoding the [0; i) substring
      */
+
+    size_t* dp = malloc(sizeof(size_t) * s_length);
+    dp[0] = 0;
+
     for(size_t i = 1; i <= s_length; i++) {
         dp[i] = SIZE_MAX;
 
@@ -72,7 +80,7 @@ int main()
              * Try to write substring [j; i) as its minimum period with the number of repetitions prepended
              */
 
-            size_t substr_min_period = min_period(s + j, i - j);
+            size_t substr_min_period = min_period(i - j, prefix_function[j][i - 1]);
 
             size_t candidate_answer = dp[j];
 
