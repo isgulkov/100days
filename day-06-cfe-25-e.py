@@ -4,17 +4,13 @@ class DirectedGraph:
 	def __init__(self, n):
 		self._num_nodes = n
 		self._adj_lists = [[] for i in xrange(n)]
+		self._reversed_adj_lists = [[] for i in xrange(n)]
 
 	def add_edge(self, u, v):
 		self._adj_lists[u].append(v)
+		self._reversed_adj_lists[v].append(u)
 
 	def get_topological_labels(self):
-		reversed_adj_lists = [[] for i in xrange(self._num_nodes)]
-
-		for u in xrange(self._num_nodes):
-			for v in self._adj_lists[u]:
-				reversed_adj_lists[v].append(u)
-
 		labels = [None for i in xrange(self._num_nodes)]
 
 		outflow_rate = [len(self._adj_lists[u]) for u in xrange(self._num_nodes)]
@@ -32,7 +28,7 @@ class DirectedGraph:
 
 			next_label -= 1
 
-			for v in reversed_adj_lists[u]:
+			for v in self._reversed_adj_lists[u]:
 				outflow_rate[v] -= 1
 
 				if outflow_rate[v] == 0:
