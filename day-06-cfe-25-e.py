@@ -14,14 +14,12 @@ class DirectedGraph:
     def get_topological_labels(self):
         labels = [None for i in xrange(self._num_nodes)]
 
-        zero_outflow_nodes = [-u for u in xrange(self._num_nodes) if self._outflow_rate[u] == 0]
-
-        heapq.heapify(zero_outflow_nodes)
+        zero_outflow_nodes = [u for u in xrange(self._num_nodes) if self._outflow_rate[u] == 0]
 
         next_label = self._num_nodes
 
         while len(zero_outflow_nodes) != 0:
-            u = -heapq.heappop(zero_outflow_nodes)
+            u = zero_outflow_nodes.pop()
 
             labels[u] = next_label
 
@@ -31,7 +29,9 @@ class DirectedGraph:
                 self._outflow_rate[v] -= 1
 
                 if self._outflow_rate[v] == 0:
-                    heapq.heappush(zero_outflow_nodes, -v)
+                    zero_outflow_nodes.append(v)
+
+                    zero_outflow_nodes.sort()
 
         return labels
 
