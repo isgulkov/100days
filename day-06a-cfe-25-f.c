@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
-#include <math.h>
 #include <stdint.h>
 
 /**
@@ -66,6 +65,19 @@ int main()
     }
 
     /**
+     * Precompute "floor(logarithm base 10) + 1" values as the math.h log10 floating point function is hella slow
+     */
+    size_t log10plus1_values[8000];
+
+    log10plus1_values[0] = 0;
+
+    for(int i = 1; i < 8000; i++) {
+        log10plus1_values[i] = log10plus1_values[i / 10] + 1;
+    }
+
+    log10plus1_values[1] = 1;
+
+    /**
      * dp[i] stores the minimum number of chars required for encoding the [0; i) substring
      */
 
@@ -92,7 +104,7 @@ int main()
             /**
              * Number of decimal digits needed to write down the number of repetitions
              */
-            candidate_answer += (int)log10((i - j) / substr_min_period) + 1;
+            candidate_answer += log10plus1_values[(i - j) / substr_min_period];
 
             if(candidate_answer < dp[i]) {
                 dp[i] = candidate_answer;
