@@ -4,19 +4,17 @@ import heapq
 class DirectedGraph:
     def __init__(self, n):
         self._num_nodes = n
-        self._adj_lists = [[] for i in xrange(n)]
+        self._outflow_rate = [0 for i in xrange(n)]
         self._reversed_adj_lists = [[] for i in xrange(n)]
 
     def add_edge(self, u, v):
-        self._adj_lists[u].append(v)
+        self._outflow_rate[u] += 1
         self._reversed_adj_lists[v].append(u)
 
     def get_topological_labels(self):
         labels = [None for i in xrange(self._num_nodes)]
 
-        outflow_rate = [len(self._adj_lists[u]) for u in xrange(self._num_nodes)]
-
-        zero_outflow_nodes = [-u for u in xrange(self._num_nodes) if outflow_rate[u] == 0]
+        zero_outflow_nodes = [-u for u in xrange(self._num_nodes) if self._outflow_rate[u] == 0]
 
         heapq.heapify(zero_outflow_nodes)
 
@@ -30,9 +28,9 @@ class DirectedGraph:
             next_label -= 1
 
             for v in self._reversed_adj_lists[u]:
-                outflow_rate[v] -= 1
+                self._outflow_rate[v] -= 1
 
-                if outflow_rate[v] == 0:
+                if self._outflow_rate[v] == 0:
                     heapq.heappush(zero_outflow_nodes, -v)
 
         return labels
