@@ -75,8 +75,6 @@ int main()
         log10plus1_values[i] = log10plus1_values[i / 10] + 1;
     }
 
-    log10plus1_values[1] = 1;
-
     /**
      * dp[i] stores the minimum number of chars required for encoding the [0; i) substring
      */
