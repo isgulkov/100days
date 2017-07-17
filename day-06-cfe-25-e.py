@@ -1,3 +1,4 @@
+from Queue import PriorityQueue
 
 class DirectedGraph:
 	def __init__(self, n):
@@ -18,12 +19,15 @@ class DirectedGraph:
 
 		outflow_rate = [len(self._adj_lists[i]) for i in xrange(self._num_nodes)]
 
-		zero_outflow_nodes = [i for i in xrange(self._num_nodes) if outflow_rate[i] == 0]
+		zero_outflow_nodes = PriorityQueue()
+
+		for u in filter(lambda u: outflow_rate[u] == 0, xrange(self._num_nodes)):
+			zero_outflow_nodes.put((-u, u, ))
 
 		next_label = self._num_nodes
 
-		while zero_outflow_nodes:
-			u = zero_outflow_nodes.pop()
+		while not zero_outflow_nodes.empty():
+			u = zero_outflow_nodes.get()[1]
 
 			labels[u] = next_label
 
@@ -33,7 +37,7 @@ class DirectedGraph:
 				outflow_rate[v] -= 1
 
 				if outflow_rate[v] == 0:
-					zero_outflow_nodes.insert(0, v)
+					zero_outflow_nodes.put((-v, v, ))
 
 		return labels
 
