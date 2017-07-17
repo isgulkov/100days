@@ -67,11 +67,11 @@ int main()
     /**
      * Precompute "floor(logarithm base 10) + 1" values as the math.h log10 floating point function is hella slow
      */
-    size_t log10plus1_values[8000];
+    size_t log10plus1_values[8001];
 
     log10plus1_values[0] = 0;
 
-    for(int i = 1; i < 8000; i++) {
+    for(int i = 1; i <= 8000; i++) {
         log10plus1_values[i] = log10plus1_values[i / 10] + 1;
     }
 
