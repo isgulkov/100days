@@ -11,7 +11,7 @@
  */
 size_t prefix_function_last(char* s, size_t size)
 {
-    size_t* prefix_function = malloc(sizeof(size_t) * size);
+    size_t prefix_function[size + 1];
     prefix_function[0] = 0;
 
     for(int i = 1; i <= size; i++) {
@@ -29,8 +29,6 @@ size_t prefix_function_last(char* s, size_t size)
     }
 
     size_t prefix_last = prefix_function[size - 1];
-
-//    free(prefix_function);
 
     return prefix_last;
 }
