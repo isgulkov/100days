@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <memory.h>
 #include <math.h>
+#include <stdint.h>
 
 /**
  * @param s String of specified size
@@ -66,7 +67,7 @@ int main()
      * dp[i] stores the minimum number of chars required for encoding the [0; i) substring
      */
     for(size_t i = 1; i <= s_length; i++) {
-        dp[i] = INT32_MAX;
+        dp[i] = SIZE_MAX;
 
         for(size_t j = 0; j < i; j++) {
             /**
