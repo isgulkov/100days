@@ -8,9 +8,7 @@ int main()
 
     std::cin >> s;
 
-    std::list<int> masik;
-
-    masik.push_front(1);
+    std::list<int> masik = { 1 };
 
     auto prev_element = masik.begin();
 
