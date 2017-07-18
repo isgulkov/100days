@@ -54,14 +54,14 @@ int main()
      * Precompute the values of the prefix function for all suffixes of `s` so that prefix_function[i][j] stores the
      * last value of prefix function of substring [i; j)
      */
-    size_t* prefix_function[8000];
+    size_t* s_prefix_function[8000];
 
     for(int i = 0; i < 8000; i++) {
-        prefix_function[i] = malloc(sizeof(size_t) * 8000);
+        s_prefix_function[i] = malloc(sizeof(size_t) * 8000);
     }
 
     for(int i = 0; i < s_length; i++) {
-        compute_prefix_function(s + i, s_length - i, prefix_function[i] + i);
+        compute_prefix_function(s + i, s_length - i, s_prefix_function[i] + i);
     }
 
     /**
@@ -90,7 +90,7 @@ int main()
              * Try to write substring [j; i) as its minimum period with the number of repetitions prepended
              */
 
-            size_t substr_min_period = min_period(i - j, prefix_function[j][i - 1]);
+            size_t substr_min_period = min_period(i - j, s_prefix_function[j][i - 1]);
 
             size_t candidate_answer = dp[j];
 
