@@ -22,9 +22,7 @@ int main()
         prev_element = masik.insert(prev_element, i + 2);
     }
 
-    while(!masik.empty()) {
-        std::cout << masik.front() << std::endl;
-
-        masik.pop_front();
+    for(auto it = masik.begin(); it != masik.end(); it++) {
+        std::cout << *it << std::endl;
     }
 }
