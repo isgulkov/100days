@@ -1,5 +1,5 @@
 #include <iostream>
-#include <list>
+#include <map>
 #include <string>
 
 int main()
@@ -8,19 +8,24 @@ int main()
 
     std::cin >> s;
 
-    std::list<int> masik = { 1 };
+    std::map<double, int> masik;
 
-    auto prev_element = masik.begin();
+    double left = 0.0, right = 1.0;
 
-    for(int i = 0; i < s.length() - 1; i++) {
-        if(s[i] == 'r') {
-            prev_element++;
+    for(int i = 0; i < s.length(); i++) {
+        double mid = (right + left) / 2.0;
+
+        masik[mid] = i + 1;
+
+        if(s[i] == 'l') {
+            right = mid;
         }
-
-        prev_element = masik.insert(prev_element, i + 2);
+        else if(s[i] == 'r') {
+            left = mid;
+        }
     }
 
     for(auto it = masik.begin(); it != masik.end(); it++) {
-        std::cout << *it << std::endl;
+        std::cout << it->second << std::endl;
     }
 }
