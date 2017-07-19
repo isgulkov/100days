@@ -1,4 +1,4 @@
-from sys import maxint, exit
+from sys import exit
 
 num_rows, num_cols = map(int, raw_input().split(' '))
 
