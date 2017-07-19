@@ -1,10 +1,10 @@
 from sys import maxint
 
-n, m = map(int, raw_input().split(' '))
+num_rows, num_cols = map(int, raw_input().split(' '))
 
 playing_field_rows = []
 
-for i in xrange(n):
+for i in xrange(num_rows):
 	playing_field_rows.append(map(int, raw_input().split(' ')))
 
 moves = []
@@ -16,7 +16,7 @@ for row in playing_field_rows:
 
 smallest_row_max = min(row_maxes)
 
-for i in xrange(len(playing_field_rows)):
+for i in xrange(num_rows):
 	surplus = row_maxes[i] - smallest_row_max
 
 	for j in xrange(surplus):
