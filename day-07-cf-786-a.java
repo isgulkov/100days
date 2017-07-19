@@ -103,6 +103,14 @@ class GameSolver
             nonLosingOutcomesA[i] = this.movesPlayerA.length;
             nonLosingOutcomesB[i] = this.movesPlayerB.length;
         }
+
+        extrapolateOutcome(0, Player.A);
+        extrapolateOutcome(0, Player.B);
+    }
+
+    private void extrapolateOutcome(int position, Player player)
+    {
+        
     }
 
     GameOutcome getOutcome(int position, Player player)
