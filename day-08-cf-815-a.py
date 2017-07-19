@@ -1,4 +1,4 @@
-from sys import maxint
+from sys import maxint, exit
 
 num_rows, num_cols = map(int, raw_input().split(' '))
 
@@ -8,6 +8,8 @@ for i in xrange(num_rows):
 	playing_field_rows.append(map(int, raw_input().split(' ')))
 
 moves = []
+
+# Remove surplises from rows
 
 row_maxes = []
 
@@ -24,6 +26,8 @@ for i_row in xrange(num_rows):
 
 	if surplus != 0:
 		playing_field_rows[i_row] = map(lambda x: x - surplus, playing_field_rows[i_row])
+
+# Remove surpluses from columns
 
 def get_column(i_col, rows):
 	return [rows[j][i_col] for j in xrange(num_rows)]
@@ -49,6 +53,28 @@ for i_col in xrange(num_cols):
 
 	if surplus != 0:
 		map_column(lambda x: x - surplus, i_col, playing_field_rows)
+
+# At this point all cells must have the same and non-negative value
+
+common_value = playing_field_rows[0][0]
+
+if common_value < 0:
+	print -1
+	exit(0)
+
+for i_row in xrange(num_rows):
+	for i_col in xrange(num_cols):
+		current_cell = playing_field_rows[i_row][i_col]
+
+		if current_cell != common_value:
+			print -1
+			exit(0)
+
+for i_row in xrange(num_rows):
+	for j in xrange(common_value):
+		moves.append("row %d" % (i_row, ))
+
+print len(moves)
 
 for move in moves:
 	print move
