@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <stdio.h>
 
 struct list_node
 {
@@ -71,7 +72,7 @@ int main()
     }
 
     while(head != nullptr) {
-        std::cout << head->value << std::endl;
+        printf("%d\n", head->value);
 
         head = head->next;
     }
