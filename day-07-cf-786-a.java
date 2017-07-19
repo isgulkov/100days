@@ -109,4 +109,54 @@ class GameSolver
     {
         return GameOutcome.WinA;
     }
+
+    private GameOutcome getCachedOutcome(int position, Player player)
+    {
+        if(player == Player.A) {
+            return cachedOutcomesA[position];
+        }
+        else {
+            return cachedOutcomesB[position];
+        }
+    }
+
+    private void setCachedOutcome(int position, Player player, GameOutcome outcome)
+    {
+        if(player == Player.A) {
+            cachedOutcomesA[position] = outcome;
+        }
+        else {
+            cachedOutcomesB[position] = outcome;
+        }
+    }
+
+    private void decrementNonLosingOutcomes(int position, Player player)
+    {
+        if(player == Player.A) {
+            nonLosingOutcomesA[position] -= 1;
+        }
+        else {
+            nonLosingOutcomesB[position] -= 1;
+        }
+    }
+
+    private boolean noNonLosingOutcomes(int position, Player player)
+    {
+        if(player == Player.A) {
+            return nonLosingOutcomesA[position] == 0;
+        }
+        else {
+            return nonLosingOutcomesB[position] == 0;
+        }
+    }
+
+    private int[] getPlayerMoves(Player player)
+    {
+        if(player == Player.A) {
+            return movesPlayerA;
+        }
+        else {
+            return movesPlayerB;
+        }
+    }
 }
