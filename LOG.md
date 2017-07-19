@@ -344,7 +344,7 @@ void fun(int pos)
 
 ## День 8: 19 июля 2017 года
 
-**Задача**: [CF #4419 (Div. 1) A](http://codeforces.com/contest/815/problem/A)
+**Задача**: [CF #419 (Div. 1) A](http://codeforces.com/contest/815/problem/A)
 
 #### Ход решения
 
