@@ -10,7 +10,7 @@ int main()
 
     std::map<double, int> masik;
 
-    double left = 0.0, right = 1.0;
+    double left = 0.0, right = 1000000000.0;
 
     for(int i = 0; i < s.length(); i++) {
         double mid = (right + left) / 2.0;
