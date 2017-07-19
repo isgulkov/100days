@@ -72,7 +72,7 @@ for i_row in xrange(num_rows):
 
 for i_row in xrange(num_rows):
 	for j in xrange(common_value):
-		moves.append("row %d" % (i_row, ))
+		moves.append("row %d" % (i_row + 1, ))
 
 print len(moves)
 
