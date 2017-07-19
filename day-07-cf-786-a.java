@@ -59,6 +59,16 @@ class GameSolver
                 return GameOutcome.WinB;
             }
         }
+
+        Player getOther()
+        {
+            if(this == A) {
+                return B;
+            }
+            else {
+                return A;
+            }
+        }
     }
 
     enum GameOutcome
@@ -113,7 +123,39 @@ class GameSolver
 
     private void extrapolateOutcome(int position, Player player)
     {
-        
+        Player otherPlayer = player.getOther();
+
+        for(int move : getPlayerMoves(otherPlayer)) {
+            /*
+             * Calculate the position from which the other player may have put this player into this position with the
+             * current move. `n` is added because in Java the modulo operation returns negative remainders for negative
+             * numbers, which is undesirable here
+             */
+            int possibleOrigin = (position - move + n) % n;
+
+            if(getOutcome(possibleOrigin, otherPlayer) != GameOutcome.Loop) {
+                continue;
+            }
+
+            if(getOutcome(position, player) == player.getWinOutcome()) {
+                decrementNonLosingOutcomes(possibleOrigin, otherPlayer);
+
+                if(noNonLosingOutcomes(possibleOrigin, otherPlayer)) {
+                    setOutcome(possibleOrigin, otherPlayer, player.getWinOutcome());
+
+                    extrapolateOutcome(possibleOrigin, otherPlayer);
+                }
+            }
+            else {
+                /*
+                 * Current outcome is win for the other player — can't be Loop because this method isn't called on such outcomes
+                 */
+
+                setOutcome(possibleOrigin, otherPlayer, otherPlayer.getWinOutcome());
+
+                extrapolateOutcome(possibleOrigin, otherPlayer);
+            }
+        }
     }
 
     GameOutcome getOutcome(int position, Player player)
