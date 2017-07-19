@@ -1,5 +1,3 @@
-from sys import exit
-
 
 class GameSolver:
     def __init__(self, playing_field_rows, num_rows, num_cols):
