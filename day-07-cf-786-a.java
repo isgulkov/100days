@@ -19,21 +19,60 @@ class Day07
 
         int n = scanner.nextInt();
 
-        int[] xs_player_a = readNInts(scanner.nextInt(), scanner);
-        int[] xs_player_b = readNInts(scanner.nextInt(), scanner);
+        int[] player_a_moves = readNInts(scanner.nextInt(), scanner);
+        int[] player_b_moves = readNInts(scanner.nextInt(), scanner);
 
-        System.out.println(n);
+        GameSolver gameSolver = new GameSolver(n, player_a_moves, player_b_moves);
 
-        for(int x : xs_player_a) {
-            System.out.printf("%d ", x);
+        for(GameSolver.Player player : new GameSolver.Player[] { GameSolver.Player.A, GameSolver.Player.B }) {
+            for(int i = 1; i < n; i++) {
+                GameSolver.GameOutcome outcome = gameSolver.getOutcome(i, player);
+
+                if(outcome == player.getWinOutcome()) {
+                    System.out.print("Win ");
+                }
+                else if(outcome == GameSolver.GameOutcome.Loop) {
+                    System.out.print("Loop ");
+                }
+                else {
+                    System.out.print("Lose ");
+                }
+            }
+
+            System.out.println();
         }
+    }
+}
 
-        System.out.println();
+class GameSolver
+{
+    enum Player
+    {
+        A, B;
 
-        for(int x : xs_player_b) {
-            System.out.printf("%d ", x);
+        GameOutcome getWinOutcome()
+        {
+            if(this == A) {
+                return GameOutcome.WinA;
+            }
+            else {
+                return GameOutcome.WinB;
+            }
         }
+    }
 
-        System.out.println();
+    enum GameOutcome
+    {
+        WinA, WinB, Loop
+    }
+
+    GameSolver(int n, int[] player_a_moves, int[] player_b_moves)
+    {
+
+    }
+
+    GameOutcome getOutcome(int startLocation, Player startingPlayer)
+    {
+        return GameOutcome.WinA;
     }
 }
