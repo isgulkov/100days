@@ -88,8 +88,8 @@ class GameSolver
         cachedOutcomesB = new GameOutcome[n];
 
         /*
-         * If one player ends up in a situation where monster position is zero, the other player has won on the previous
-         * turn
+         * When one player ends up in a situation where monster position is zero, the other player has won on the
+         * previous turn
          */
         cachedOutcomesA[0] = GameOutcome.WinB;
         cachedOutcomesB[0] = GameOutcome.WinA;
@@ -98,6 +98,9 @@ class GameSolver
             cachedOutcomesA[i] = GameOutcome.Loop;
             cachedOutcomesB[i] = GameOutcome.Loop;
         }
+
+        nonLosingOutcomesA = new int[n];
+        nonLosingOutcomesB = new int[n];
 
         for(int i = 0; i < n; i++) {
             nonLosingOutcomesA[i] = this.movesPlayerA.length;
