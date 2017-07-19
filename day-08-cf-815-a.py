@@ -17,15 +17,19 @@ class GameSolver:
 
     is_solvable = property(_is_solvable)
 
-    def get_moves(self):
+    def _get_moves(self):
         if self._solvable:
             return self._moves
         else:
             raise Exception("yobnulsia?")
 
-    moves = property(get_moves)
+    moves = property(_get_moves)
 
     def _remove_row_surpluses(self):
+        """
+        Removes surplus max values from rows that have them, recording the moves that lead to this situation
+        """
+
         row_maxes = []
 
         for row in self.playing_field_rows:
@@ -52,6 +56,10 @@ class GameSolver:
             self.playing_field_rows[i][i_col] = mapped_column[i]
 
     def _remove_column_surpluses(self):
+        """
+        Removes surplus max values from columns that have them, recording the moves that lead to this situation
+        """
+
         col_maxes = []
 
         for column in [self._get_column(i) for i in xrange(self.num_cols)]:
@@ -69,6 +77,11 @@ class GameSolver:
                 self._map_column(lambda x: x - surplus, i_col)
 
     def _level_field(self):
+        """
+        Checks that the playing field is level after the max value surpluses are removed. If so, records the minimum
+        number of moves that could lead to this situation
+        """
+
         common_value = self.playing_field_rows[0][0]
 
         if common_value < 0:
