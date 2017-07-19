@@ -98,7 +98,7 @@ class GameSolver
         cachedOutcomesB = new GameOutcome[n];
 
         /*
-         * When one player ends up in a situation where monster position is zero, the other player has won on the
+         * When one player ends up in a situation where monster position is zero, the other player has won on his
          * previous turn
          */
         cachedOutcomesA[0] = GameOutcome.WinB;
@@ -133,14 +133,26 @@ class GameSolver
              */
             int possibleOrigin = (position - move + n) % n;
 
+            /*
+             * The outcome for that position has already been determined and therefore the current method has been
+             * called on it — no need to go there
+             */
             if(getOutcome(possibleOrigin, otherPlayer) != GameOutcome.Loop) {
                 continue;
             }
 
             if(getOutcome(position, player) == player.getWinOutcome()) {
+                /*
+                 * If in the current position the current player wins, it decreases the number of possible non-losing
+                 * moves from origin by one
+                 */
                 decrementNonLosingOutcomes(possibleOrigin, otherPlayer);
 
                 if(noNonLosingOutcomes(possibleOrigin, otherPlayer)) {
+                    /*
+                     * If there's no moves from the origin not determined to be losing moves, the origin is a losing
+                     * position
+                     */
                     setOutcome(possibleOrigin, otherPlayer, player.getWinOutcome());
 
                     extrapolateOutcome(possibleOrigin, otherPlayer);
@@ -148,7 +160,8 @@ class GameSolver
             }
             else {
                 /*
-                 * Current outcome is win for the other player — can't be Loop because this method isn't called on such outcomes
+                 * In the else branch current outcome is win for the other player — can't be Loop because this method
+                 * isn't called on such outcomes
                  */
 
                 setOutcome(possibleOrigin, otherPlayer, otherPlayer.getWinOutcome());
