@@ -70,9 +70,14 @@ for i_row in xrange(num_rows):
 			print -1
 			exit(0)
 
-for i_row in xrange(num_rows):
-	for j in xrange(common_value):
-		moves.append("row %d" % (i_row + 1, ))
+if num_rows <= num_cols:
+	for i_row in xrange(num_rows):
+		for j in xrange(common_value):
+			moves.append("row %d" % (i_row + 1, ))
+else:
+	for i_col in xrange(num_cols):
+		for j in xrange(common_value):
+			moves.append("col %d" % (i_col + 1, ))
 
 print len(moves)
 
