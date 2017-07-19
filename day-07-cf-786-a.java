@@ -19,10 +19,10 @@ class Day07
 
         int n = scanner.nextInt();
 
-        int[] player_a_moves = readNInts(scanner.nextInt(), scanner);
-        int[] player_b_moves = readNInts(scanner.nextInt(), scanner);
+        int[] movesPlayerA = readNInts(scanner.nextInt(), scanner);
+        int[] movesPlayerB = readNInts(scanner.nextInt(), scanner);
 
-        GameSolver gameSolver = new GameSolver(n, player_a_moves, player_b_moves);
+        GameSolver gameSolver = new GameSolver(n, movesPlayerA, movesPlayerB);
 
         for(GameSolver.Player player : new GameSolver.Player[] { GameSolver.Player.A, GameSolver.Player.B }) {
             for(int i = 1; i < n; i++) {
@@ -66,9 +66,43 @@ class GameSolver
         WinA, WinB, Loop
     }
 
-    GameSolver(int n, int[] player_a_moves, int[] player_b_moves)
-    {
+    private int n;
 
+    private GameOutcome[] cachedOutcomesA;
+    private GameOutcome[] cachedOutcomesB;
+
+    private int[] nonLosingOutcomesA;
+    private int[] nonLosingOutcomesB;
+
+    private int[] movesPlayerA;
+    private int[] movesPlayerB;
+
+    GameSolver(int n, int[] movesPlayerA, int[] movesPlayerB)
+    {
+        this.n = n;
+
+        this.movesPlayerA = movesPlayerA;
+        this.movesPlayerB = movesPlayerB;
+
+        cachedOutcomesA = new GameOutcome[n];
+        cachedOutcomesB = new GameOutcome[n];
+
+        /*
+         * If one player ends up in a situation where monster position is zero, the other player has won on the previous
+         * turn
+         */
+        cachedOutcomesA[0] = GameOutcome.WinB;
+        cachedOutcomesB[0] = GameOutcome.WinA;
+
+        for(int i = 1; i < n; i++) {
+            cachedOutcomesA[i] = GameOutcome.Loop;
+            cachedOutcomesB[i] = GameOutcome.Loop;
+        }
+
+        for(int i = 0; i < n; i++) {
+            nonLosingOutcomesA[i] = this.movesPlayerA.length;
+            nonLosingOutcomesB[i] = this.movesPlayerB.length;
+        }
     }
 
     GameOutcome getOutcome(int startLocation, Player startingPlayer)
