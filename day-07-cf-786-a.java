@@ -105,12 +105,7 @@ class GameSolver
         }
     }
 
-    GameOutcome getOutcome(int startLocation, Player startingPlayer)
-    {
-        return GameOutcome.WinA;
-    }
-
-    private GameOutcome getCachedOutcome(int position, Player player)
+    GameOutcome getOutcome(int position, Player player)
     {
         if(player == Player.A) {
             return cachedOutcomesA[position];
@@ -120,7 +115,7 @@ class GameSolver
         }
     }
 
-    private void setCachedOutcome(int position, Player player, GameOutcome outcome)
+    private void setOutcome(int position, Player player, GameOutcome outcome)
     {
         if(player == Player.A) {
             cachedOutcomesA[position] = outcome;
