@@ -16,14 +16,14 @@ for row in playing_field_rows:
 
 smallest_row_max = min(row_maxes)
 
-for i in xrange(num_rows):
-	surplus = row_maxes[i] - smallest_row_max
+for i_row in xrange(num_rows):
+	surplus = row_maxes[i_row] - smallest_row_max
 
 	for j in xrange(surplus):
-		moves.append("row %d" % (i + 1, ))
+		moves.append("row %d" % (i_row + 1, ))
 
 	if surplus != 0:
-		playing_field_rows[i] = map(lambda x: x - surplus, playing_field_rows[i])
+		playing_field_rows[i_row] = map(lambda x: x - surplus, playing_field_rows[i_row])
 
 def get_column(i_col, rows):
 	return [rows[j][i_col] for j in xrange(num_rows)]
@@ -41,14 +41,14 @@ for column in [get_column(i, playing_field_rows) for i in xrange(num_cols)]:
 
 smallest_col_max = min(col_maxes)
 
-for i in xrange(num_cols):
-	surplus = col_maxes[i] - smallest_col_max
+for i_col in xrange(num_cols):
+	surplus = col_maxes[i_col] - smallest_col_max
 
 	for j in xrange(surplus):
-		moves.append("col %d" % (i + 1, ))
+		moves.append("col %d" % (i_col + 1, ))
 
 	if surplus != 0:
-		map_column(lambda x: x - surplus, i, playing_field_rows)
+		map_column(lambda x: x - surplus, i_col, playing_field_rows)
 
 for move in moves:
 	print move
