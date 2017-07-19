@@ -1,85 +1,114 @@
 from sys import exit
 
-num_rows, num_cols = map(int, raw_input().split(' '))
 
-playing_field_rows = []
+class GameSolver:
+    def __init__(self, playing_field_rows, num_rows, num_cols):
+        self.playing_field_rows = playing_field_rows
+        self.num_rows = num_rows
+        self.num_cols = num_cols
 
-for i in xrange(num_rows):
-    playing_field_rows.append(map(int, raw_input().split(' ')))
+        self._solvable = True
+        self._moves = []
 
-moves = []
+        self._remove_row_surpluses()
+        self._remove_column_surpluses()
+        self._level_field()
 
-# Remove surplises from rows
+    def _is_solvable(self):
+        return self._solvable
 
-row_maxes = []
+    is_solvable = property(_is_solvable)
 
-for row in playing_field_rows:
-    row_maxes.append(max(row))
+    def get_moves(self):
+        if self._solvable:
+            return self._moves
+        else:
+            raise Exception("yobnulsia?")
 
-smallest_row_max = min(row_maxes)
+    moves = property(get_moves)
 
-for i_row in xrange(num_rows):
-    surplus = row_maxes[i_row] - smallest_row_max
+    def _remove_row_surpluses(self):
+        row_maxes = []
 
-    for j in xrange(surplus):
-        moves.append("row %d" % (i_row + 1, ))
+        for row in self.playing_field_rows:
+            row_maxes.append(max(row))
 
-    if surplus != 0:
-        playing_field_rows[i_row] = map(lambda x: x - surplus, playing_field_rows[i_row])
+        smallest_row_max = min(row_maxes)
 
-# Remove surpluses from columns
+        for i_row in xrange(self.num_rows):
+            surplus = row_maxes[i_row] - smallest_row_max
 
-def get_column(i_col, rows):
-    return [rows[j][i_col] for j in xrange(num_rows)]
+            for j in xrange(surplus):
+                self._moves.append("row %d" % (i_row + 1, ))
 
-def map_column(f, i_col, rows):
-    mapped_column = map(f, get_column(i_col, rows))
+            if surplus != 0:
+                self.playing_field_rows[i_row] = map(lambda x: x - surplus, self.playing_field_rows[i_row])
+
+    def _get_column(self, i_col):
+        return [self.playing_field_rows[j][i_col] for j in xrange(num_rows)]
+
+    def _map_column(self, f, i_col):
+        mapped_column = map(f, self._get_column(i_col))
+
+        for i in xrange(self.num_rows):
+            self.playing_field_rows[i][i_col] = mapped_column[i]
+
+    def _remove_column_surpluses(self):
+        col_maxes = []
+
+        for column in [self._get_column(i) for i in xrange(self.num_cols)]:
+            col_maxes.append(max(column))
+
+        smallest_col_max = min(col_maxes)
+
+        for i_col in xrange(self.num_cols):
+            surplus = col_maxes[i_col] - smallest_col_max
+
+            for j in xrange(surplus):
+                self._moves.append("col %d" % (i_col + 1, ))
+
+            if surplus != 0:
+                self._map_column(lambda x: x - surplus, i_col)
+
+    def _level_field(self):
+        common_value = self.playing_field_rows[0][0]
+
+        if common_value < 0:
+            self._solvable = False
+            return
+
+        for i_row in xrange(self.num_rows):
+            for i_col in xrange(self.num_cols):
+                current_cell = self.playing_field_rows[i_row][i_col]
+
+                if current_cell != common_value:
+                    self._solvable = False
+                    return
+
+        if self.num_rows <= self.num_cols:
+            for i_row in xrange(self.num_rows):
+                for j in xrange(common_value):
+                    self._moves.append("row %d" % (i_row + 1, ))
+        else:
+            for i_col in xrange(self.num_cols):
+                for j in xrange(common_value):
+                    self._moves.append("col %d" % (i_col + 1, ))
+
+
+if __name__ == '__main__':
+    num_rows, num_cols = map(int, raw_input().split(' '))
+
+    playing_field_rows = []
 
     for i in xrange(num_rows):
-        rows[i][i_col] = mapped_column[i]
+        playing_field_rows.append(map(int, raw_input().split(' ')))
 
-col_maxes = []
+    solver = GameSolver(playing_field_rows, num_rows, num_cols)
 
-for column in [get_column(i, playing_field_rows) for i in xrange(num_cols)]:
-    col_maxes.append(max(column))
+    if solver.is_solvable:
+        print len(solver.moves)
 
-smallest_col_max = min(col_maxes)
-
-for i_col in xrange(num_cols):
-    surplus = col_maxes[i_col] - smallest_col_max
-
-    for j in xrange(surplus):
-        moves.append("col %d" % (i_col + 1, ))
-
-    if surplus != 0:
-        map_column(lambda x: x - surplus, i_col, playing_field_rows)
-
-# At this point all cells must have the same and non-negative value
-
-common_value = playing_field_rows[0][0]
-
-if common_value < 0:
-    print -1
-    exit(0)
-
-for i_row in xrange(num_rows):
-    for i_col in xrange(num_cols):
-        current_cell = playing_field_rows[i_row][i_col]
-
-        if current_cell != common_value:
-            print -1
-            exit(0)
-
-if num_rows <= num_cols:
-    for i_row in xrange(num_rows):
-        for j in xrange(common_value):
-            moves.append("row %d" % (i_row + 1, ))
-else:
-    for i_col in xrange(num_cols):
-        for j in xrange(common_value):
-            moves.append("col %d" % (i_col + 1, ))
-
-print len(moves)
-
-for move in moves:
-    print move
+        for move in solver.moves:
+            print move
+    else:
+        print -1
