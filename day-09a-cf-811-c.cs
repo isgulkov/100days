@@ -33,6 +33,8 @@ class MainClass
 	/// <summary>
 	/// Returns a dictionary that for each unique value in <paramref name="values"/> contains the pair of the index of
 	/// its first occurence in the list and its last occurence (its occurence interval)
+	///
+	/// Complexity: O(n)
 	/// </summary>
 	/// <returns>Dictionary of values' occurence interval boundaries</returns>
 	/// <param name="values">Values for which the occurence intervals are to be determined.</param>
