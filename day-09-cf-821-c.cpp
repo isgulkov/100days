@@ -1,7 +1,8 @@
 #include <iostream>
-#include <stack>
+#include <vector>
 #include <string>
-#include <queue>
+#include <algorithm>
+#include <functional>
 
 int main()
 {
@@ -9,7 +10,7 @@ int main()
 
     std::cin >> n;
 
-    std::stack<int> stack;
+    std::vector<int> stack;
 
     int num_reorderings = 0;
     int next_box_to_remove = 1;
@@ -24,32 +25,16 @@ int main()
 
             std::cin >> k;
 
-            stack.push(k);
+            stack.push_back(k);
         }
         else if(command == "remove") {
-            if(stack.top() != next_box_to_remove) {
+            if(stack.back() != next_box_to_remove) {
                 num_reorderings += 1;
 
-                std::priority_queue<int> queue;
-
-                int current_box;
-
-                do {
-                    current_box = stack.top();
-
-                    stack.pop();
-
-                    queue.push(current_box);
-                } while(!stack.empty());
-
-                while(!queue.empty()) {
-                    stack.push(queue.top());
-
-                    queue.pop();
-                }
+                std::sort(stack.begin(), stack.end(), std::greater<int>());
             }
 
-            stack.pop();
+            stack.pop_back();
 
             next_box_to_remove += 1;
         }
