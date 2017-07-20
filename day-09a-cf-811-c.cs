@@ -15,45 +15,51 @@ class MainClass
 
 		List<int> passengerCities = ReadNInts(n);
 
-		Dictionary<int, Tuple<int, int>> cityIntervals = DetermineCityIntervals(passengerCities);
+		/**
+		 * Determine the smallest intervals (borders inclusive) in which passengers of each city lay (from the first
+		 * occurence of a passenger to the city to the last)
+		 *
+		 * By formulation, if a passenger from a city is included, all passengers from this city should be included and
+		 * in the same non-overlapping inter, thus including a city means including at least its corresponding
+		 * interval
+		 */
+		Dictionary<int, Tuple<int, int>> cityIntervals = GetOccurenceIntervals(passengerCities);
 
 		foreach(int k in cityIntervals.Keys) {
 			Console.WriteLine($"{k}: {cityIntervals[k]}");
 		}
 	}
 
-	static Dictionary<int, Tuple<int, int>> DetermineCityIntervals(List<int> passengerCities)
+	/// <summary>
+	/// Returns a dictionary that for each unique value in <paramref name="values"/> contains the pair of the index of
+	/// its first occurence in the list and its last occurence (its occurence interval)
+	/// </summary>
+	/// <returns>Dictionary of values' occurence interval boundaries</returns>
+	/// <param name="values">Values for which the occurence intervals are to be determined.</param>
+	static Dictionary<int, Tuple<int, int>> GetOccurenceIntervals(List<int> values)
 	{
-		/**
-		 * Determine the smallest intervals (borders inclusive) in which passengers of each city lay (from the first
-		 * occurence of a passenger to the city to the last)
-		 *
-		 * By formulation, if a passenger from a city is included, all passengers from this city should be included and
-		 * in the same non-overlapping interval, thus including a city means including at least its corresponding
-		 * interval
-		 */
-		Dictionary<int, Tuple<int, int>> cityIntervals = new Dictionary<int, Tuple<int, int>>();
+		Dictionary<int, Tuple<int, int>> occurenceIntervals = new Dictionary<int, Tuple<int, int>>();
 
-		for(int i = 0; i < passengerCities.Count; i++) {
-			int city = passengerCities[i];
+		for(int i = 0; i < values.Count; i++) {
+			int city = values[i];
 
-			if(!cityIntervals.ContainsKey(city)) {
+			if(!occurenceIntervals.ContainsKey(city)) {
 				/**
-				 * If a passenger to a new city is encountered, start a new interval of this city at the current point
+				 * If a new value is encountered, start a new occurence interval for this value at the current index
 				 */
-				cityIntervals[city] = new Tuple<int, int>(i, i);
+				occurenceIntervals[city] = new Tuple<int, int>(i, i);
 			}
 			else {
 				/**
-				 * If a passenger to a known city is encountered, expand the boundaries of that city's interval up to
-				 * the current point
+				 * If a known value is encountered, expand the boundaries of its occurence interval up to the current
+				 * point
 				 */
-				Tuple<int, int> oldBoundaries = cityIntervals[city];
+				Tuple<int, int> oldBoundaries = occurenceIntervals[city];
 
-				cityIntervals[city] = new Tuple<int, int>(oldBoundaries.Item1, i);
+				occurenceIntervals[city] = new Tuple<int, int>(oldBoundaries.Item1, i);
 			}
 		}
 
-		return cityIntervals;
+		return occurenceIntervals;
 	}
 }
