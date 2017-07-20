@@ -28,13 +28,25 @@ int main()
             stack.push_back(k);
         }
         else if(command == "remove") {
-            if(stack.back() != next_box_to_remove) {
-                num_reorderings += 1;
+            if(!stack.empty()) {
+                if(stack.back() != next_box_to_remove) {
+                    num_reorderings += 1;
 
-                std::sort(stack.begin(), stack.end(), std::greater<int>());
+                    /**
+                     * Clear the stack and assume that all the elements on it are there and in sorted order
+                     */
+                    stack.clear();
+                }
+                else {
+                    stack.pop_back();
+                };
             }
 
-            stack.pop_back();
+            /**
+             * Consider removal requests on empty stack be fulfilled because:
+             * * by formulation the requested elements will be on the stack;
+             * * by the assumption that we have sorted the stack they will be at the top
+             */
 
             next_box_to_remove += 1;
         }
