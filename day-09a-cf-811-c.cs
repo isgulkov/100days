@@ -13,8 +13,17 @@ class MainClass
 	{
 		int n = int.Parse(Console.ReadLine());
 
-		List<int> passengersCities = ReadNInts(n);
+		List<int> passengerCities = ReadNInts(n);
 
+		Dictionary<int, Tuple<int, int>> cityIntervals = DetermineCityIntervals(passengerCities);
+
+		foreach(int k in cityIntervals.Keys) {
+			Console.WriteLine($"{k}: {cityIntervals[k]}");
+		}
+	}
+
+	static Dictionary<int, Tuple<int, int>> DetermineCityIntervals(List<int> passengerCities)
+	{
 		/**
 		 * Determine the smallest intervals (borders inclusive) in which passengers of each city lay (from the first
 		 * occurence of a passenger to the city to the last)
@@ -25,8 +34,8 @@ class MainClass
 		 */
 		Dictionary<int, Tuple<int, int>> cityIntervals = new Dictionary<int, Tuple<int, int>>();
 
-		for(int i = 0; i < passengersCities.Count; i++) {
-			int city = passengersCities[i];
+		for(int i = 0; i < passengerCities.Count; i++) {
+			int city = passengerCities[i];
 
 			if(!cityIntervals.ContainsKey(city)) {
 				/**
@@ -45,8 +54,6 @@ class MainClass
 			}
 		}
 
-		foreach(int k in cityIntervals.Keys) {
-			Console.WriteLine($"{k}: {cityIntervals[k]}");
-		}
+		return cityIntervals;
 	}
 }
