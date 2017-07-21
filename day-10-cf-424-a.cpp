@@ -34,7 +34,7 @@ int main()
 
     int smallest_max_distance = INT32_MAX;
 
-    for(int keys_offset = 0; keys_offset < num_keys - num_people; keys_offset++) {
+    for(int keys_offset = 0; keys_offset <= num_keys - num_people; keys_offset++) {
         int current_max_distance = 0;
 
         for(int i = 0; i < num_people; i++) {
