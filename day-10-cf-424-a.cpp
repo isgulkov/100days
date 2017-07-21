@@ -19,56 +19,36 @@ int main()
         people.push_back(person);
     }
 
-    std::set<int> keys;
+    std::vector<int> keys;
 
     for(int i = 0; i < num_keys; i++) {
         int key;
 
         std::cin >> key;
 
-        keys.insert(key);
+        keys.push_back(key);
     }
 
     std::sort(people.begin(), people.end());
+    std::sort(keys.begin(), keys.end());
 
-    std::vector<int> selected_keys;
+    int smallest_max_distance = INT32_MAX;
 
-    int max_distance = 0;
+    for(int keys_offset = 0; keys_offset < num_keys - num_people; keys_offset++) {
+        int current_max_distance = 0;
 
-    for(int i = 0; i < num_people; i++) {
-        int person = people[i];
+        for(int i = 0; i < num_people; i++) {
+            int current_distance = abs(people[i] - keys[keys_offset + i]) + abs(keys[keys_offset + i] - office_pos);
 
-        int person_distance = INT32_MAX;
-        int selected_key;
-
-        for(int key : keys) {
-            int current_distance = abs(person - key) + abs(key - office_pos);
-
-            if(current_distance < person_distance) {
-                person_distance = current_distance;
-                selected_key = key;
+            if(current_distance > current_max_distance) {
+                current_max_distance = current_distance;
             }
         }
 
-        keys.erase(selected_key);
-        selected_keys.push_back(selected_key);
-
-        if(person_distance > max_distance) {
-            max_distance = person_distance;
+        if(current_max_distance < smallest_max_distance) {
+            smallest_max_distance = current_max_distance;
         }
     }
 
-    std::sort(selected_keys.begin(), selected_keys.end());
-
-    int real_max_distance = 0;
-
-    for(int i = 0; i < num_people; i++) {
-        int current_distance = abs(selected_keys[i] - people[i]) + abs(selected_keys[i] - office_pos);
-
-        if(current_distance > real_max_distance) {
-            real_max_distance = current_distance;
-        }
-    }
-
-    std::cout << real_max_distance << std::endl;
+    std::cout << smallest_max_distance << std::endl;
 }
