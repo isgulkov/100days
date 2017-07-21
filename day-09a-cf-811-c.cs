@@ -19,7 +19,7 @@ class MainClass
 		 * Determine the smallest intervals (borders inclusive) in which passengers of each city occur (from the first
 		 * occurence of a passenger to the city to the last)
 		 */
-		Dictionary<int, Tuple<int, int>> cityIntervals = GetOccurenceIntervals(passengerCities);
+		Dictionary<int, OccurenceInterval> cityIntervals = GetOccurenceIntervals(passengerCities);
 
 		CarriageValidityChecker checker = new CarriageValidityChecker(passengerCities, cityIntervals);
 
@@ -64,12 +64,24 @@ class MainClass
 		Console.WriteLine(maxComfort[n]);
 	}
 
+	class OccurenceInterval
+	{
+		public int Begin { get; set; }
+		public int End { get; set; }
+
+		public OccurenceInterval(int begin, int end)
+		{
+			Begin = begin;
+			End = end;
+		}
+	}
+
 	class CarriageValidityChecker
 	{
 		int[] Passengers;
-		Dictionary<int, Tuple<int, int>> Intervals;
+		Dictionary<int, OccurenceInterval> Intervals;
 
-		public CarriageValidityChecker(int[] passengers, Dictionary<int, Tuple<int, int>> intervals)
+		public CarriageValidityChecker(int[] passengers, Dictionary<int, OccurenceInterval> intervals)
 		{
 			Passengers = passengers;
 			Intervals = intervals;
@@ -83,9 +95,9 @@ class MainClass
 		public bool IsValidCarriage(int start, int end, HashSet<int> keys)
 		{
 			foreach(int key in keys) {
-				Tuple<int, int> interval = Intervals[key];
+				OccurenceInterval interval = Intervals[key];
 
-				if(interval.Item1 < start || interval.Item2 > end) {
+				if(interval.Begin < start || interval.End > end) {
 					return false;
 				}
 			}
@@ -102,9 +114,9 @@ class MainClass
 	/// </summary>
 	/// <returns>Dictionary of values' occurence interval boundaries</returns>
 	/// <param name="values">Values for which the occurence intervals are to be determined.</param>
-	static Dictionary<int, Tuple<int, int>> GetOccurenceIntervals(int[] values)
+	static Dictionary<int, OccurenceInterval> GetOccurenceIntervals(int[] values)
 	{
-		Dictionary<int, Tuple<int, int>> occurenceIntervals = new Dictionary<int, Tuple<int, int>>();
+		Dictionary<int, OccurenceInterval> occurenceIntervals = new Dictionary<int, OccurenceInterval>();
 
 		for(int i = 0; i < values.Length; i++) {
 			int city = values[i];
@@ -113,16 +125,16 @@ class MainClass
 				/**
 				 * If a new value is encountered, start a new occurence interval for this value at the current index
 				 */
-				occurenceIntervals[city] = new Tuple<int, int>(i, i);
+				occurenceIntervals[city] = new OccurenceInterval(i, i);
 			}
 			else {
 				/**
 				 * If a known value is encountered, expand the boundaries of its occurence interval up to the current
 				 * point
 				 */
-				Tuple<int, int> oldBoundaries = occurenceIntervals[city];
+				OccurenceInterval oldBoundaries = occurenceIntervals[city];
 
-				occurenceIntervals[city] = new Tuple<int, int>(oldBoundaries.Item1, i);
+				occurenceIntervals[city].End = i;
 			}
 		}
 
