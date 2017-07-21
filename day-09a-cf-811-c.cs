@@ -29,6 +29,8 @@ class MainClass
 		int[] maxComfort = Enumerable.Repeat(0, n + 1).ToArray();
 
 		for(int i = 0; i < n; i++) {
+			maxComfort[i + 1] = maxComfort[i];
+
 			HashSet<int> keys = new HashSet<int>();
 			int subarrayComfort = 0;
 
@@ -51,13 +53,6 @@ class MainClass
 						maxComfort[i + 1] = candidate_max;
 					}
 				}
-			}
-
-			/**
-			 * If the best answer without using the `i`th passenger is better than with it, use the the former instead
-			 */
-			if(maxComfort[i + 1] < maxComfort[i]) {
-				maxComfort[i + 1] = maxComfort[i];
 			}
 		}
 
