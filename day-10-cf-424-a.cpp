@@ -19,14 +19,14 @@ int main()
         people.push_back(person);
     }
 
-    std::set<int> keys;
+    std::vector<int> keys;
 
     for(int i = 0; i < num_keys; i++) {
         int key;
 
         std::cin >> key;
 
-        keys.insert(key);
+        keys.push_back(key);
     }
 
     std::sort(people.begin(), people.end());
@@ -36,15 +36,21 @@ int main()
     for(int i = 0; i < num_people; i++) {
         int person = people[i];
 
-        int person_distance = INT32_MAX;
-        int selected_key;
+        std::sort(keys.begin(), keys.end(), [person](int one, int another) {
+            return abs(one - person) < abs(another - person);
+        });
 
-        for(int key : keys) {
+        int person_distance = INT32_MAX;
+        std::vector<int>::iterator selected_key;
+
+        for(auto it = keys.begin(); it != keys.end(); it++) {
+            int key = *it;
+
             int current_distance = abs(person - key) + abs(key - p);
 
             if(current_distance < person_distance) {
                 person_distance = current_distance;
-                selected_key = key;
+                selected_key = it;
             }
         }
 
