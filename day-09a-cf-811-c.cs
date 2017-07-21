@@ -19,7 +19,7 @@ class MainClass
 		 * Determine the smallest intervals (borders inclusive) in which passengers of each city occur (from the first
 		 * occurence of a passenger to the city to the last)
 		 */
-		Dictionary<int, OccurenceInterval> cityIntervals = GetOccurenceIntervals(passengerCities);
+		OccurenceInterval[] cityIntervals = GetOccurenceIntervals(passengerCities);
 
 		CarriageValidityChecker checker = new CarriageValidityChecker(passengerCities, cityIntervals);
 
@@ -79,9 +79,9 @@ class MainClass
 	class CarriageValidityChecker
 	{
 		int[] Passengers;
-		Dictionary<int, OccurenceInterval> Intervals;
+		OccurenceInterval[] Intervals;
 
-		public CarriageValidityChecker(int[] passengers, Dictionary<int, OccurenceInterval> intervals)
+		public CarriageValidityChecker(int[] passengers, OccurenceInterval[] intervals)
 		{
 			Passengers = passengers;
 			Intervals = intervals;
@@ -114,14 +114,14 @@ class MainClass
 	/// </summary>
 	/// <returns>Dictionary of values' occurence interval boundaries</returns>
 	/// <param name="values">Values for which the occurence intervals are to be determined.</param>
-	static Dictionary<int, OccurenceInterval> GetOccurenceIntervals(int[] values)
+	static OccurenceInterval[] GetOccurenceIntervals(int[] values)
 	{
-		Dictionary<int, OccurenceInterval> occurenceIntervals = new Dictionary<int, OccurenceInterval>();
+		OccurenceInterval[] occurenceIntervals = new OccurenceInterval[10000];
 
 		for(int i = 0; i < values.Length; i++) {
 			int city = values[i];
 
-			if(!occurenceIntervals.ContainsKey(city)) {
+			if(occurenceIntervals[city] == null) {
 				/**
 				 * If a new value is encountered, start a new occurence interval for this value at the current index
 				 */
