@@ -27,8 +27,34 @@ class MainClass
 
 		int[] right_boundary = new int[5001];
 
-		for(int i = 0; i<passengerCities.Length; i++) {
+		for(int i = 0; i < n; i++) {
 			right_boundary[passengerCities[i]] = i;
+		}
+
+		int[,] carriageComfort = new int[passengerCities.Length, passengerCities.Length];
+
+		for(int i = 0; i < n; i++) {
+			if(left_boundary[passengerCities[i]] < i) {
+				continue;
+			}
+
+			HashSet<int> keys = new HashSet<int>();
+			int currentComfort = 0;
+
+			for(int j = i; j < n; j++) {
+				int rightKey = passengerCities[j];
+
+				if(j < right_boundary[rightKey]) {
+					continue;
+				}
+
+				if(!keys.Contains(rightKey)) {
+					keys.Add(rightKey);
+					currentComfort ^= rightKey;
+				}
+
+				carriageComfort[i, j] = currentComfort;
+			}
 		}
 
 		/**
@@ -39,38 +65,11 @@ class MainClass
 		for(int i = 0; i < n; i++) {
 			maxComfort[i + 1] = maxComfort[i];
 
-			HashSet<int> keys = new HashSet<int>();
-			int subarrayComfort = 0;
-
 			for(int j = i; j >= 0; j--) {
-				/**
-				 * If [j; i] is a valid carriage, try to update the answer for [0; i] with existing sum of best set of
-				 * carriages on [0; j) with it extended by the [j; i] carriage
-				 */
+				int candidateMax = maxComfort[j] + carriageComfort[j, i];
 
-				if(!keys.Contains(passengerCities[j])) {
-					subarrayComfort ^= passengerCities[j];
-
-					keys.Add(passengerCities[j]);
-				}
-
-				bool validCarriage = true;
-
-				foreach(int key in keys) {
-					if(left_boundary[key] < j || i < right_boundary[key]) {
-						validCarriage = false;
-						break;
-					}
-				}
-
-				if(!validCarriage) {
-					continue;
-				}
-
-				int candidate_max = maxComfort[j] + subarrayComfort;
-
-				if(candidate_max > maxComfort[i + 1]) {
-					maxComfort[i + 1] = candidate_max;
+				if(candidateMax > maxComfort[i + 1]) {
+					maxComfort[i + 1] = candidateMax;
 				}
 			}
 		}
