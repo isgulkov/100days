@@ -4,16 +4,16 @@ using System.Linq;
 
 class MainClass
 {
-	static List<int> ReadNInts(int n)
+	static int[] ReadNInts(int n)
 	{
-		return Console.ReadLine().Split(' ').Select(x => int.Parse(x)).Take(n).ToList();
+		return Array.ConvertAll(Console.ReadLine().Split(' '), x => int.Parse(x));
 	}
 
 	public static void Main(string[] args)
 	{
 		int n = int.Parse(Console.ReadLine());
 
-		List<int> passengerCities = ReadNInts(n);
+		int[] passengerCities = ReadNInts(n);
 
 		/**
 		 * Determine the smallest intervals (borders inclusive) in which passengers of each city occur (from the first
@@ -66,10 +66,10 @@ class MainClass
 
 	class CarriageValidityChecker
 	{
-		List<int> Passengers;
+		int[] Passengers;
 		Dictionary<int, Tuple<int, int>> Intervals;
 
-		public CarriageValidityChecker(List<int> passengers, Dictionary<int, Tuple<int, int>> intervals)
+		public CarriageValidityChecker(int[] passengers, Dictionary<int, Tuple<int, int>> intervals)
 		{
 			Passengers = passengers;
 			Intervals = intervals;
@@ -102,11 +102,11 @@ class MainClass
 	/// </summary>
 	/// <returns>Dictionary of values' occurence interval boundaries</returns>
 	/// <param name="values">Values for which the occurence intervals are to be determined.</param>
-	static Dictionary<int, Tuple<int, int>> GetOccurenceIntervals(List<int> values)
+	static Dictionary<int, Tuple<int, int>> GetOccurenceIntervals(int[] values)
 	{
 		Dictionary<int, Tuple<int, int>> occurenceIntervals = new Dictionary<int, Tuple<int, int>>();
 
-		for(int i = 0; i < values.Count; i++) {
+		for(int i = 0; i < values.Length; i++) {
 			int city = values[i];
 
 			if(!occurenceIntervals.ContainsKey(city)) {
