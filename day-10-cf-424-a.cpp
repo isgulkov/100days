@@ -19,47 +19,56 @@ int main()
         people.push_back(person);
     }
 
-    std::vector<int> keys;
+    std::set<int> keys;
 
     for(int i = 0; i < num_keys; i++) {
         int key;
 
         std::cin >> key;
 
-        keys.push_back(key);
+        keys.insert(key);
     }
 
     std::sort(people.begin(), people.end());
+
+    std::vector<int> selected_keys;
 
     int max_distance = 0;
 
     for(int i = 0; i < num_people; i++) {
         int person = people[i];
 
-        std::sort(keys.begin(), keys.end(), [person](int one, int another) {
-            return abs(one - person) < abs(another - person);
-        });
-
         int person_distance = INT32_MAX;
-        std::vector<int>::iterator selected_key;
+        int selected_key;
 
-        for(auto it = keys.begin(); it != keys.end(); it++) {
-            int key = *it;
-
+        for(int key : keys) {
             int current_distance = abs(person - key) + abs(key - p);
 
             if(current_distance < person_distance) {
                 person_distance = current_distance;
-                selected_key = it;
+                selected_key = key;
             }
         }
 
         keys.erase(selected_key);
+        selected_keys.push_back(selected_key);
 
         if(person_distance > max_distance) {
             max_distance = person_distance;
         }
     }
 
-    std::cout << max_distance << std::endl;
+    std::sort(selected_keys.begin(), selected_keys.end());
+
+    int real_max_distance = 0;
+
+    for(int i = 0; i < num_people; i++) {
+        int current_distance = abs(selected_keys[i] - people[i]) + abs(selected_keys[i] - p);
+
+        if(current_distance > real_max_distance) {
+            real_max_distance = current_distance;
+        }
+    }
+
+    std::cout << real_max_distance << std::endl;
 }
