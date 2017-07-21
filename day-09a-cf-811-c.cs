@@ -19,9 +19,17 @@ class MainClass
 		 * Determine the smallest intervals (borders inclusive) in which passengers of each city occur (from the first
 		 * occurence of a passenger to the city to the last)
 		 */
-		OccurenceInterval[] cityIntervals = GetOccurenceIntervals(passengerCities);
+		int[] left_boundary = new int[5001];
 
-		CarriageValidityChecker checker = new CarriageValidityChecker(passengerCities, cityIntervals);
+		for(int i = passengerCities.Length - 1; i >= 0; i--) {
+			left_boundary[passengerCities[i]] = i;
+		}
+
+		int[] right_boundary = new int[5001];
+
+		for(int i = 0; i<passengerCities.Length; i++) {
+			right_boundary[passengerCities[i]] = i;
+		}
 
 		/**
          * maxComfort[i] stores the answer for subproblem for indices [0; i)
@@ -46,93 +54,27 @@ class MainClass
 					keys.Add(passengerCities[j]);
 				}
 
-				if(checker.IsValidCarriage(j, i, keys)) {
-					int candidate_max = maxComfort[j] + subarrayComfort;
+				bool validCarriage = true;
 
-					if(candidate_max > maxComfort[i + 1]) {
-						maxComfort[i + 1] = candidate_max;
+				foreach(int key in keys) {
+					if(left_boundary[key] < j || i < right_boundary[key]) {
+						validCarriage = false;
+						break;
 					}
+				}
+
+				if(!validCarriage) {
+					continue;
+				}
+
+				int candidate_max = maxComfort[j] + subarrayComfort;
+
+				if(candidate_max > maxComfort[i + 1]) {
+					maxComfort[i + 1] = candidate_max;
 				}
 			}
 		}
 
 		Console.WriteLine(maxComfort[n]);
-	}
-
-	class OccurenceInterval
-	{
-		public int Begin { get; set; }
-		public int End { get; set; }
-
-		public OccurenceInterval(int begin, int end)
-		{
-			Begin = begin;
-			End = end;
-		}
-	}
-
-	class CarriageValidityChecker
-	{
-		int[] Passengers;
-		OccurenceInterval[] Intervals;
-
-		public CarriageValidityChecker(int[] passengers, OccurenceInterval[] intervals)
-		{
-			Passengers = passengers;
-			Intervals = intervals;
-		}
-
-		/// <returns><c>true</c>, if all occurences of every key that occurs in [start; end] are contained in that
-		/// interval, <c>false</c> otherwise</returns>
-		/// <param name="start">Start</param>
-		/// <param name="end">End</param>
-		/// <param name="keys">Set of keys contained in [start; end]</param>
-		public bool IsValidCarriage(int start, int end, HashSet<int> keys)
-		{
-			foreach(int key in keys) {
-				OccurenceInterval interval = Intervals[key];
-
-				if(interval.Begin < start || interval.End > end) {
-					return false;
-				}
-			}
-
-			return true;
-		}
-	}
-
-	/// <summary>
-	/// Returns a dictionary that for each unique value in <paramref name="values"/> contains the pair of the index of
-	/// its first occurence in the list and its last occurence (its occurence interval)
-	///
-	/// Complexity: O(n)
-	/// </summary>
-	/// <returns>Dictionary of values' occurence interval boundaries</returns>
-	/// <param name="values">Values for which the occurence intervals are to be determined.</param>
-	static OccurenceInterval[] GetOccurenceIntervals(int[] values)
-	{
-		OccurenceInterval[] occurenceIntervals = new OccurenceInterval[10000];
-
-		for(int i = 0; i < values.Length; i++) {
-			int city = values[i];
-
-			if(occurenceIntervals[city] == null) {
-				/**
-				 * If a new value is encountered, start a new occurence interval for this value at the current index
-				 */
-				occurenceIntervals[city] = new OccurenceInterval(i, i);
-			}
-			else {
-				/**
-				 * If a known value is encountered, expand the boundaries of its occurence interval up to the current
-				 * point
-				 */
-				OccurenceInterval oldBoundaries = occurenceIntervals[city];
-
-				occurenceIntervals[city].End = i;
-			}
-		}
-
-		return occurenceIntervals;
 	}
 }
