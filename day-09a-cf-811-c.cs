@@ -26,7 +26,7 @@ class MainClass
 		/**
          * maxComfort[i] stores the answer for subproblem for indices [0; i)
 		 */
-		int[] maxComfort = Enumerable.Repeat(0, n + 1).ToArray();
+		int[] maxComfort = new int[n + 1];
 
 		for(int i = 0; i < n; i++) {
 			maxComfort[i + 1] = maxComfort[i];
