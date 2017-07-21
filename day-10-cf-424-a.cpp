@@ -5,9 +5,9 @@
 
 int main()
 {
-    int num_people, num_keys, p;
+    int num_people, num_keys, office_pos;
 
-    std::cin >> num_people >> num_keys >> p;
+    std::cin >> num_people >> num_keys >> office_pos;
 
     std::vector<int> people;
 
@@ -42,7 +42,7 @@ int main()
         int selected_key;
 
         for(int key : keys) {
-            int current_distance = abs(person - key) + abs(key - p);
+            int current_distance = abs(person - key) + abs(key - office_pos);
 
             if(current_distance < person_distance) {
                 person_distance = current_distance;
@@ -63,7 +63,7 @@ int main()
     int real_max_distance = 0;
 
     for(int i = 0; i < num_people; i++) {
-        int current_distance = abs(selected_keys[i] - people[i]) + abs(selected_keys[i] - p);
+        int current_distance = abs(selected_keys[i] - people[i]) + abs(selected_keys[i] - office_pos);
 
         if(current_distance > real_max_distance) {
             real_max_distance = current_distance;
