@@ -4,6 +4,56 @@
 #include <set>
 #include <unordered_map>
 
+/**
+ * Represents a segment tree on an array of bits all of which are initially set
+ */
+struct binary_segment_tree
+{
+private:
+    int n;
+
+    struct segment_tree_node
+    {
+        int sum;
+
+        segment_tree_node* left_branch;
+        segment_tree_node* right_branch;
+    };
+
+    segment_tree_node* top;
+
+    void build_tree()
+    {
+
+    }
+
+public:
+    binary_segment_tree(int n) : n(n)
+    {
+
+    }
+
+    /**
+     * Get the sum of bits in segment [a; b]
+     * @param l Left segment boundary
+     * @param r Right segment boundary
+     * @return Sum of bits on the specified segment
+     */
+    int get_sum(int l, int r)
+    {
+        return 0;
+    }
+
+    /**
+     * Unset bit at the specified index
+     * @param i Index of the bit to be unset
+     */
+    void unset_bit(int i)
+    {
+
+    }
+};
+
 int main()
 {
     size_t num_cards;
