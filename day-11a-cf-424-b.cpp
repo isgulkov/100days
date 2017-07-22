@@ -43,12 +43,44 @@ private:
                 }
             }
         }
+
+        bool unset_bit(int i)
+        {
+            if(i == start && i == end) {
+                if(sum) {
+                    sum = 0;
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+
+            int mid = (start + end) / 2; // TODO: make `mid` a field
+
+            bool success = false;
+
+            if(i <= mid) {
+                success = left->unset_bit(i);
+            }
+            else {
+                success = right->unset_bit(i);
+            }
+
+            if(success) {
+                sum -= 1;
+            }
+
+            return success;
+        }
     };
 
     segment_tree_node* root;
 
     segment_tree_node* create_node(int l, int r)
     {
+        // TODO: move all of this to the node constructor
+
         segment_tree_node* new_node = new segment_tree_node(l, r);
 
         if(l == r) {
@@ -89,7 +121,7 @@ public:
      */
     void unset_bit(int i)
     {
-
+        root->unset_bit(i);
     }
 };
 
