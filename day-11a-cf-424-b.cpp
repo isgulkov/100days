@@ -22,19 +22,20 @@ int main()
 
     std::set<int> card_values;
 
-    std::unordered_map<int, int> card_first_occurrence;
-    std::unordered_map<int, int> card_last_occurrence;
+    std::unordered_map<int, std::set<int>> card_occurrences;
 
     for(int i = 0; i < num_cards; i++) {
         int card_value = cards[i];
 
         card_values.insert(card_value);
 
-        if(card_first_occurrence.find(card_value) == card_first_occurrence.end()) {
-            card_first_occurrence[card_value] = i;
+        if(card_occurrences.find(card_value) == card_occurrences.end()) {
+            std::set<int> new_set;
+
+            card_occurrences[card_value] = new_set;
         }
 
-        card_last_occurrence[card_value] = i;
+        card_occurrences[card_value].insert(i);
     }
 
     std::vector<bool> card_taken(num_cards, false);
@@ -47,31 +48,61 @@ int main()
     int top_card = 0;
 
     for(int card_value : card_values) {
-        if(top_card <= card_first_occurrence[card_value]) {
-            int last_occurrence = card_last_occurrence[card_value];
+        if(top_card <= *card_occurrences[card_value].begin()) {
+            int last_occurrence = *card_occurrences[card_value].rbegin();
 
             /**
-             * Count untaken cards in [top_card; last_occurrence] and mark `card_value` cards on this interval as taken
+             * Count cards unmarked as taken in [top_card; last_occurrence] and mark `card_value` cards on this interval
              */
 
             int current_inspections = 0;
 
-            for(int i = top_card; i <= card_last_occurrence[card_value]; i++) {
-                if(!card_taken[i]) {
+            for( ; top_card <= last_occurrence; top_card++) {
+                if(!card_taken[top_card]) {
                     current_inspections += 1;
 
-                    if(cards[i] == card_value) {
-                        card_taken[i] = true;
+                    if(cards[top_card] == card_value) {
+                        card_taken[top_card] = true;
                     }
                 }
             }
 
             total_inspections += current_inspections;
-
-            top_card = card_last_occurrence[card_value] + 1;
         }
         else {
+            /**
+             * Find the occurrence previous to `top_card` (i.e. largest smaller than)
+             */
+            int prev_occurrence = *card_occurrences[card_value].upper_bound(top_card);
 
+            /**
+             * Count all cards unmarked as taken on [top_card; num_cards) and [0; prev_occurence] and mark `card_value`
+             * cards on these intervals
+             */
+
+            int current_inspections = 0;
+
+            for( ; top_card < num_cards; top_card++) {
+                if(!card_taken[top_card]) {
+                    current_inspections += 1;
+
+                    if(cards[top_card] == card_value) {
+                        card_taken[top_card] = true;
+                    }
+                }
+            }
+
+            for(top_card = 0; top_card <= prev_occurrence; top_card++) {
+                if(!card_taken[top_card]) {
+                    current_inspections += 1;
+
+                    if(cards[top_card] == card_value) {
+                        card_taken[top_card] = true;
+                    }
+                }
+            }
+
+            total_inspections += current_inspections;
         }
     }
 
