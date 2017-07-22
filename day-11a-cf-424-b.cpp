@@ -58,7 +58,7 @@ private:
 
             int mid = (start + end) / 2; // TODO: make `mid` a field
 
-            bool success = false;
+            bool success;
 
             if(i <= mid) {
                 success = left->unset_bit(i);
