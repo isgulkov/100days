@@ -71,15 +71,11 @@ int main()
         }
         else {
             /**
-             * Find the occurrence previous to `top_card` (i.e. largest smaller than)
+             * Find the occurrence previous to `top_card` (i.e. largest smaller than).
+             *
+             * Use `lower_bound` to find first greater than or equal, then decrease by one to get last smaller
              */
-            auto lower_bound = card_occurrences[card_value].lower_bound(top_card);
-
-            if(*lower_bound == top_card || lower_bound == card_occurrences[card_value].end()) {
-                lower_bound--;
-            }
-
-            int prev_occurrence = *lower_bound;
+            int prev_occurrence = *(--card_occurrences[card_value].lower_bound(top_card));
 
             /**
              * Count all cards unmarked as taken on [top_card; num_cards) and [0; prev_occurence] and mark `card_value`
