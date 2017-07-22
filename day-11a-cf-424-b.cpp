@@ -16,32 +16,71 @@ private:
     {
         int sum;
 
-        segment_tree_node* left_branch;
-        segment_tree_node* right_branch;
+        int start, end;
+
+        segment_tree_node* left;
+        segment_tree_node* right;
+
+    public:
+        segment_tree_node(int l, int r) : start(l), end(r), left(nullptr), right(nullptr) { }
+
+        int get_segment_sum(int l, int r)
+        {
+            if(l == start && r == end) {
+                return sum;
+            }
+            else {
+                int mid = (start + end) / 2;
+
+                if(r <= mid) {
+                    return left->get_segment_sum(l, r);
+                }
+                else if(l > mid) {
+                    return right->get_segment_sum(l, r);
+                }
+                else {
+                    return left->get_segment_sum(l, mid) + right->get_segment_sum(mid + 1, r);
+                }
+            }
+        }
     };
 
-    segment_tree_node* top;
+    segment_tree_node* root;
 
-    void build_tree()
+    segment_tree_node* create_node(int l, int r)
     {
+        segment_tree_node* new_node = new segment_tree_node(l, r);
 
+        if(l == r) {
+            new_node->sum = 1;
+        }
+        else {
+            int mid = (l + r) / 2;
+
+            new_node->left = new segment_tree_node(l, mid);
+            new_node->right = new segment_tree_node(l, mid + 1);
+
+            new_node->sum = new_node->left->sum + new_node->right->sum;
+        }
+
+        return new_node;
     }
 
 public:
     binary_segment_tree(int n) : n(n)
     {
-
+        root = create_node(0, n - 1);
     }
 
     /**
      * Get the sum of bits in segment [a; b]
-     * @param l Left segment boundary
-     * @param r Right segment boundary
+     * @param l Left segment boundary (inclusive)
+     * @param r Right segment boundary (inclusive)
      * @return Sum of bits on the specified segment
      */
     int get_sum(int l, int r)
     {
-        return 0;
+        return root->get_segment_sum(l, r);
     }
 
     /**
