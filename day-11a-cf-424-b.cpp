@@ -22,19 +22,19 @@ int main()
 
     std::set<int> card_values;
 
-    std::unordered_map<int, int> card_first_occurence;
-    std::unordered_map<int, int> card_last_occurence;
+    std::unordered_map<int, int> card_first_occurrence;
+    std::unordered_map<int, int> card_last_occurrence;
 
     for(int i = 0; i < num_cards; i++) {
         int card_value = cards[i];
 
         card_values.insert(card_value);
 
-        if(card_first_occurence.find(card_value) == card_first_occurence.end()) {
-            card_first_occurence[card_value] = i;
+        if(card_first_occurrence.find(card_value) == card_first_occurrence.end()) {
+            card_first_occurrence[card_value] = i;
         }
 
-        card_last_occurence[card_value] = i;
+        card_last_occurrence[card_value] = i;
     }
 
     std::vector<bool> card_taken(num_cards, false);
@@ -47,16 +47,16 @@ int main()
     int top_card = 0;
 
     for(int card_value : card_values) {
-        if(top_card <= card_first_occurence[card_value]) {
-            total_inspections += card_last_occurence[card_value] - top_card + 1;
+        if(top_card <= card_first_occurrence[card_value]) {
+            total_inspections += card_last_occurrence[card_value] - top_card + 1;
 
-            top_card = card_last_occurence[card_value] + 1;
+            top_card = card_last_occurrence[card_value] + 1;
         }
         else {
             total_inspections += num_cards - top_card;
-            total_inspections += card_first_occurence[card_value] + 1;
+            total_inspections += card_first_occurrence[card_value] + 1;
 
-            top_card = card_first_occurence[card_value] + 1;
+            top_card = card_first_occurrence[card_value] + 1;
         }
     }
 
