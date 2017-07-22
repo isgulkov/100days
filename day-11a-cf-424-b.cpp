@@ -4,9 +4,130 @@
 #include <set>
 #include <unordered_map>
 
+/**
+ * Represents a segment tree on an array of bits all of which are initially set
+ */
+struct binary_segment_tree
+{
+private:
+    int n;
+
+    struct segment_tree_node
+    {
+        int sum;
+
+        int start, end;
+
+        segment_tree_node* left;
+        segment_tree_node* right;
+
+    public:
+        segment_tree_node(int l, int r) : start(l), end(r), left(nullptr), right(nullptr) { }
+
+        int get_segment_sum(int l, int r)
+        {
+            if(l == start && r == end) {
+                return sum;
+            }
+            else {
+                int mid = (start + end) / 2;
+
+                if(r <= mid) {
+                    return left->get_segment_sum(l, r);
+                }
+                else if(l > mid) {
+                    return right->get_segment_sum(l, r);
+                }
+                else {
+                    return left->get_segment_sum(l, mid) + right->get_segment_sum(mid + 1, r);
+                }
+            }
+        }
+
+        bool unset_bit(int i)
+        {
+            if(i == start && i == end) {
+                if(sum) {
+                    sum = 0;
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+
+            int mid = (start + end) / 2; // TODO: make `mid` a field
+
+            bool success;
+
+            if(i <= mid) {
+                success = left->unset_bit(i);
+            }
+            else {
+                success = right->unset_bit(i);
+            }
+
+            if(success) {
+                sum -= 1;
+            }
+
+            return success;
+        }
+    };
+
+    segment_tree_node* root;
+
+    segment_tree_node* create_node(int l, int r)
+    {
+        // TODO: move all of this to the node constructor
+
+        segment_tree_node* new_node = new segment_tree_node(l, r);
+
+        if(l == r) {
+            new_node->sum = 1;
+        }
+        else {
+            int mid = (l + r) / 2;
+
+            new_node->left = create_node(l, mid);
+            new_node->right = create_node(mid + 1, r);
+
+            new_node->sum = new_node->left->sum + new_node->right->sum;
+        }
+
+        return new_node;
+    }
+
+public:
+    binary_segment_tree(int n) : n(n)
+    {
+        root = create_node(0, n - 1);
+    }
+
+    /**
+     * Get the sum of bits in segment [a; b]
+     * @param l Left segment boundary (inclusive)
+     * @param r Right segment boundary (inclusive)
+     * @return Sum of bits on the specified segment
+     */
+    int get_sum(int l, int r)
+    {
+        return root->get_segment_sum(l, r);
+    }
+
+    /**
+     * Unset bit at the specified index
+     * @param i Index of the bit to be unset
+     */
+    void unset_bit(int i)
+    {
+        root->unset_bit(i);
+    }
+};
+
 int main()
 {
-    size_t num_cards;
+    int num_cards;
 
     std::cin >> num_cards;
 
@@ -38,7 +159,7 @@ int main()
         card_occurrences[card_value].insert(i);
     }
 
-    std::vector<bool> card_taken(num_cards, false);
+    binary_segment_tree card_not_taken(num_cards); // TODO: do what it says
 
     int total_inspections = 0;
 
@@ -55,19 +176,13 @@ int main()
              * Count cards unmarked as taken in [top_card; last_occurrence] and mark `card_value` cards on this interval
              */
 
-            int current_inspections = 0;
+            total_inspections += card_not_taken.get_sum(top_card, last_occurrence);
 
-            for( ; top_card <= last_occurrence; top_card++) {
-                if(!card_taken[top_card]) {
-                    current_inspections += 1;
-
-                    if(cards[top_card] == card_value) {
-                        card_taken[top_card] = true;
-                    }
-                }
+            for(int occurrence : card_occurrences[card_value]) {
+                card_not_taken.unset_bit(occurrence);
             }
 
-            total_inspections += current_inspections;
+            top_card = last_occurrence + 1;
         }
         else {
             /**
@@ -82,29 +197,14 @@ int main()
              * cards on these intervals
              */
 
-            int current_inspections = 0;
+            total_inspections += card_not_taken.get_sum(top_card, num_cards - 1);
+            total_inspections += card_not_taken.get_sum(0, prev_occurrence);
 
-            for( ; top_card < num_cards; top_card++) {
-                if(!card_taken[top_card]) {
-                    current_inspections += 1;
-
-                    if(cards[top_card] == card_value) {
-                        card_taken[top_card] = true;
-                    }
-                }
+            for(int occurrence : card_occurrences[card_value]) {
+                card_not_taken.unset_bit(occurrence);
             }
 
-            for(top_card = 0; top_card <= prev_occurrence; top_card++) {
-                if(!card_taken[top_card]) {
-                    current_inspections += 1;
-
-                    if(cards[top_card] == card_value) {
-                        card_taken[top_card] = true;
-                    }
-                }
-            }
-
-            total_inspections += current_inspections;
+            top_card = prev_occurrence + 1;
         }
     }
 
