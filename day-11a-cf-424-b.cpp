@@ -16,13 +16,16 @@ private:
     {
         long long sum;
 
-        int start, end;
+        int start, end, mid;
 
         segment_tree_node* left;
         segment_tree_node* right;
 
     public:
-        segment_tree_node(int start, int end) : start(start), end(end), left(nullptr), right(nullptr) { }
+        segment_tree_node(int start, int end) : start(start), end(end), left(nullptr), right(nullptr)
+        {
+            mid = (start + end) / 2;
+        }
 
         long long get_segment_sum(int l, int r)
         {
@@ -30,8 +33,6 @@ private:
                 return sum;
             }
             else {
-                int mid = (start + end) / 2;
-
                 if(r <= mid) {
                     return left->get_segment_sum(l, r);
                 }
@@ -55,8 +56,6 @@ private:
                     return false;
                 }
             }
-
-            int mid = (start + end) / 2; // TODO: make `mid` a field
 
             bool success;
 
