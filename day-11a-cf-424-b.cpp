@@ -14,7 +14,7 @@ private:
 
     struct segment_tree_node
     {
-        int sum;
+        long long sum;
 
         int start, end;
 
@@ -24,7 +24,7 @@ private:
     public:
         segment_tree_node(int l, int r) : start(l), end(r), left(nullptr), right(nullptr) { }
 
-        int get_segment_sum(int l, int r)
+        long long get_segment_sum(int l, int r)
         {
             if(l == start && r == end) {
                 return sum;
@@ -110,7 +110,7 @@ public:
      * @param r Right segment boundary (inclusive)
      * @return Sum of bits on the specified segment
      */
-    int get_sum(int l, int r)
+    long long get_sum(int l, int r)
     {
         return root->get_segment_sum(l, r);
     }
@@ -161,7 +161,7 @@ int main()
 
     binary_segment_tree card_not_taken(num_cards); // TODO: do what it says
 
-    int total_inspections = 0;
+    long long total_inspections = 0;
 
     /**
      * Consider cards [top_card; n) be on top of the stack, [0; top_card) below them in the existing order
