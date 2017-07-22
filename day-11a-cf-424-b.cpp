@@ -48,15 +48,30 @@ int main()
 
     for(int card_value : card_values) {
         if(top_card <= card_first_occurrence[card_value]) {
-            total_inspections += card_last_occurrence[card_value] - top_card + 1;
+            int last_occurrence = card_last_occurrence[card_value];
+
+            /**
+             * Count untaken cards in [top_card; last_occurrence] and mark `card_value` cards on this interval as taken
+             */
+
+            int current_inspections = 0;
+
+            for(int i = top_card; i <= card_last_occurrence[card_value]; i++) {
+                if(!card_taken[i]) {
+                    current_inspections += 1;
+
+                    if(cards[i] == card_value) {
+                        card_taken[i] = true;
+                    }
+                }
+            }
+
+            total_inspections += current_inspections;
 
             top_card = card_last_occurrence[card_value] + 1;
         }
         else {
-            total_inspections += num_cards - top_card;
-            total_inspections += card_first_occurrence[card_value] + 1;
 
-            top_card = card_first_occurrence[card_value] + 1;
         }
     }
 
