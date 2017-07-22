@@ -158,7 +158,7 @@ int main()
         card_occurrences[card_value].insert(i);
     }
 
-    binary_segment_tree card_not_taken(num_cards); // TODO: do what it says
+    binary_segment_tree card_not_taken(num_cards);
 
     long long total_inspections = 0;
 
