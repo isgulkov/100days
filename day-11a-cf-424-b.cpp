@@ -73,7 +73,7 @@ int main()
             /**
              * Find the occurrence previous to `top_card` (i.e. largest smaller than)
              */
-            int prev_occurrence = *card_occurrences[card_value].upper_bound(top_card);
+            int prev_occurrence = *card_occurrences[card_value].lower_bound(top_card);
 
             /**
              * Count all cards unmarked as taken on [top_card; num_cards) and [0; prev_occurence] and mark `card_value`
