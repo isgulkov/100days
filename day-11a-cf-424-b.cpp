@@ -22,7 +22,7 @@ private:
         segment_tree_node* right;
 
     public:
-        segment_tree_node(int l, int r) : start(l), end(r), left(nullptr), right(nullptr) { }
+        segment_tree_node(int start, int end) : start(start), end(end), left(nullptr), right(nullptr) { }
 
         long long get_segment_sum(int l, int r)
         {
