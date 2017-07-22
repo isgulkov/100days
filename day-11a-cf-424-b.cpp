@@ -75,6 +75,14 @@ int main()
              */
             int prev_occurrence = *card_occurrences[card_value].lower_bound(top_card);
 
+            if(prev_occurrence == top_card) {
+                /**
+                 * If the current top card was returned as `lower_bound`, which it very well can, select the previous
+                 * occurrence instead
+                 */
+                prev_occurrence = *(--card_occurrences[card_value].lower_bound(top_card));
+            }
+
             /**
              * Count all cards unmarked as taken on [top_card; num_cards) and [0; prev_occurence] and mark `card_value`
              * cards on these intervals
