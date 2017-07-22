@@ -89,8 +89,8 @@ private:
         else {
             int mid = (l + r) / 2;
 
-            new_node->left = new segment_tree_node(l, mid);
-            new_node->right = new segment_tree_node(l, mid + 1);
+            new_node->left = create_node(l, mid);
+            new_node->right = create_node(mid + 1, r);
 
             new_node->sum = new_node->left->sum + new_node->right->sum;
         }
