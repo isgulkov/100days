@@ -6,7 +6,7 @@
 
 int main()
 {
-    int num_cards;
+    size_t num_cards;
 
     std::cin >> num_cards;
 
@@ -37,7 +37,28 @@ int main()
         card_last_occurence[card_value] = i;
     }
 
-    for(int cv : card_values) {
-        std::cout << cv << " ";
+    std::vector<bool> card_taken(num_cards, false);
+
+    int total_inspections = 0;
+
+    /**
+     * Consider cards [top_card; n) be on top of the stack, [0; top_card) below them in the existing order
+     */
+    int top_card = 0;
+
+    for(int card_value : card_values) {
+        if(top_card <= card_first_occurence[card_value]) {
+            total_inspections += card_last_occurence[card_value] - top_card + 1;
+
+            top_card = card_last_occurence[card_value] + 1;
+        }
+        else {
+            total_inspections += num_cards - top_card;
+            total_inspections += card_first_occurence[card_value] + 1;
+
+            top_card = card_first_occurence[card_value] + 1;
+        }
     }
+
+    std::cout << total_inspections << std::endl;
 }
