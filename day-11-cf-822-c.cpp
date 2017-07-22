@@ -2,15 +2,17 @@
 #include <stdio.h>
 #include <vector>
 #include <tuple>
+#include <map>
 
 struct trip
 {
+    int id;
     int start;
     int end;
     int cost;
 
 public:
-    trip(int start, int end, int cost) : start(start), end(end), cost(cost) { }
+    trip(int id, int start, int end, int cost) : id(id), start(start), end(end), cost(cost) { }
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "OCSimplifyInspection"
@@ -60,31 +62,37 @@ int main()
 
     std::vector<trip> trips;
 
+    std::multimap<int, trip> trips_with_duration;
+
     for(int i = 0; i < num_trips; i++) {
         int start, end, cost;
 
         scanf("%d %d %d", &start, &end, &cost);
 
-        trips.push_back(trip(start, end, cost));
+        trips.push_back(trip(i, start, end, cost));
+
+        trips_with_duration.insert(std::make_pair(trips.back().get_duration(), trips.back()));
     }
 
     int minimum_cost = INT32_MAX;
 
     for(int i = 0; i < num_trips; i++) {
-        for(int j = 0; j < num_trips; j++) {
-            if(i == j) {
+        trip& one_trip = trips[i];
+
+        auto specific_duration_range = trips_with_duration.equal_range(target_duration - trips[i].get_duration());
+
+        for(auto it = specific_duration_range.first; it != specific_duration_range.second; it++) {
+            trip& another_trip = it->second;
+
+            if(one_trip.id == another_trip.id) {
                 continue;
             }
 
-            if(trips[i].intersects_with(trips[j])) {
+            if(one_trip.intersects_with(another_trip)) {
                 continue;
             }
 
-            if(trips[i].get_duration() + trips[j].get_duration() != target_duration) {
-                continue;
-            }
-
-            int candidate_cost = trips[i].cost + trips[j].cost;
+            int candidate_cost = one_trip.cost + another_trip.cost;
 
             if(candidate_cost < minimum_cost) {
                 minimum_cost = candidate_cost;
