@@ -45,6 +45,11 @@ public:
         }
     }
 #pragma clang diagnostic pop
+
+    int get_duration()
+    {
+        return end - start + 1;
+    }
 };
 
 int main()
@@ -72,6 +77,10 @@ int main()
             }
 
             if(trips[i].intersects_with(trips[j])) {
+                continue;
+            }
+
+            if(trips[i].get_duration() + trips[j].get_duration() != target_duration) {
                 continue;
             }
 
