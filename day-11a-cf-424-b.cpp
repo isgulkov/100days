@@ -16,13 +16,26 @@ private:
     {
         long long sum;
 
-        int start, end;
+        int start, end, mid;
 
         segment_tree_node* left;
         segment_tree_node* right;
 
     public:
-        segment_tree_node(int l, int r) : start(l), end(r), left(nullptr), right(nullptr) { }
+        segment_tree_node(int start, int end) : start(start), end(end), left(nullptr), right(nullptr)
+        {
+            mid = (start + end) / 2;
+
+            if(start == end) {
+                sum = 1;
+            }
+            else {
+                left = new segment_tree_node(start, mid);
+                right = new segment_tree_node(mid + 1, end);
+
+                sum = left->sum + right->sum;
+            }
+        }
 
         long long get_segment_sum(int l, int r)
         {
@@ -30,8 +43,6 @@ private:
                 return sum;
             }
             else {
-                int mid = (start + end) / 2;
-
                 if(r <= mid) {
                     return left->get_segment_sum(l, r);
                 }
@@ -56,8 +67,6 @@ private:
                 }
             }
 
-            int mid = (start + end) / 2; // TODO: make `mid` a field
-
             bool success;
 
             if(i <= mid) {
@@ -77,31 +86,10 @@ private:
 
     segment_tree_node* root;
 
-    segment_tree_node* create_node(int l, int r)
-    {
-        // TODO: move all of this to the node constructor
-
-        segment_tree_node* new_node = new segment_tree_node(l, r);
-
-        if(l == r) {
-            new_node->sum = 1;
-        }
-        else {
-            int mid = (l + r) / 2;
-
-            new_node->left = create_node(l, mid);
-            new_node->right = create_node(mid + 1, r);
-
-            new_node->sum = new_node->left->sum + new_node->right->sum;
-        }
-
-        return new_node;
-    }
-
 public:
     binary_segment_tree(int n) : n(n)
     {
-        root = create_node(0, n - 1);
+        root = new segment_tree_node(0, n - 1);
     }
 
     /**
@@ -159,7 +147,7 @@ int main()
         card_occurrences[card_value].insert(i);
     }
 
-    binary_segment_tree card_not_taken(num_cards); // TODO: do what it says
+    binary_segment_tree card_not_taken(num_cards);
 
     long long total_inspections = 0;
 
