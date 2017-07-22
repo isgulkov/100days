@@ -127,7 +127,7 @@ public:
 
 int main()
 {
-    size_t num_cards;
+    int num_cards;
 
     std::cin >> num_cards;
 
