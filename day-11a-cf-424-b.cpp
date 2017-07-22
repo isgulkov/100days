@@ -159,7 +159,7 @@ int main()
         card_occurrences[card_value].insert(i);
     }
 
-    std::vector<bool> card_taken(num_cards, false);
+    binary_segment_tree card_not_taken(num_cards); // TODO: do what it says
 
     int total_inspections = 0;
 
@@ -176,19 +176,13 @@ int main()
              * Count cards unmarked as taken in [top_card; last_occurrence] and mark `card_value` cards on this interval
              */
 
-            int current_inspections = 0;
+            total_inspections += card_not_taken.get_sum(top_card, last_occurrence);
 
-            for( ; top_card <= last_occurrence; top_card++) {
-                if(!card_taken[top_card]) {
-                    current_inspections += 1;
-
-                    if(cards[top_card] == card_value) {
-                        card_taken[top_card] = true;
-                    }
-                }
+            for(int occurrence : card_occurrences[card_value]) {
+                card_not_taken.unset_bit(occurrence);
             }
 
-            total_inspections += current_inspections;
+            top_card = last_occurrence + 1;
         }
         else {
             /**
@@ -203,29 +197,14 @@ int main()
              * cards on these intervals
              */
 
-            int current_inspections = 0;
+            total_inspections += card_not_taken.get_sum(top_card, num_cards - 1);
+            total_inspections += card_not_taken.get_sum(0, prev_occurrence);
 
-            for( ; top_card < num_cards; top_card++) {
-                if(!card_taken[top_card]) {
-                    current_inspections += 1;
-
-                    if(cards[top_card] == card_value) {
-                        card_taken[top_card] = true;
-                    }
-                }
+            for(int occurrence : card_occurrences[card_value]) {
+                card_not_taken.unset_bit(occurrence);
             }
 
-            for(top_card = 0; top_card <= prev_occurrence; top_card++) {
-                if(!card_taken[top_card]) {
-                    current_inspections += 1;
-
-                    if(cards[top_card] == card_value) {
-                        card_taken[top_card] = true;
-                    }
-                }
-            }
-
-            total_inspections += current_inspections;
+            top_card = prev_occurrence + 1;
         }
     }
 
