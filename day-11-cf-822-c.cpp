@@ -63,5 +63,30 @@ int main()
         trips.push_back(trip(start, end, cost));
     }
 
+    int minimum_cost = INT32_MAX;
 
+    for(int i = 0; i < num_trips; i++) {
+        for(int j = 0; j < num_trips; j++) {
+            if(i == j) {
+                continue;
+            }
+
+            if(trips[i].intersects_with(trips[j])) {
+                continue;
+            }
+
+            int candidate_cost = trips[i].cost + trips[j].cost;
+
+            if(candidate_cost < minimum_cost) {
+                minimum_cost = candidate_cost;
+            }
+        }
+    }
+
+    if(minimum_cost != INT32_MAX) {
+        std::cout << minimum_cost << std::endl;
+    }
+    else {
+        std::cout << -1 << std::endl;
+    }
 }
