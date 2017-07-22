@@ -206,6 +206,10 @@ int main()
 
             top_card = prev_occurrence + 1;
         }
+
+        if(top_card == num_cards) {
+            top_card = 0;
+        }
     }
 
     std::cout << total_inspections << std::endl;
