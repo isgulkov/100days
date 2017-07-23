@@ -46,8 +46,7 @@ int main()
     });
 
     /**
-     * Stores minimum cost encountered of a trip of particular duration that ends up to the current point processed
-     * in the loop
+     * Stores minimum cost of a trip of particular duration that ends up to the current point processed in the loop
      */
     std::unordered_map<int, int> minimum_encountered_cost;
 
