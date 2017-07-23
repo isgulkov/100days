@@ -81,8 +81,6 @@ int main()
         return one.start < another.start;
     });
 
-    std::unordered_map<int, int> minimum_encountered_cost;
-
     std::vector<trip_point> trip_points;
 
     for(int i = 0; i < num_trips; i++) {
@@ -95,6 +93,12 @@ int main()
     std::sort(trip_points.begin(), trip_points.end(), [](trip_point& one, trip_point& another) {
        return one.point < another.point;
     });
+
+    /**
+     * Stores minimum cost encountered of a trip of particilar duration that ends up to the current point processed
+     * in the loop
+     */
+    std::unordered_map<int, int> minimum_encountered_cost;
 
     int minimum_cost = INT32_MAX;
 
