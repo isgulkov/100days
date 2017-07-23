@@ -500,6 +500,28 @@ void fun(int pos)
 |---------|----------|
 |||
 
+Сначала я подумал, что функция отклонения данной смещенной перестановки от смещения будет выпуклая и я там легко найду минимум двоичным поиском. В рассмотренных мной на бумажке трех вариантах для перестановок длины 5 так и было. Потом я построил парочку графиков для случайных перестановок размера в районе 100 с помощью следующей проги в математике:
+
+```mathematica
+shiftDeviation[masik_, k_] := Total@(
+    Abs[First@# - Last@#] & /@ Transpose@{
+       RotateRight[masik, k],
+       Range[Length@masik]
+       }
+    );
+
+listDeviations[masik_] :=
+  shiftDeviation[masik, #] & /@ Range[0, Length@masik - 1];
+
+ListPlot[
+ listDeviations[RandomSample@Range[500]],
+ Joined -> True,
+ PlotStyle -> Directive[RandomColor, Opacity[0.2]]
+ ]
+ ```
+
+ ...и это оказалось не так. Мда.
+
 **Затраченное время**:
 
 #### Честность решения
