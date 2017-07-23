@@ -13,52 +13,10 @@ struct trip
 public:
     trip(int start, int end, int cost) : start(start), end(end), cost(cost) { }
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "OCSimplifyInspection"
-    bool intersects_with(trip& other)
-    {
-        if(start < other.start && end >= other.start) {
-            /**
-             * Case 1:
-             *
-             * [-----------] one
-             *     [-------------] other
-             *
-             * [------------------------------] one
-             *     [-------------] other
-             */
-            return true;
-        }
-        else if(other.start < start && other.end >= start) {
-            /**
-             * Case 2:
-             *
-             *       [-----------] one
-             * [-------------] other
-             *
-             * [------------------------------] one
-             * [-------------] other
-             */
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-#pragma clang diagnostic pop
-
     int get_duration()
     {
         return end - start + 1;
     }
-};
-
-struct trip_point
-{
-    int point;
-    trip _trip;
-
-    trip_point(int point, trip& _trip) : point(point), _trip(_trip) { }
 };
 
 int main()
@@ -67,61 +25,60 @@ int main()
 
     std::cin >> num_trips >> target_duration;
 
-    std::vector<trip> trips;
+    std::vector<trip> trips_by_start;
+    std::vector<trip> trips_by_end;
 
     for(int i = 0; i < num_trips; i++) {
         int start, end, cost;
 
         scanf("%d %d %d", &start, &end, &cost);
 
-        trips.push_back(trip(start, end, cost));
+        trips_by_start.push_back(trip(start, end, cost));
+        trips_by_end.push_back(trip(start, end, cost));
     }
 
-    std::sort(trips.begin(), trips.end(), [](trip& one, trip& another) {
+    std::sort(trips_by_start.begin(), trips_by_start.end(), [](trip& one, trip& another) {
         return one.start < another.start;
     });
 
-    std::vector<trip_point> trip_points;
-
-    for(int i = 0; i < num_trips; i++) {
-        trip& current_trip = trips[i];
-
-        trip_points.push_back(trip_point(current_trip.start, current_trip));
-        trip_points.push_back(trip_point(current_trip.end, current_trip));
-    }
-
-    std::sort(trip_points.begin(), trip_points.end(), [](trip_point& one, trip_point& another) {
-       return one.point < another.point;
+    std::sort(trips_by_end.begin(), trips_by_end.end(), [](trip& one, trip& another) {
+        return one.end < another.end;
     });
 
     /**
-     * Stores minimum cost encountered of a trip of particilar duration that ends up to the current point processed
+     * Stores minimum cost encountered of a trip of particular duration that ends up to the current point processed
      * in the loop
      */
     std::unordered_map<int, int> minimum_encountered_cost;
 
+    int next_end = 0;
+
     int minimum_cost = INT32_MAX;
 
-    for(int i = 0; i < 2 * num_trips; i++) {
-        int current_point = trip_points[i].point;
-        trip& current_trip = trip_points[i]._trip;
+    for(int i = 0; i < num_trips; i++) {
+        trip& current_trip = trips_by_start[i];
 
-        if(current_point == current_trip.start) {
-            int other_part = target_duration - current_trip.get_duration();
+        /**
+         * Update minimum costs among trips that end before this trip
+         */
+        while(next_end < num_trips && trips_by_end[next_end].end < current_trip.start) {
+            trip& previous_trip = trips_by_end[next_end];
 
-            if(minimum_encountered_cost.find(other_part) != minimum_encountered_cost.end()) {
-                int candidate_cost = minimum_encountered_cost[other_part] + current_trip.cost;
-
-                if(candidate_cost < minimum_cost) {
-                    minimum_cost = candidate_cost;
-                }
+            if(minimum_encountered_cost.find(previous_trip.get_duration()) == minimum_encountered_cost.end()
+               || previous_trip.cost < minimum_encountered_cost[previous_trip.get_duration()]) {
+                minimum_encountered_cost[previous_trip.get_duration()] = previous_trip.cost;
             }
+
+            next_end += 1;
         }
 
-        if(current_point == current_trip.end) {
-            if(minimum_encountered_cost.find(current_trip.get_duration()) == minimum_encountered_cost.end()
-                    || current_trip.cost < minimum_encountered_cost[current_trip.get_duration()]) {
-                minimum_encountered_cost[current_trip.get_duration()] = current_trip.cost;
+        int other_part = target_duration - current_trip.get_duration();
+
+        if(minimum_encountered_cost.find(other_part) != minimum_encountered_cost.end()) {
+            int candidate_cost = minimum_encountered_cost[other_part] + current_trip.cost;
+
+            if(candidate_cost < minimum_cost) {
+                minimum_cost = candidate_cost;
             }
         }
     }
