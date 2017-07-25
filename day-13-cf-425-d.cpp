@@ -123,7 +123,7 @@ private:
             int left_min = get_index_with_min_height(left, mid, node->left_subtree);
             int right_min = get_index_with_min_height(mid + 1, right, node->right_subtree);
 
-            if(height[left_min] < height[right_min]) {
+            if(height[visit_order[left_min]] < height[visit_order[right_min]]) {
                 return left_min;
             }
             else {
