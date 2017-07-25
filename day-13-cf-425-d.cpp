@@ -88,7 +88,7 @@ public:
 
 int main()
 {
-    int num_nodes, num_requests;
+    size_t num_nodes, num_requests;
 
     std::cin >> num_nodes >> num_requests;
 
