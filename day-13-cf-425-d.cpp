@@ -8,11 +8,12 @@ class lca_tree
 
     std::vector<std::vector<int>> children;
 
-    std::vector<int> time_visit;
+    std::vector<int> visit_order;
+    std::vector<int> time_in;
     std::vector<int> height;
 
 public:
-    lca_tree(size_t num_nodes) : num_nodes(num_nodes), children(num_nodes), time_visit(num_nodes), height(num_nodes) { }
+    lca_tree(size_t num_nodes) : num_nodes(num_nodes), children(num_nodes), time_in(num_nodes), height(num_nodes) { }
 
     void pidor()
     {
@@ -57,23 +58,25 @@ private:
 
     void preprocess_lca(int root)
     {
-        std::vector<int> visit_order;
+        visit_order.reserve(2 * num_nodes);
 
-        record_visit_order(root, visit_order);
+        record_visit_order(root);
 
         for(int i = 0; i < num_nodes; i++) {
-            time_visit[visit_order[i]] = i;
+            time_in[visit_order[i]] = i;
         }
 
         record_height(root, 0);
     }
 
-    void record_visit_order(int u, std::vector<int>& visit_order)
+    void record_visit_order(int u)
     {
         visit_order.push_back(u);
 
         for(int v : children[u]) {
-            record_visit_order(v, visit_order);
+            record_visit_order(v);
+
+            visit_order.push_back(u);
         }
     }
 
