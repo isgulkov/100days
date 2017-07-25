@@ -185,7 +185,36 @@ public:
 
         return visit_order[lca_index];
     }
+
+    int get_height(int u)
+    {
+        return height[u];
+    }
 };
+
+int common_nodes(lca_tree& tree, int s, int t, int f)
+{
+    int result = 0;
+
+    bool is1 = tree.get_lca(f, s) == f;
+    bool is2 = tree.get_lca(f, t) == f;
+
+    if(is1 != is2) {
+        return 1;
+    }
+
+    if(is1) {
+        result = std::max(result, tree.get_height(tree.get_lca(s, t)) - tree.get_height(f));
+    }
+    else if(tree.get_lca(f, s) != tree.get_lca(f, t)) {
+        result = std::max(result, tree.get_height(f) - std::max(tree.get_height(tree.get_lca(f, s)), tree.get_height(tree.get_lca(f, t))));
+    }
+    else {
+        result = std::max(result, tree.get_height(f) + tree.get_height(tree.get_lca(s, t)) - 2 * tree.get_height(tree.get_lca(f, t)));
+    }
+
+    return result + 1;
+}
 
 int main()
 {
@@ -205,11 +234,19 @@ int main()
 
     t.hang_by_and_preprocess_lca(0);
 
+//    t.pidor();
+
     for(int i = 0; i < num_requests; i++) {
         int u, v, w;
 
         std::cin >> u >> v >> w;
 
-        std::cout << t.common_edges(u - 1, v - 1, w - 1) << std::endl;
+        u -= 1;
+        v -= 1;
+        w -= 1;
+
+        int max_common_nodes = std::max({common_nodes(t, u, v, w), common_nodes(t, u, w, v), common_nodes(t, v, w, u)});
+
+        std::cout << max_common_nodes << std::endl;
     }
 }
