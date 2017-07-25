@@ -28,35 +28,6 @@ class lca_tree
 public:
     lca_tree(size_t num_nodes) : num_nodes(num_nodes), children(num_nodes), time_in(num_nodes), height(num_nodes) { }
 
-    void pidor()
-    {
-        for(int u = 0; u < num_nodes; u++) {
-            std::cout << u << ": ";
-
-            for(int v : children[u]) {
-                std::cout << v << " ";
-            }
-
-            std::cout << std::endl;
-        }
-
-        std::cout << "Visit order: ";
-
-        for(int v : visit_order) {
-            std::cout << v << " ";
-        }
-
-        std::cout << std::endl;
-
-        std::cout << "Height: ";
-
-        for(int h : height) {
-            std::cout << h << " ";
-        }
-
-        std::cout << std::endl;
-    }
-
     void add_edge(int u, int v)
     {
         children[u].push_back(v);
@@ -233,8 +204,6 @@ int main()
     }
 
     t.hang_by_and_preprocess_lca(0);
-
-//    t.pidor();
 
     for(int i = 0; i < num_requests; i++) {
         int u, v, w;
