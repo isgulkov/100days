@@ -78,16 +78,6 @@ public:
     }
 
 private:
-    int get_lca(int u, int v)
-    {
-        size_t u_index = (size_t)time_in[u];
-        size_t v_index = (size_t)time_in[v];
-
-        int lca_index = get_index_with_min_height(std::min(u_index, v_index), std::max(u_index, v_index), segment_tree);
-
-        return visit_order[lca_index];
-    }
-
     segment_tree_node* build_segment_subtree(size_t l, size_t r)
     {
         segment_tree_node* new_node = new segment_tree_node;
@@ -157,7 +147,7 @@ private:
 
         record_visit_order(root);
 
-        for(int i = 0; i < num_nodes; i++) {
+        for(int i = (int)(visit_order.size()) - 1; i >= 0; i--) {
             time_in[visit_order[i]] = i;
         }
 
@@ -185,9 +175,14 @@ private:
     }
 
 public:
-    int common_edges(int u, int v, int w)
+    int get_lca(int u, int v)
     {
-        return 0;
+        size_t u_index = (size_t)time_in[u];
+        size_t v_index = (size_t)time_in[v];
+
+        int lca_index = get_index_with_min_height(std::min(u_index, v_index), std::max(u_index, v_index), segment_tree);
+
+        return visit_order[lca_index];
     }
 };
 
