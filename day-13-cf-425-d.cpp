@@ -4,6 +4,17 @@
 
 class lca_tree
 {
+    struct segment_tree_node
+    {
+        size_t min_index;
+
+        size_t left_index;
+        size_t right_index;
+
+        segment_tree_node* left_subtree = nullptr;
+        segment_tree_node* right_subtree = nullptr;
+    };
+
     size_t num_nodes;
 
     std::vector<std::vector<int>> children;
@@ -11,6 +22,8 @@ class lca_tree
     std::vector<int> visit_order;
     std::vector<int> time_in;
     std::vector<int> height;
+
+    segment_tree_node* segment_tree;
 
 public:
     lca_tree(size_t num_nodes) : num_nodes(num_nodes), children(num_nodes), time_in(num_nodes), height(num_nodes) { }
@@ -26,6 +39,22 @@ public:
 
             std::cout << std::endl;
         }
+
+        std::cout << "Visit order: ";
+
+        for(int v : visit_order) {
+            std::cout << v << " ";
+        }
+
+        std::cout << std::endl;
+
+        std::cout << "Height: ";
+
+        for(int h : height) {
+            std::cout << h << " ";
+        }
+
+        std::cout << std::endl;
     }
 
     void add_edge(int u, int v)
@@ -44,9 +73,75 @@ public:
         hang_by(u);
 
         preprocess_lca(u);
+
+        segment_tree = build_segment_subtree(0, visit_order.size() - 1);
     }
 
 private:
+    int get_lca(int u, int v)
+    {
+        size_t u_index = (size_t)time_in[u];
+        size_t v_index = (size_t)time_in[v];
+
+        int lca_index = get_index_with_min_height(std::min(u_index, v_index), std::max(u_index, v_index), segment_tree);
+
+        return visit_order[lca_index];
+    }
+
+    segment_tree_node* build_segment_subtree(size_t l, size_t r)
+    {
+        segment_tree_node* new_node = new segment_tree_node;
+
+        new_node->left_index = l;
+        new_node->right_index = r;
+
+        if(l == r) {
+            new_node->min_index = l;
+        }
+        else {
+            size_t mid = (l + r) / 2;
+
+            new_node->left_subtree = build_segment_subtree(l, mid);
+            new_node->right_subtree = build_segment_subtree(mid + 1, r);
+
+            if(height[new_node->left_subtree->min_index] < height[new_node->right_subtree->min_index]) {
+                new_node->min_index = new_node->left_subtree->min_index;
+            }
+            else {
+                new_node->min_index = new_node->right_subtree->min_index;
+            }
+        }
+
+        return new_node;
+    }
+
+    int get_index_with_min_height(size_t left, size_t right, segment_tree_node* node)
+    {
+        if(left == node->left_index && right == node->right_index) {
+            return (int)node->min_index;
+        }
+
+        size_t mid = (node->left_index + node->right_index) / 2;
+
+        if(right <= mid) {
+            return get_index_with_min_height(left, mid, node->left_subtree);
+        }
+        else if(left > mid) {
+            return get_index_with_min_height(mid + 1, right, node->right_subtree);
+        }
+        else {
+            int left_min = get_index_with_min_height(left, mid, node->left_subtree);
+            int right_min = get_index_with_min_height(mid + 1, right, node->right_subtree);
+
+            if(height[left_min] < height[right_min]) {
+                return left_min;
+            }
+            else {
+                return right_min;
+            }
+        }
+    }
+
     void hang_by(int u)
     {
         for(int v : children[u]) {
