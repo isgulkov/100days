@@ -49,6 +49,48 @@ public:
     }
 
 private:
+    void hang_by(int u)
+    {
+        for(int v : children[u]) {
+            children[v].erase(std::remove(children[v].begin(), children[v].end(), u), children[v].end());
+
+            hang_by(v);
+        }
+    }
+
+    void preprocess_lca(int root)
+    {
+        visit_order.reserve(2 * num_nodes);
+
+        record_visit_order(root);
+
+        for(int i = (int)(visit_order.size()) - 1; i >= 0; i--) {
+            time_in[visit_order[i]] = i;
+        }
+
+        record_height(root, 0);
+    }
+
+    void record_visit_order(int u)
+    {
+        visit_order.push_back(u);
+
+        for(int v : children[u]) {
+            record_visit_order(v);
+
+            visit_order.push_back(u);
+        }
+    }
+
+    void record_height(int u, int current_height)
+    {
+        height[u] = current_height;
+
+        for(int v : children[u]) {
+            record_height(v, current_height + 1);
+        }
+    }
+
     segment_tree_node* build_segment_subtree(size_t l, size_t r)
     {
         segment_tree_node* new_node = new segment_tree_node;
@@ -101,48 +143,6 @@ private:
             else {
                 return right_min;
             }
-        }
-    }
-
-    void hang_by(int u)
-    {
-        for(int v : children[u]) {
-            children[v].erase(std::remove(children[v].begin(), children[v].end(), u), children[v].end());
-
-            hang_by(v);
-        }
-    }
-
-    void preprocess_lca(int root)
-    {
-        visit_order.reserve(2 * num_nodes);
-
-        record_visit_order(root);
-
-        for(int i = (int)(visit_order.size()) - 1; i >= 0; i--) {
-            time_in[visit_order[i]] = i;
-        }
-
-        record_height(root, 0);
-    }
-
-    void record_visit_order(int u)
-    {
-        visit_order.push_back(u);
-
-        for(int v : children[u]) {
-            record_visit_order(v);
-
-            visit_order.push_back(u);
-        }
-    }
-
-    void record_height(int u, int current_height)
-    {
-        height[u] = current_height;
-
-        for(int v : children[u]) {
-            record_height(v, current_height + 1);
         }
     }
 
