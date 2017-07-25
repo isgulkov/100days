@@ -94,7 +94,8 @@ private:
             new_node->left_subtree = build_segment_subtree(l, mid);
             new_node->right_subtree = build_segment_subtree(mid + 1, r);
 
-            if(height[new_node->left_subtree->min_index] < height[new_node->right_subtree->min_index]) {
+            if(height[visit_order[new_node->left_subtree->min_index]]
+               < height[visit_order[new_node->right_subtree->min_index]]) {
                 new_node->min_index = new_node->left_subtree->min_index;
             }
             else {
@@ -114,10 +115,10 @@ private:
         size_t mid = (node->left_index + node->right_index) / 2;
 
         if(right <= mid) {
-            return get_index_with_min_height(left, mid, node->left_subtree);
+            return get_index_with_min_height(left, right, node->left_subtree);
         }
         else if(left > mid) {
-            return get_index_with_min_height(mid + 1, right, node->right_subtree);
+            return get_index_with_min_height(left, right, node->right_subtree);
         }
         else {
             int left_min = get_index_with_min_height(left, mid, node->left_subtree);
