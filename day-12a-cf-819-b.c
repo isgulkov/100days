@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 
 struct offline_segment
 {
@@ -94,7 +95,7 @@ int get_minimum(struct offline_segment* segment, int* min_index_ptr)
         restored_values[i] += restored_values[i - 1];
     }
 
-    int min_value = INT32_MAX;
+    int min_value = INT_MAX;
     int min_index = -1;
 
     for(int i = 0; i < segment->length; i++) {
