@@ -139,7 +139,7 @@ int main()
         else {
             subtract_increasing(&deviations, 0, n - i, perm[i] - (i + 1));
 
-            add_decreasing(&deviations, n - i, n - i - perm[i], perm[i] - (i + n - i - n + 1));
+            add_decreasing(&deviations, n - i, n - i + perm[i], perm[i] - (i + n - i - n + 1));
 
             subtract_increasing(&deviations, n - i + perm[i], n, perm[i] - (i + n - i + perm[i] - n + 1));
         }
