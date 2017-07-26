@@ -1,37 +1,72 @@
+from sys import maxint
+
 
 class OfflineSegment:
     def __init__(self, length):
         self.length = length
 
-        self.values = [0 for i in xrange(length)]
+        self._values = [0 for i in xrange(length)]
+        self._deltas = [0 for i in xrange(length)]
 
     '''
     Add members of arithmetic progression with initial term -`first` and difference -1 to indices [l; r)
     '''
     def subtract_increasing(self, l, r, first):
-        for i in xrange(l, r):
-            self.values[i] -= first - (i - l)
+        if l < self.length:
+            self._values[l] += -first
+            self._deltas[l] += 1
+
+        if r < self.length:
+            self._values[r] -= r - l - first
+            self._deltas[r] -= 1
 
     '''
     Add members of arithmetic progression with initial term `first` and difference -1 to indices [l; r)
     '''
     def add_decreasing(self, l, r, first):
-        for i in xrange(l, r):
-            self.values[i] += first - (i - l)
+        if l < self.length:
+            self._values[l] += first
+            self._deltas[l] += -1
+
+        if r < self.length:
+            self._values[r] -= -(r - l) + first
+            self._deltas[r] -= -1
+
+    def _restore(self):
+        deltas_interp = self._deltas[:]
+
+        for i in xrange(1, self.length):
+            deltas_interp[i] += deltas_interp[i - 1]
+
+        restored_values = self._values[:]
+
+        for i in xrange(1, self.length):
+            restored_values[i] += deltas_interp[i - 1]
+
+        for i in xrange(1, self.length):
+            restored_values[i] += restored_values[i - 1]
+
+        return restored_values
 
     '''
     Return segment's minimum value and the value's index
     '''
     def get_minimum(self):
-        min_value, min_shift = self.values[0], 0
+        restored_values = self._restore()
+
+        min_value, min_index = maxint, None
 
         for i in xrange(n):
-            if self.values[i] < min_value:
-                min_value = self.values[i]
-                min_shift = i
+            if restored_values[i] < min_value:
+                min_value = restored_values[i]
+                min_index = i
 
-        return min_value, min_shift
+        return min_value, min_index
 
+
+# pidr = OfflineSegment(10)
+
+# pidr.subtract_increasing(2, 5, -2)
 
 n = int(raw_input())
 
