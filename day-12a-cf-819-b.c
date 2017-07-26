@@ -148,7 +148,7 @@ int main()
     int min_shift;
     long long min_deviation = get_minimum(&deviations, &min_shift);
 
-    printf("%I64d %d\n", min_deviation, min_shift);
+    printf("%lld %d\n", min_deviation, min_shift);
 
     return 0;
 }
