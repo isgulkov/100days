@@ -132,16 +132,16 @@ int main()
         if(perm[i] >= i + 1) {
             add_decreasing(&deviations, 0, perm[i] - i, perm[i] - (i + 1));
 
-            subtract_increasing(&deviations, perm[i] - i, n - i, perm[i] - (i + perm[i] - i + 1));
+            subtract_increasing(&deviations, perm[i] - i, n - i, -1);
 
-            add_decreasing(&deviations, n - i, n, perm[i] - (i + n - i - n + 1));
+            add_decreasing(&deviations, n - i, n, perm[i] - 1);
         }
         else {
             subtract_increasing(&deviations, 0, n - i, perm[i] - (i + 1));
 
-            add_decreasing(&deviations, n - i, n - i + perm[i], perm[i] - (i + n - i - n + 1));
+            add_decreasing(&deviations, n - i, n - i + perm[i], perm[i] - 1);
 
-            subtract_increasing(&deviations, n - i + perm[i], n, perm[i] - (i + n - i + perm[i] - n + 1));
+            subtract_increasing(&deviations, n - i + perm[i], n, -1);
         }
     }
 
