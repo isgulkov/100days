@@ -1,5 +1,3 @@
-from sys import maxint
-
 
 class OfflineSegment:
     def __init__(self, length):
@@ -54,7 +52,7 @@ class OfflineSegment:
     def get_minimum(self):
         restored_values = self._restore()
 
-        min_value, min_index = maxint, None
+        min_value, min_index = float("+inf"), None
 
         for i in xrange(n):
             if restored_values[i] < min_value:
