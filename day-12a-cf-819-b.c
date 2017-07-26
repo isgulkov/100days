@@ -5,16 +5,16 @@
 struct offline_segment
 {
     int length;
-    int* values;
-    int* deltas;
+    long long* values;
+    long long* deltas;
 };
 
 void build_segment(struct offline_segment* segment, int length)
 {
     segment->length = length;
 
-    segment->values = malloc(sizeof(int) * length);
-    segment->deltas = malloc(sizeof(int) * length);
+    segment->values = malloc(sizeof(long long) * length);
+    segment->deltas = malloc(sizeof(long long) * length);
 
     for(int i = 0; i < length; i++) {
         segment->values[i] = 0;
@@ -64,12 +64,12 @@ void subtract_increasing(struct offline_segment* segment, int l, int r, int firs
  * Time complexity: O(n)
  * Space complexity: O(n) (can be redone in O(1) even without destroying the data structure)
  */
-int get_minimum(struct offline_segment* segment, int* min_index_ptr)
+long long get_minimum(struct offline_segment* segment, int* min_index_ptr)
 {
     /**
      * Interpolate deltas
      */
-    int* deltas_inpterp = malloc(sizeof(int) * segment->length);
+    long long* deltas_inpterp = malloc(sizeof(long long) * segment->length);
 
     deltas_inpterp[0] = segment->deltas[0];
 
@@ -80,7 +80,7 @@ int get_minimum(struct offline_segment* segment, int* min_index_ptr)
     /**
      * Apply deltas to partial values
      */
-    int* restored_values = malloc(sizeof(int) * segment->length);
+    long long* restored_values = malloc(sizeof(long long) * segment->length);
 
     restored_values[0] = segment->values[0];
 
@@ -95,7 +95,7 @@ int get_minimum(struct offline_segment* segment, int* min_index_ptr)
         restored_values[i] += restored_values[i - 1];
     }
 
-    int min_value = INT_MAX;
+    long long min_value = LONG_LONG_MAX;
     int min_index = -1;
 
     for(int i = 0; i < segment->length; i++) {
@@ -145,11 +145,10 @@ int main()
         }
     }
 
-    int min_deviation, min_shift;
+    int min_shift;
+    long long min_deviation = get_minimum(&deviations, &min_shift);
 
-    min_deviation = get_minimum(&deviations, &min_shift);
-
-    printf("%d %d\n", min_deviation, min_shift);
+    printf("%I64d %d\n", min_deviation, min_shift);
 
     return 0;
 }
