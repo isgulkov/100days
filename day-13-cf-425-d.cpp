@@ -165,26 +165,82 @@ public:
 
 int common_nodes(lca_tree& tree, int s, int t, int f)
 {
-    int result = 0;
+    int sf_lca = tree.get_lca(s, f);
+    int tf_lca = tree.get_lca(t, f);
 
-    bool is1 = tree.get_lca(f, s) == f;
-    bool is2 = tree.get_lca(f, t) == f;
+    if((sf_lca == f) != (tf_lca == f)) {
+        /**
+         * One of (s, t) is in f's subtree and the other is outside of it. The two paths to f will only intersect in f
+         *
+         *           t?
+         *        ......
+         *       /     \
+         *      f     ...
+         *     / \     t?
+         *   ......
+         *     s
+         */
 
-    if(is1 != is2) {
         return 1;
     }
 
-    if(is1) {
-        result = std::max(result, tree.get_height(tree.get_lca(s, t)) - tree.get_height(f));
-    }
-    else if(tree.get_lca(f, s) != tree.get_lca(f, t)) {
-        result = std::max(result, tree.get_height(f) - std::max(tree.get_height(tree.get_lca(f, s)), tree.get_height(tree.get_lca(f, t))));
-    }
-    else {
-        result = std::max(result, tree.get_height(f) + tree.get_height(tree.get_lca(s, t)) - 2 * tree.get_height(tree.get_lca(f, t)));
-    }
+    if(sf_lca == f /* && tf_lca == f */) {
+        /**
+         * Both s and t are in the f's subtree. Common nodes will make up the path from lca(s, t) to f
+         *
+         *             f
+         * common ->  / \
+         *          ......
+         *          /   <- common
+         *      lca(s, t)
+         *        /  \  <- separate
+         *       ......
+         *       s   t
+         */
 
-    return result + 1;
+        return 1 + std::max(0, tree.get_height(tree.get_lca(s, t)) - tree.get_height(f));
+    }
+    else if(sf_lca != tf_lca) {
+        /**
+         * Both s and t are outside f's subtree, but paths from them to f go through two different LCA's, which means
+         * that common part of the two paths will only start at the higher of the two
+         *
+         *        lower lca
+         *          /    \ <- separate
+         *        ...    ...
+         *    s or t   higher lca
+         *              ........
+         * separate ->  /      \ <- common
+         *           s or t   ...
+         *                     f
+         */
+
+        return 1 + std::max(
+                0,
+                tree.get_height(f) - std::max(tree.get_height(sf_lca), tree.get_height(tf_lca))
+        );
+    }
+    else /* if(sf_lca == tf_lca) */ {
+        /**
+         * Both s and t are outside f's subtree and paths from them to f go through one common lca, at which the common
+         * part of the two paths starts. Both lca(s, f) and lca(t, f) are equal to lca(s, t, f), so tf_lca is used in
+         * the calculation
+         *
+         *             lca(s, t, f)
+         *              ........
+         *    common -> /      \ <- common
+         *          lca(s, t)  ...
+         * separate -> /  \       f
+         *           ......
+         *           s   t
+         */
+
+        return 1 + std::max(
+                0,
+                tree.get_height(f) - tree.get_height(tf_lca)
+                + tree.get_height(tree.get_lca(s, t)) - tree.get_height(tf_lca)
+        );
+    }
 }
 
 int main()
