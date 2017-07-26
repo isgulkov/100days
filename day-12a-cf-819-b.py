@@ -5,9 +5,9 @@ ps = map(int, raw_input().split(' '))
 
 deviations = [0 for i in xrange(n)]
 
-for i in xrange(n):
-    for j in xrange(n):
-        deviations[i] += abs(ps[(j - i) % n] - (j + 1))
+for shift in xrange(n):
+    for i_p in xrange(n):
+        deviations[shift] += abs(ps[(i_p - shift) % n] - (i_p + 1))
 
 min_deviation, min_shift = deviations[0], 0
 
