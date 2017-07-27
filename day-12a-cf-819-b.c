@@ -59,7 +59,7 @@ void subtract_increasing(struct offline_segment* segment, int l, int r, int firs
 }
 
 /**
- * Get minimum values in the segment as well as its index
+ * Get minimum value in the segment as well as its index
  *
  * Time complexity: O(n)
  * Space complexity: O(n) (can be redone in O(1) even without destroying the data structure)
