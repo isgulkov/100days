@@ -30,6 +30,20 @@ void build_segment(struct offline_segment* segment, int length)
     }
 }
 
+void add_progression(struct offline_segment* segment, int l, int r, int first, int diff)
+{
+    if(l < segment->length) {
+        segment->values[l] += first;
+        segment->deltas[l] += diff;
+    }
+
+    if(r < segment->length) {
+        segment->values[r] -= first;
+        segment->values[r] -= diff * (r - l);
+        segment->deltas[r] -= diff;
+    }
+}
+
 /**
  * Add values of arithmetic progression starting with `first` with difference -1 from elements with indices [l; r)
  *
@@ -37,33 +51,17 @@ void build_segment(struct offline_segment* segment, int length)
  */
 void add_decreasing(struct offline_segment* segment, int l, int r, int first)
 {
-    if(l < segment->length) {
-        segment->values[l] += first;
-        segment->deltas[l] += -1;
-    }
-
-    if(r < segment->length) {
-        segment->values[r] -= -(r - l) + first;
-        segment->deltas[r] -= -1;
-    }
+    add_progression(segment, l, r, first, -1);
 }
 
 /**
- * Subtract values of arithmetic progression starting with `first` with difference 1 from elements with indices [l; r)
+ * Subtract values of arithmetic progression starting with `first` with difference -1 from elements with indices [l; r)
  *
  * Time complexity: O(1)
  */
-void subtract_increasing(struct offline_segment* segment, int l, int r, int first)
+void subtract_decreasing(struct offline_segment* segment, int l, int r, int first)
 {
-    if(l < segment->length) {
-        segment->values[l] += -first;
-        segment->deltas[l] += 1;
-    }
-
-    if(r < segment->length) {
-        segment->values[r] -= r - l - first;
-        segment->deltas[r] -= 1;
-    }
+    add_progression(segment, l, r, -first, 1);
 }
 
 /**
@@ -140,16 +138,16 @@ int main()
         if(perm[i] >= i + 1) {
             add_decreasing(&deviations, 0, perm[i] - i, perm[i] - (i + 1));
 
-            subtract_increasing(&deviations, perm[i] - i, n - i, -1);
+            subtract_decreasing(&deviations, perm[i] - i, n - i, -1);
 
             add_decreasing(&deviations, n - i, n, perm[i] - 1);
         }
         else {
-            subtract_increasing(&deviations, 0, n - i, perm[i] - (i + 1));
+            subtract_decreasing(&deviations, 0, n - i, perm[i] - (i + 1));
 
             add_decreasing(&deviations, n - i, n - i + perm[i], perm[i] - 1);
 
-            subtract_increasing(&deviations, n - i + perm[i], n, -1);
+            subtract_decreasing(&deviations, n - i + perm[i], n, -1);
         }
     }
 
