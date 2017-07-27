@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <iomanip>
 
 struct person
 {
@@ -18,6 +19,11 @@ struct person
     }
 };
 
+bool edges_reachable(std::vector<person>& people, int ray_speed, long double time)
+{
+    return false;
+}
+
 int main()
 {
     int num_people, ray_speed;
@@ -34,9 +40,22 @@ int main()
         people.push_back(person(x, v, t));
     }
 
-    for(person& person1 : people) {
-        std::cout << person1.position << " " << person1.speed << " " << person1.direction << std::endl;
+    long double left = 0.0;
+    long double right = 1000000.0;
+    long double mid = 14.88;
+
+    while(right - left > 0.0000001) {
+        mid = left + (right - left) / 2.0;
+
+        if(edges_reachable(people, ray_speed, mid)) {
+            right = mid;
+        }
+        else {
+            left = mid;
+        }
     }
+
+    std::cout << std::fixed << mid << std::endl;
 
     return 0;
 }
