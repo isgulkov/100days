@@ -2,6 +2,14 @@
 #include <stdlib.h>
 #include <limits.h>
 
+/**
+ * Represents a `long long` array of size `length` with following operations defined:
+ * * add arithmetic progression to a range of elements in constant time;
+ * * get minimum value in linear time
+ *
+ * Values of elements, as well as the array minimum, can only be obtained in O(n) time and don't get updated with each
+ * modification request, hence the name "offline"
+ */
 struct offline_segment
 {
     int length;
