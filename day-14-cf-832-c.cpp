@@ -2,27 +2,39 @@
 #include <vector>
 #include <iomanip>
 
-struct person
+class edge_reachability_checker
 {
-    int position;
-    int speed;
-    int direction;
-
-    person(int position, int speed, int direction) : position(position), speed(speed)
+    struct person
     {
-        if(direction == 1) {
-            this->direction = -1;
-        }
-        else {
-            this->direction = 1;
-        }
+        int position;
+        int speed;
+
+        person(int position, int speed) : position(position), speed(speed) { }
+    };
+
+    int ray_speed;
+
+    std::vector<person> people_facing_left;
+    std::vector<person> people_facing_right;
+
+public:
+    edge_reachability_checker(int ray_speed) : ray_speed(ray_speed) { }
+
+    void add_person_facing_left(int position, int speed)
+    {
+        people_facing_left.push_back(person(position, speed));
+    }
+
+    void add_person_facing_right(int position, int speed)
+    {
+        people_facing_right.push_back(person(position, speed));
+    }
+
+    bool edges_reachable(long double time)
+    {
+        return false;
     }
 };
-
-bool edges_reachable(std::vector<person>& people, int ray_speed, long double time)
-{
-    return false;
-}
 
 int main()
 {
@@ -30,14 +42,19 @@ int main()
 
     std::cin >> num_people >> ray_speed;
 
-    std::vector<person> people;
+    edge_reachability_checker ch(ray_speed);
 
     for(int i = 0; i < num_people; i++) {
-        int x, v, t;
+        int position, speed, direction;
 
-        std::cin >> x >> v >> t;
+        std::cin >> position >> speed >> direction;
 
-        people.push_back(person(x, v, t));
+        if(direction == 1) {
+            ch.add_person_facing_left(position, speed);
+        }
+        else {
+            ch.add_person_facing_right(position, speed);
+        }
     }
 
     long double left = 0.0;
@@ -47,7 +64,7 @@ int main()
     while(right - left > 0.0000001) {
         mid = left + (right - left) / 2.0;
 
-        if(edges_reachable(people, ray_speed, mid)) {
+        if(ch.edges_reachable(mid)) {
             right = mid;
         }
         else {
