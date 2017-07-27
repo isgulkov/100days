@@ -135,6 +135,15 @@ int main()
     build_segment(&deviations, n);
 
     for(int i = 0; i < n; i++) {
+        /**
+         * Add to deviation of each shift the share of this permutation element:
+         *
+         * abs(perm[i] - ((i + shift) % n + 1))
+         *
+         * with abs and modulo opened up, so that these can be added to ranges of deviations at once (as arithmetic
+         * progressions), which can be performed in O(1) time
+         */
+
         if(perm[i] >= i + 1) {
             add_decreasing(&deviations, 0, perm[i] - i, perm[i] - (i + 1));
 
