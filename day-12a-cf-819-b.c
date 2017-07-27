@@ -111,6 +111,9 @@ long long get_minimum(struct offline_segment* segment, int* min_index_ptr)
         }
     }
 
+    free(deltas_inpterp);
+    free(restored_values);
+
     if(min_index_ptr != NULL) {
         *min_index_ptr = min_index;
     }
