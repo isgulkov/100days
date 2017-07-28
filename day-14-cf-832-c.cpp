@@ -93,7 +93,30 @@ public:
             }
         });
 
-        // Scan for intersections
+        int reach_left = 0, reach_right = 0;
+
+        for(boundary& b : boundaries) {
+            switch(b.type) {
+                case START_LEFT:
+                    reach_left += 1;
+                    break;
+                case START_RIGHT:
+                    reach_right += 1;
+                    break;
+                case END_LEFT:
+                    reach_left -= 1;
+                    break;
+                case END_RIGHT:
+                    reach_right -= 1;
+                    break;
+            }
+
+            if(reach_left && reach_right) {
+                return true;
+            }
+        }
+
+        return false;
     }
 };
 
@@ -122,7 +145,7 @@ int main()
     long double right = 1000 * 1000.0;
     long double mid = 14.88;
 
-    while(right - left > 0.0000001) {
+    while(right - left > 0.0001 * 0.0001) {
         mid = left + (right - left) / 2.0;
 
         if(ch.edges_reachable(mid)) {
