@@ -48,7 +48,25 @@ private:
             return std::make_pair(0, 1000 * 1000);
         }
         else {
-            return std::make_pair(p.position, (int)(ray_speed * time));
+            /**
+             * Consider x a bomb position. Then time when ray meets the person:
+             *
+             * t_meet = (x - p.position) / (ray_speed - p.speed)
+             *
+             * Position where ray meets the person:
+             *
+             * x_meet = x - ray_speed * t_meet
+             *
+             * Position of the person after time `time` passed:
+             *
+             * x_final = x_meet - (ray_speed + p.speed) (time - t_meet)
+             *
+             * Solving x_final <= 0 for x yields right boundary for bomb position
+             */
+            long double right_boundary = p.speed * p.position / (long double)ray_speed
+                                         + ray_speed * time - p.speed * p.speed * time / ray_speed;
+
+            return std::make_pair(p.position, (int)right_boundary);
         }
     };
 
@@ -57,7 +75,26 @@ private:
             return std::make_pair(0, 1000 * 1000);
         }
         else {
-            return std::make_pair((int)std::ceil(1000 * 1000 - ray_speed * time), p.position);
+            /**
+             * Consider x a bomb position. Then time when ray meets the person:
+             *
+             * t_meet = (p.position - x) / (ray_speed - p.speed)
+             *
+             * Position where ray meets the person:
+             *
+             * x_meet = x + ray_speed * t_meet
+             *
+             * Position of the person after time `time` passed:
+             *
+             * x_final = x_meet + (ray_speed + p_speed) (time - t_meet)
+             *
+             * Solving x_final >= 10^6 for x yields right boundary for bomb position
+             */
+            long double left_boundary = 1000 * 1000 * (ray_speed - p.speed) / (long double)ray_speed
+                                        + p.position * p.speed / (long double)ray_speed
+                                        - ray_speed * time + p.speed * p.speed * time / ray_speed;
+
+            return std::make_pair((int)std::ceil(left_boundary), p.position);
         }
     };
 
