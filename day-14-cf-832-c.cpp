@@ -34,31 +34,29 @@ public:
 
 private:
     bool left_edge_reachable(person& p, long double time, int bomb_position) {
-        if(bomb_position < p.position) {
-            return p.position - time * p.speed <= 0;
-        }
-        else {
-            long double t_regular = (bomb_position - p.position) / (long double)(ray_speed - p.speed);
-            long double x_regular = bomb_position - ray_speed * t_regular;
+        long double t_regular = (bomb_position - p.position) / (long double)(ray_speed - p.speed);
+        long double d_regular = p.speed * t_regular;
 
-            long double t_accelerated = std::max(time - t_regular, 0.0L);
-
-            return x_regular - (p.speed + ray_speed) * t_accelerated <= 0;
+        if(d_regular < 0 || d_regular > p.position) {
+            return p.position / (long double)p.speed <= time;
         }
+
+        long double t_accelerated = t_regular + (p.position - d_regular) / (p.speed + ray_speed);
+
+        return t_accelerated <= time;
     };
 
     bool right_edge_reachable(person& p, long double time, int bomb_position) {
-        if(bomb_position > p.position) {
-            return p.position + time * p.speed >= 1000 * 1000;
-        }
-        else {
-            long double t_regular = (p.position - bomb_position) / (ray_speed - p.speed);
-            long double x_regular = bomb_position + ray_speed * t_regular;
+        long double t_regular = (p.position - bomb_position) / (long double)(ray_speed - p.speed);
+        long double d_regular = p.speed * t_regular;
 
-            long double t_accelerated = std::max(time - t_regular, 0.0L);
-
-            return x_regular + (p.speed + ray_speed) * t_accelerated >= 1000 * 1000;
+        if(d_regular < 0 || d_regular > 1000 * 1000 - p.position) {
+            return (1000 * 1000 - p.position) / (long double)p.speed <= time;
         }
+
+        long double t_total = t_regular + (1000 * 1000 - p.position - d_regular) / (p.speed + ray_speed);
+
+        return t_total <= time;
     };
 
 public:
