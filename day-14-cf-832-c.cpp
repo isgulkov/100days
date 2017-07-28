@@ -1,6 +1,8 @@
 #include <iostream>
-#include <vector>
 #include <iomanip>
+#include <vector>
+#include <algorithm>
+#include <cmath>
 
 class edge_reachability_checker
 {
@@ -30,9 +32,68 @@ public:
         people_facing_right.push_back(person(position, speed));
     }
 
+private:
+    enum boundary_type { START_LEFT, START_RIGHT, END_LEFT, END_RIGHT };
+
+    struct boundary
+    {
+        int position;
+        boundary_type type;
+
+        boundary(int position, boundary_type type) : position(position), type(type) { }
+    };
+
+    std::pair<int, int> reachable_bomb_positions_left(person& p, long double time) {
+        if(p.position <= p.speed * time) {
+            return std::make_pair(0, 1000 * 1000);
+        }
+        else {
+            return std::make_pair(p.position, (int)(ray_speed * time));
+        }
+    };
+
+    std::pair<int, int> reachable_bomb_positions_right(person& p, long double time) {
+        if(p.position + p.speed * time >= 1000 * 1000) {
+            return std::make_pair(0, 1000 * 1000);
+        }
+        else {
+            return std::make_pair((int)std::ceil(1000 * 1000 - ray_speed * time), p.position);
+        }
+    };
+
+public:
     bool edges_reachable(long double time)
     {
-        return false;
+        std::vector<boundary> boundaries;
+
+        for(person& p : people_facing_left) {
+            std::pair<int, int> segment = reachable_bomb_positions_left(p, time);
+
+            if(segment.first <= segment.second) {
+                boundaries.push_back(boundary(segment.first, START_LEFT));
+                boundaries.push_back(boundary(segment.second, END_LEFT));
+            }
+        }
+
+        for(person& p : people_facing_right) {
+            std::pair<int, int> segment = reachable_bomb_positions_right(p, time);
+
+            if(segment.first <= segment.second) {
+                boundaries.push_back(boundary(segment.first, START_RIGHT));
+                boundaries.push_back(boundary(segment.second, END_RIGHT));
+            }
+        }
+
+        std::sort(boundaries.begin(), boundaries.end(), [](boundary& one, boundary& another) {
+            if(one.position == another.position) {
+                return one.type < another.type;
+            }
+            else {
+                return one.position < another.position;
+            }
+        });
+
+        // Scan for intersections
     }
 };
 
@@ -58,7 +119,7 @@ int main()
     }
 
     long double left = 0.0;
-    long double right = 1000000.0;
+    long double right = 1000 * 1000.0;
     long double mid = 14.88;
 
     while(right - left > 0.0000001) {
