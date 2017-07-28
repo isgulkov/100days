@@ -38,10 +38,12 @@ private:
             return p.position - time * p.speed <= 0;
         }
         else {
-            long double t_meet = (bomb_position - p.position) / (long double)(ray_speed - p.speed);
-            long double x_meet = bomb_position - ray_speed * t_meet;
+            long double t_regular = (bomb_position - p.position) / (long double)(ray_speed - p.speed);
+            long double x_regular = bomb_position - ray_speed * t_regular;
 
-            return x_meet - (p.speed + ray_speed) * (time - t_meet) <= 0;
+            long double t_accelerated = std::max(time - t_regular, 0.0L);
+
+            return x_regular - (p.speed + ray_speed) * t_accelerated <= 0;
         }
     };
 
@@ -50,10 +52,12 @@ private:
             return p.position + time * p.speed >= 1000 * 1000;
         }
         else {
-            long double t_meet = (p.position - bomb_position) / (long double)(ray_speed - p.speed);
-            long double x_meet = bomb_position + ray_speed * t_meet;
+            long double t_regular = (p.position - bomb_position) / (ray_speed - p.speed);
+            long double x_regular = bomb_position + ray_speed * t_regular;
 
-            return x_meet + (p.speed + ray_speed) * (time - t_meet) >= 1000 * 1000;
+            long double t_accelerated = std::max(time - t_regular, 0.0L);
+
+            return x_regular + (p.speed + ray_speed) * t_accelerated >= 1000 * 1000;
         }
     };
 
@@ -121,7 +125,7 @@ int main()
         }
     }
 
-    std::cout << std::fixed << mid << std::endl;
+    std::cout << std::fixed << std::setprecision(20) << mid << std::endl;
 
     return 0;
 }
