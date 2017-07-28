@@ -33,123 +33,51 @@ public:
     }
 
 private:
-    enum boundary_type { START_LEFT, START_RIGHT, END_LEFT, END_RIGHT };
-
-    struct boundary
-    {
-        int position;
-        boundary_type type;
-
-        boundary(int position, boundary_type type) : position(position), type(type) { }
-    };
-
-    std::pair<int, int> reachable_bomb_positions_left(person& p, long double time) {
-        if(p.position <= p.speed * time) {
-            return std::make_pair(0, 1000 * 1000);
+    bool left_edge_reachable(person& p, long double time, int bomb_position) {
+        if(bomb_position < p.position) {
+            return p.position - time * p.speed <= 0;
         }
         else {
-            /**
-             * Consider x a bomb position. Then time when ray meets the person:
-             *
-             * t_meet = (x - p.position) / (ray_speed - p.speed)
-             *
-             * Position where ray meets the person:
-             *
-             * x_meet = x - ray_speed * t_meet
-             *
-             * Position of the person after time `time` passed:
-             *
-             * x_final = x_meet - (ray_speed + p.speed) (time - t_meet)
-             *
-             * Solving x_final <= 0 for x yields right boundary for bomb position
-             */
-            long double right_boundary = p.speed * p.position / (long double)ray_speed
-                                         + ray_speed * time - p.speed * p.speed * time / ray_speed;
+            long double t_meet = (bomb_position - p.position) / (long double)(ray_speed - p.speed);
+            long double x_meet = bomb_position - ray_speed * t_meet;
 
-            return std::make_pair(p.position, (int)right_boundary);
+            return x_meet - (p.speed + ray_speed) * (time - t_meet) <= 0;
         }
     };
 
-    std::pair<int, int> reachable_bomb_positions_right(person& p, long double time) {
-        if(p.position + p.speed * time >= 1000 * 1000) {
-            return std::make_pair(0, 1000 * 1000);
+    bool right_edge_reachable(person& p, long double time, int bomb_position) {
+        if(bomb_position > p.position) {
+            return p.position + time * p.speed >= 1000 * 1000;
         }
         else {
-            /**
-             * Consider x a bomb position. Then time when ray meets the person:
-             *
-             * t_meet = (p.position - x) / (ray_speed - p.speed)
-             *
-             * Position where ray meets the person:
-             *
-             * x_meet = x + ray_speed * t_meet
-             *
-             * Position of the person after time `time` passed:
-             *
-             * x_final = x_meet + (ray_speed + p_speed) (time - t_meet)
-             *
-             * Solving x_final >= 10^6 for x yields right boundary for bomb position
-             */
-            long double left_boundary = 1000 * 1000 * (ray_speed - p.speed) / (long double)ray_speed
-                                        + p.position * p.speed / (long double)ray_speed
-                                        - ray_speed * time + p.speed * p.speed * time / ray_speed;
+            long double t_meet = (p.position - bomb_position) / (long double)(ray_speed - p.speed);
+            long double x_meet = bomb_position + ray_speed * t_meet;
 
-            return std::make_pair((int)std::ceil(left_boundary), p.position);
+            return x_meet + (p.speed + ray_speed) * (time - t_meet) >= 1000 * 1000;
         }
     };
 
 public:
     bool edges_reachable(long double time)
     {
-        std::vector<boundary> boundaries;
+        for(int p_bomb = 0; p_bomb <= 1000 * 1000; p_bomb++) {
+            bool left_reachable = false;
 
-        for(person& p : people_facing_left) {
-            std::pair<int, int> segment = reachable_bomb_positions_left(p, time);
-
-            if(segment.first <= segment.second) {
-                boundaries.push_back(boundary(segment.first, START_LEFT));
-                boundaries.push_back(boundary(segment.second, END_LEFT));
-            }
-        }
-
-        for(person& p : people_facing_right) {
-            std::pair<int, int> segment = reachable_bomb_positions_right(p, time);
-
-            if(segment.first <= segment.second) {
-                boundaries.push_back(boundary(segment.first, START_RIGHT));
-                boundaries.push_back(boundary(segment.second, END_RIGHT));
-            }
-        }
-
-        std::sort(boundaries.begin(), boundaries.end(), [](boundary& one, boundary& another) {
-            if(one.position == another.position) {
-                return one.type < another.type;
-            }
-            else {
-                return one.position < another.position;
-            }
-        });
-
-        int reach_left = 0, reach_right = 0;
-
-        for(boundary& b : boundaries) {
-            switch(b.type) {
-                case START_LEFT:
-                    reach_left += 1;
+            for(person& p : people_facing_left) {
+                if(left_edge_reachable(p, time, p_bomb)) {
+                    left_reachable = true;
                     break;
-                case START_RIGHT:
-                    reach_right += 1;
-                    break;
-                case END_LEFT:
-                    reach_left -= 1;
-                    break;
-                case END_RIGHT:
-                    reach_right -= 1;
-                    break;
+                }
             }
 
-            if(reach_left && reach_right) {
-                return true;
+            if(!left_reachable) {
+                continue;
+            }
+
+            for(person& p : people_facing_right) {
+                if(right_edge_reachable(p, time, p_bomb)) {
+                    return true;
+                }
             }
         }
 
