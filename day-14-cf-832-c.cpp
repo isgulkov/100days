@@ -31,6 +31,11 @@ public:
 
     void add_person_facing_right(int position, int speed)
     {
+        /**
+         * The task to determine if a some person can reach an edge with the bomb at certain position in certain time
+         * for people facing right it the mirrored version of the same task for people facing left; so we can store
+         * right-facing people positions mirrored and use the same procedure on them
+         */
         people_facing_right.push_back(person(1000 * 1000 - position, speed));
     }
 
@@ -60,11 +65,15 @@ private:
         return d_total >= p.position;
     };
 
-    void populate_reachable(std::vector<person>& people, long double time, std::vector<bool>& reachable)
+    void populate_suitable_positions(std::vector<person>& people, long double time,
+                                     std::vector<bool>& position_suitable)
     {
+        /**
+         * If a person reaches the edge without the assistance of the bomb, mark all bomb positions as "suitable"
+         */
         for(person& p : people) {
             if(p.position <= time * p.speed) {
-                std::fill(reachable.begin(), reachable.end(), true);
+                std::fill(position_suitable.begin(), position_suitable.end(), true);
                 return;
             }
         }
@@ -72,14 +81,20 @@ private:
         auto it_person = people.begin();
 
         for(int p_bomb = 0; p_bomb <= 1000 * 1000; p_bomb++) {
-            reachable[p_bomb] = false;
+            position_suitable[p_bomb] = false;
 
             while(it_person != people.end() && it_person->position <= p_bomb) {
                 if(edge_reachable(*it_person, time, p_bomb)) {
-                    reachable[p_bomb] = true;
+                    position_suitable[p_bomb] = true;
                     break;
                 }
                 else {
+                    /**
+                     * If there are two people p and q, p.position < q.position, and q doesn't reach the edge with
+                     * p_bomb >= q.position, p won't reach either; so we have to only iterate over the people array once
+                     * over the course of iterating over bomb positions. This makes this loop take O(N) time, where N is
+                     * the number of bomb positions (one million)
+                     */
                     it_person++;
                 }
             }
@@ -101,16 +116,23 @@ public:
             people_sorted = true;
         }
 
+        /**
+         * Calculate with which bomb positions left and right edges are reachable in `time` by some person
+         */
+
         std::vector<bool> left_edge_reachable(1000 * 1000 + 1);
 
-        populate_reachable(people_facing_left, time, left_edge_reachable);
+        populate_suitable_positions(people_facing_left, time, left_edge_reachable);
 
         std::vector<bool> right_edge_reachable(1000 * 1000 + 1);
 
-        populate_reachable(people_facing_right, time, right_edge_reachable);
+        populate_suitable_positions(people_facing_right, time, right_edge_reachable);
 
         for(int p_bomb = 0; p_bomb <= 1000 * 1000; p_bomb++) {
             if(left_edge_reachable[p_bomb] && right_edge_reachable[1000 * 1000 - p_bomb]) {
+                /**
+                 * Found a position of the bomb where both edges are reachable in `time`
+                 */
                 return true;
             }
         }
