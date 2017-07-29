@@ -32,8 +32,8 @@ public:
     void add_person_facing_right(int position, int speed)
     {
         /**
-         * The task to determine if a some person can reach an edge with the bomb at certain position in certain time
-         * for people facing right it the mirrored version of the same task for people facing left; so we can store
+         * The task to determine if some person can reach an edge with the bomb at certain position in certain time for
+         * people facing right it the mirrored version of the same task for people facing left; so we can store
          * right-facing people positions mirrored and use the same procedure on them
          */
         people_facing_right.push_back(person(1000 * 1000 - position, speed));
