@@ -7,11 +7,20 @@ class max_koyomity_calculator
     std::string initial_string;
 
     std::vector<std::vector<int>> max_koyomity;
+
+    void precompute_max_koyomities(std::vector<int>& max_koyomities, char color)
+    {
+        for(int i = 0; i < max_koyomities.size(); i++) {
+            max_koyomities[i] = 0;
+        }
+    }
 public:
     max_koyomity_calculator(std::string initial_string) : initial_string(initial_string)
     {
         for(char color = 'a'; color <= 'z'; color++) {
-            max_koyomity.push_back(std::vector<int>(initial_string.size() + 1, 0));
+            max_koyomity.push_back(std::vector<int>(initial_string.size() + 1));
+
+            precompute_max_koyomities(max_koyomity.back(), color);
         }
     }
 
