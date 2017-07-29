@@ -1,5 +1,25 @@
 #include <iostream>
 #include <string>
+#include <vector>
+
+class max_koyomity_calculator
+{
+    std::string initial_string;
+
+    std::vector<std::vector<int>> max_koyomity;
+public:
+    max_koyomity_calculator(std::string initial_string) : initial_string(initial_string)
+    {
+        for(char color = 'a'; color <= 'z'; color++) {
+            max_koyomity.push_back(std::vector<int>(initial_string.size() + 1, 0));
+        }
+    }
+
+    int get_max_koyomity(int num_changes, char color)
+    {
+        return max_koyomity[color - 'a'][num_changes];
+    }
+};
 
 int main()
 {
@@ -9,12 +29,14 @@ int main()
 
     std::cin >> string_length >> initial_string >> num_requests;
 
+    max_koyomity_calculator mkc(initial_string);
+
     for(int i = 0; i < num_requests; i++) {
         int num_changes;
         char fav_color;
 
         std::cin >> num_changes >> fav_color;
 
-        std::cout << num_changes << " " << fav_color << std::endl;
+        std::cout << mkc.get_max_koyomity(num_changes, fav_color) << std::endl;
     }
 }
