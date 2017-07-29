@@ -10,10 +10,17 @@ def sum_digits(n):
 
 n, s = map(int, raw_input().split(' '))
 
-result = 0
+# As all suitable numbers form interval of form [k; +inf), find the smallest
+# suitable number using binary serach
 
-for i in xrange(1, n + 1):
-    if i - sum_digits(i) >= s:
-        result += 1
+left, right = 0, n + 1
 
-print result
+while left != right:
+    mid = (left + right) / 2
+
+    if mid - sum_digits(mid) >= s:
+        right = mid
+    else:
+        left = mid + 1
+
+print n + 1 - left
