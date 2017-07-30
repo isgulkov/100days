@@ -36,6 +36,23 @@ class max_koyomity_calculator
                 }
             }
         }
+
+        /**
+         * Max sure the max koyomity for each number of changes is not less than the koyomity for any of the smaller
+         * numbers of changes, as not all provided changes need to be performed and a smaller but more advantageous
+         * number of changes can be used instead
+         */
+
+        int max_koyomity = 0;
+
+        for(int i = 0; i < max_koyomities.size(); i++) {
+            if(max_koyomities[i] < max_koyomity) {
+                max_koyomities[i] = max_koyomity;
+            }
+            else {
+                max_koyomity = max_koyomities[i];
+            }
+        }
     }
 public:
     max_koyomity_calculator(std::string initial_string) : initial_string(initial_string)
