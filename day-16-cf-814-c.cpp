@@ -13,7 +13,7 @@ class max_koyomity_calculator
     {
         std::fill(max_koyomities.begin(), max_koyomities.end(), 0);
 
-        for(int r = 0; r < max_koyomities.size(); r++) {
+        for(int r = 0; r < initial_string.size(); r++) {
             int num_changes = 0;
 
             for(int l = r; l >= 0; l--) {
