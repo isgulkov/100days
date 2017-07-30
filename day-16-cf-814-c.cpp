@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 class max_koyomity_calculator
 {
@@ -10,8 +11,30 @@ class max_koyomity_calculator
 
     void precompute_max_koyomities(std::vector<int>& max_koyomities, char color)
     {
-        for(int i = 0; i < max_koyomities.size(); i++) {
-            max_koyomities[i] = 0;
+        std::fill(max_koyomities.begin(), max_koyomities.end(), 0);
+
+        for(int r = 0; r < max_koyomities.size(); r++) {
+            int num_changes = 0;
+
+            for(int l = r; l >= 0; l--) {
+                /**
+                 * Check how many color changes are needed for this segment to become a consecutive segment of `color`
+                 */
+
+                if(initial_string[l] != color) {
+                    num_changes += 1;
+                }
+
+                int score = r - l + 1;
+
+                /**
+                 * Update max koyomity for this number of color changes with current segment's length
+                 */
+
+                if(score > max_koyomities[num_changes]) {
+                    max_koyomities[num_changes] = score;
+                }
+            }
         }
     }
 public:
