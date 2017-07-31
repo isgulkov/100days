@@ -60,6 +60,13 @@ int main()
     int result = 0;
 
     for(int i = 1; i < num_computers; i++) {
+        /**
+         * This pair of adjacent positions contributes its difference to the max of every subset that has at least one
+         * element in each of two intervals: [0; i) and [i; num_computers).
+         *
+         * The number of such subsets is (2^i - 1)(2^(n - i) - 1)
+         */
+
         int contribution = positions[i] - positions[i - 1];
 
         int num_subsets = c.get_product(
