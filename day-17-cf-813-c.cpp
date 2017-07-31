@@ -83,7 +83,39 @@ public:
 
         compute_bob_depth(0);
 
-        return 1337;
+        /**
+         * Find the deepest subtree bob can get into before before Alice gets to the node next to its respective root.
+         * Bob's strategy is then to get into that subtree and follow the deepest route
+         */
+
+        int best_subtree = bob_node, subtree = 0;
+
+        while(relative_bob_depth[subtree] != -1) {
+            if(node_depth[subtree] - relative_bob_depth[subtree] >= 1) {
+                /**
+                 * If bob can get into this subtree before alice gets him, choose this subtree as best subtree and exit — no
+                 * need to consider deeper subtrees as they will only be shallower
+                 */
+
+                best_subtree = subtree;
+                break;
+            }
+
+            /**
+             * Go into the the subtree that has bob in it. If there's no such subtree (we are at the bob node), choose
+             * any and the loop will end
+             */
+
+            for(int v : adj_lists[subtree]) {
+                subtree = v;
+
+                if(relative_bob_depth[v] != -1) {
+                    break;
+                }
+            }
+        }
+
+        return 2 * (node_depth[best_subtree] + max_subtree_depth[best_subtree]);
     }
 };
 
