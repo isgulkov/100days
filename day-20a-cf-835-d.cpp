@@ -1,6 +1,20 @@
 #include <iostream>
 #include <vector>
 
+bool is_palindrome(std::string& s, size_t start, size_t length)
+{
+    size_t l = start;
+    size_t r = start + length - 1;
+
+    while(l < r) {
+        if(s[l++] != s[r--]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 int main()
 {
     std::string s;
@@ -42,17 +56,24 @@ int main()
                  * If two halves of the substring aren't equal, the substring isn't a k-palindrome
                  */
 
-                max_palindrome_degree[l][r] = 0;
+
+                if(is_palindrome(s, l, substr_length)) {
+                    max_palindrome_degree[l][r] = 1;
+                }
+                else {
+                    max_palindrome_degree[l][r] = 0;
+                }
             }
             else {
                 max_palindrome_degree[l][r] = 1 + std::min(
                         max_palindrome_degree[l][left_half_end],
                         max_palindrome_degree[right_half_start][r]
                 );
+            }
 
-                for(int i = 0; i < max_palindrome_degree[l][r]; i++) {
-                    num_palidromes[i] += 1;
-                }
+
+            for(int i = 0; i < max_palindrome_degree[l][r]; i++) {
+                num_palidromes[i] += 1;
             }
         }
     }
