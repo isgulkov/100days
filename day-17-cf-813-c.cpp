@@ -7,8 +7,21 @@ class dogonyalkee_tree
     int num_nodes, bob_node;
 
     std::vector<std::vector<int>> adj_lists;
+
+    /**
+     * For every subtree, maximum depth among its subtrees
+     */
     std::vector<int> max_subtree_depth;
+
+    /**
+     * For every node, its depth relative to the root
+     */
     std::vector<int> node_depth;
+
+    /**
+     * For every subtree, the depth at which `bob_node` lies in it, or -1 if `bob_node` isn't there
+     */
+    std::vector<int> relative_bob_depth;
 
     void hang_by(int u)
     {
@@ -34,9 +47,27 @@ class dogonyalkee_tree
         }
     }
 
+    void compute_bob_depth(int u)
+    {
+        if(u == bob_node) {
+            relative_bob_depth[u] = 0;
+        }
+        else {
+            for(int v : adj_lists[u]) {
+                compute_bob_depth(v);
+
+                if(relative_bob_depth[v] != -1) {
+                    relative_bob_depth[u] = relative_bob_depth[v] + 1;
+                }
+            }
+        }
+    }
+
 public:
     dogonyalkee_tree(int num_nodes, int bob_node) : num_nodes(num_nodes), bob_node(bob_node),
-                                                    adj_lists((size_t)num_nodes), max_subtree_depth((size_t)num_nodes) { }
+                                                    adj_lists((size_t)num_nodes), max_subtree_depth((size_t)num_nodes),
+                                                    node_depth((size_t)num_nodes),
+                                                    relative_bob_depth((size_t)num_nodes, -1) { }
 
     void add_edge(int u, int v)
     {
@@ -49,6 +80,8 @@ public:
         hang_by(0);
 
         precompute_depth(0, 0);
+
+        compute_bob_depth(0);
 
         return 1337;
     }
