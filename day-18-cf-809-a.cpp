@@ -62,12 +62,12 @@ int main()
     for(int i = 1; i < num_computers; i++) {
         int contribution = positions[i] - positions[i - 1];
 
-        int num_sums = c.get_product(
+        int num_subsets = c.get_product(
                 c.get_decremented(c.get_2_to_the_power(i)),
                 c.get_decremented(c.get_2_to_the_power(num_computers - i))
         );
 
-        result = c.get_sum(result, c.get_product(contribution, num_sums));
+        result = c.get_sum(result, c.get_product(contribution, num_subsets));
     }
 
     std::cout << result << std::endl;
