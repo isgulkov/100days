@@ -1,79 +1,67 @@
 from math import ceil
+from sys import exit
+
+class Cup:
+    def __init__(self, index, volume):
+        self.volume = volume
+        self.index = index
+
+        self.amount = 0
+
+    def _get_min_amount(self):
+        return int(ceil(self.volume / 2.0))
+
+    min_amount = property(_get_min_amount)
+
+    def fill_up_to_minimum(self):
+        self.amount += self.min_amount
+
+    def _get_surplus(self):
+        return self.volume - self.amount
+
+    def add(self, x):
+        self.amount += x
+
+    surplus = property(_get_surplus)
 
 n, total_amount = map(int, raw_input().split(' '))
 
 volumes = map(int, raw_input().split(' '))
 
-volume_to_amount = {}
-volume_to_count = {}
+cups = [Cup(i, volumes[i]) for i in xrange(n)]
 
-for volume in volumes:
-    volume_to_amount[volume] = 0
+# Fill every cup to its minimum amount.
+#
+# This satisfies the conditions because
+#   volume_i < volume_j => amount_i = ceil(volume_i / 2.0) <= ceil(volume_j / 2.0) = amount_j
 
-    if volume in volume_to_count:
-        volume_to_count[volume] += 1
-    else:
-        volume_to_count[volume] = 1
+for cup in cups:
+    total_amount -= cup.min_amount
 
-prev_amount = 0
+    cup.fill_up_to_minimum()
 
-# Assign minimum possible amout to cups of every volume
+if total_amount < 0:
+    print -1
+    exit(0)
 
-for volume in sorted(volume_to_amount.keys()):
-    this_amount = max(
-        prev_amount + 1,
-        int(ceil(volume / 2.0))
-        )
+# Distribute any leftovers over the cups by filling them up in order in order of descending volumes
+#
+# This maintains volume_i < volume_j => amount_i <= amount_j because for every such i, j we add a >= 0 to amout_j
 
-    volume_to_amount[volume] = this_amount
-    total_amount -= this_amount * volume_to_count[volume]
+cups.sort(key=lambda cup: -cup.volume)
 
-    if total_amount < 0:
-        break
-
-    prev_amount = this_amount
-
-# Try to distribute any leftovers over the cups
-
-cup_amounts = [(volume_to_amount[volumes[i]], i, ) for i in xrange(n)]
-
-cup_amounts.sort(key=lambda x: volumes[x[1]])
-
-prev_amount = float("+inf")
-
-for i in reversed(range(n)):
+for cup in cups:
     if total_amount == 0:
         break
 
-    amount, index = cup_amounts[i]
+    addition = min(total_amount, cup.surplus)
 
-    # If this cup's volume is less that that of the previous one, this cup's amount must also be less
-    if i != n - 1:
-        next_cup_index = cup_amounts[i + 1][1]
-
-        if volumes[index] < volumes[next_cup_index]:
-            prev_amount -= 1
-
-    addition = max(0,
-        min(
-            total_amount,
-            volumes[index] - amount,
-            prev_amount
-            )
-        )
-
-    cup_amounts[i] = (amount + addition, index, )
-
+    cup.add(addition)
     total_amount -= addition
 
-    prev_amount = amount + addition
+cups.sort(key=lambda cup: cup.index)
 
-cup_amounts.sort(key=lambda x: x[1])
+for cup in cups:
+    print cup.amount,
 
-if total_amount == 0:
-    for amount, _ in cup_amounts:
-        print amount,
-
-    print
-else:
-    print -1
+print
