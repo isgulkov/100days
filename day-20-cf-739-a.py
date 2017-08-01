@@ -11,10 +11,10 @@ for i in xrange(m):
     if interval_length < min_interval_length:
         min_interval_length = interval_length
 
-# The resulting score will be less than or equal to the length of the minimum interval
+# The resulting score will be less than or equal to the length of the shortest interval
 #
-# Make the score exactly that: print an array of numbers numbers 0, 1, ... , (min_interval_length - 1). Then each of
-# these numbers will appear at least one in the smallest interval as well as all larger ones
+# Make the score exactly that: print an array with repeating pattern of numbers 0, 1, ... , (min_interval_length - 1).
+# Then each of these numbers will appear at least once in the shortest interval as well as all longer ones
 
 print min_interval_length
 
