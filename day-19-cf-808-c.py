@@ -64,11 +64,13 @@ for i in reversed(range(n)):
 
     cup_amounts[i] = (amount + addition, index, )
 
+    total_amount -= addition
+
     prev_amount = amount + addition
 
 cup_amounts.sort(key=lambda x: x[1])
 
-if total_amount >= 0:
+if total_amount == 0:
     for amount, _ in cup_amounts:
         print amount,
 
