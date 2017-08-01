@@ -1,20 +1,6 @@
 #include <iostream>
 #include <vector>
 
-bool is_palindrome(std::string& s, size_t start, size_t length)
-{
-    size_t l = start;
-    size_t r = start + length - 1;
-
-    while(l < r) {
-        if(s[l++] != s[r--]) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 int main()
 {
     std::string s;
@@ -26,56 +12,66 @@ int main()
     std::vector<std::vector<int>> max_palindrome_degree(s.length(), std::vector<int>(s.length()));
 
     /**
-     * Declare substrings of length one 1-palindromes
+     * Update max palindrome degree values for substrings in order of increasing length
      */
-
     for(int i = 0; i < s.length(); i++) {
         max_palindrome_degree[i][i] = 1;
     }
 
     num_palidromes[0] = (int)s.length();
 
-    /**
-     * Update max palindrome degree values for substrings in order of increasing length
-     */
-    for(size_t substr_length = 2; substr_length <= s.length(); substr_length++) {
+    for(int i = 1; i < s.length(); i++) {
+        if(s[i - 1] == s[i]) {
+            max_palindrome_degree[i - 1][i] = 2;
+
+            num_palidromes[1] += 1;
+        }
+        else {
+            max_palindrome_degree[i - 1][i] = 0;
+        }
+    }
+
+    for(size_t substr_length = 3; substr_length <= s.length(); substr_length++) {
         for(size_t l = 0; l <= s.length() - substr_length; l++) {
             size_t r = l + substr_length - 1;
 
             size_t mid = (l + r) / 2;
 
-            /**
-             * If string length is odd, include middle symbol in neither half
-             */
-            size_t left_half_end = substr_length % 2 == 1 ? mid - 1 : mid;
-
-            size_t right_half_start = mid + 1;
-
-            if(s.compare(l, substr_length / 2, s, right_half_start, substr_length / 2) != 0) {
+            if(s[l] != s[r] || max_palindrome_degree[l + 1][r - 1] == 0) {
                 /**
-                 * If two halves of the substring aren't equal, the substring isn't a k-palindrome
+                 * This substring isn't a 1-palindrome (regular palindrome), and therefore, not any k-palindrome at all
+                 * (as any k-palindrome is also a (k-1)-palindrome).
+                 *
+                 * Second clause: suppose [l; r] is a 1-palindrome, then (l; r) would also be at least a 1-palindrome,
+                 * which it isn't
                  */
 
-
-                if(is_palindrome(s, l, substr_length)) {
-                    max_palindrome_degree[l][r] = 1;
-                }
-                else {
-                    max_palindrome_degree[l][r] = 0;
-                }
+                max_palindrome_degree[l][r] = 0;
             }
             else {
-                max_palindrome_degree[l][r] = 1 + std::min(
+                /**
+                 * This substring is at least a 1-palindrome
+                 */
+
+                size_t left_half_end = substr_length % 2 ? mid - 1 : mid;
+
+                int max_degree = 1 + std::min(
                         max_palindrome_degree[l][left_half_end],
-                        max_palindrome_degree[right_half_start][r]
+                        max_palindrome_degree[mid + 1][r]
                 );
-            }
 
+                max_palindrome_degree[l][r] = max_degree;
 
-            for(int i = 0; i < max_palindrome_degree[l][r]; i++) {
-                num_palidromes[i] += 1;
+                num_palidromes[max_degree - 1] += 1;
             }
         }
+    }
+
+    /**
+     * Account for every k-palindrome also as a (k-1)-palindrome
+     */
+    for(size_t i = s.length() - 1; i > 0; i--) {
+        num_palidromes[i - 1] += num_palidromes[i];
     }
 
     for(int n : num_palidromes) {
