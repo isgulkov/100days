@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 class oriented_graph
 {
@@ -58,7 +59,13 @@ public:
             }
         }
 
-        *every_node_reachable_from_a_cycle = true; // TODO
+        std::vector<bool> reachable((size_t)num_nodes, false);
+
+        for(int v : adj_list) {
+            reachable[v] = true;
+        }
+
+        *every_node_reachable_from_a_cycle = std::all_of(reachable.begin(), reachable.end(), [](bool b) { return b; });
 
         return cycle_lengths;
     }
