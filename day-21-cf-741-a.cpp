@@ -85,25 +85,9 @@ int get_gcd(int a, int b)
     }
 }
 
-long long get_lcm(std::vector<int>& xs)
+int get_lcm(int a, int b)
 {
-    if(xs.size() == 1) {
-        return xs[0];
-    }
-
-    int common_gcd = get_gcd(xs[0], xs[1]);
-
-    for(int x : xs) {
-        common_gcd = get_gcd(common_gcd, x);
-    }
-
-    long long product = 1;
-
-    for(int x : xs) {
-        product *= x;
-    }
-
-    return product / common_gcd;
+    return a * b / get_gcd(a, b);
 }
 
 int main()
@@ -133,7 +117,13 @@ int main()
     }
 
     if(every_node_reachable) {
-        std::cout << get_lcm(cycle_ts) << std::endl;
+        int common_lcm = 1;
+
+        for(int t : cycle_ts) {
+            common_lcm = get_lcm(common_lcm, t);
+        }
+
+        std::cout << common_lcm << std::endl;
     }
     else {
         std::cout << -1 << std::endl;
