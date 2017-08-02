@@ -39,7 +39,7 @@ public:
         adj_list[u] = v;
     }
 
-    std::vector<int> get_cycle_lengths()
+    std::vector<int> get_cycle_lengths(bool* every_node_reachable_from_a_cycle)
     {
         std::vector<int> cycle_lengths;
 
@@ -58,9 +58,46 @@ public:
             }
         }
 
+        *every_node_reachable_from_a_cycle = true; // TODO
+
         return cycle_lengths;
     }
 };
+
+int get_gcd(int a, int b)
+{
+    if(a < b) {
+        std::swap(a, b);
+    }
+
+    if(b == 0) {
+        return a;
+    }
+    else {
+        return get_gcd(b, a % b);
+    }
+}
+
+long long get_lcm(std::vector<int>& xs)
+{
+    if(xs.size() == 1) {
+        return xs[0];
+    }
+
+    int common_gcd = get_gcd(xs[0], xs[1]);
+
+    for(int x : xs) {
+        common_gcd = get_gcd(common_gcd, x);
+    }
+
+    long long product = 1;
+
+    for(int x : xs) {
+        product *= x;
+    }
+
+    return product / common_gcd;
+}
 
 int main()
 {
@@ -78,24 +115,18 @@ int main()
         g.set_edge(u, v - 1);
     }
 
-    int min_t = INT32_MAX;
+    bool every_node_reachable;
 
-    for(int cycle_length : g.get_cycle_lengths()) {
-        if(cycle_length == 1) {
-            continue; // Actually something should be done here
-        }
+    std::vector<int> cycle_ts = g.get_cycle_lengths(&every_node_reachable);
 
-        if(cycle_length % 2 == 0 && cycle_length / 2 < min_t) {
-            min_t = cycle_length / 2;
-        }
-
-        if(cycle_length % 2 == 1 && cycle_length < min_t) {
-            min_t = cycle_length;
+    for(int& t : cycle_ts) {
+        if(t % 2 == 0) {
+            t /= 2;
         }
     }
 
-    if(min_t != INT32_MAX) {
-        std::cout << min_t << std::endl;
+    if(every_node_reachable) {
+        std::cout << get_lcm(cycle_ts) << std::endl;
     }
     else {
         std::cout << -1 << std::endl;
