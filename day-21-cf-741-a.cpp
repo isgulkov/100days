@@ -34,7 +34,7 @@ class oriented_graph
 public:
     oriented_graph(int num_nodes) : num_nodes(num_nodes), adj_list((size_t)num_nodes) { }
 
-    void add_edge(int u, int v)
+    void set_edge(int u, int v)
     {
         adj_list[u] = v;
     }
@@ -75,7 +75,7 @@ int main()
 
         std::cin >> v;
 
-        g.add_edge(u, v - 1);
+        g.set_edge(u, v - 1);
     }
 
     int min_t = INT32_MAX;
