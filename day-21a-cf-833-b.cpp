@@ -1,6 +1,41 @@
 #include <iostream>
 #include <vector>
-#include <set>
+#include <unordered_map>
+
+class max_segtree // stub for segment tree
+{
+    std::vector<int> xs;
+
+public:
+    max_segtree(const std::vector<int>& init) : xs(init.size())
+    {
+        // Replace with copy-constructor
+
+        for(int i = 0; i < init.size(); i++) {
+            xs[i] = init[i];
+        }
+    }
+
+    int get_max(int start, int end)
+    {
+        int result = INT32_MIN;
+
+        for(int i = start; i <= end; i++) {
+            if(xs[i] > result) {
+                result = xs[i];
+            }
+        }
+
+        return result;
+    }
+
+    void increment_range(int start, int end)
+    {
+        for(int i = start; i <= end; i++) {
+            xs[i] += 1;
+        }
+    }
+};
 
 int main()
 {
@@ -15,39 +50,38 @@ int main()
     }
 
     /**
-     * Store maximum achievable score for subtasks with each number of cakes and k and k - 1 boxes
+     * Each prev_occurrence[i] stores the index of the last element in `cakes` that is equal to cakes[i] and goes
+     * strictly before it. -1 if there are no such elements
      */
-    std::vector<std::vector<int>> max_score(2, std::vector<int>((size_t)num_cakes));
+    std::vector<int> prev_occurrence((size_t)num_cakes, -1);
 
-    std::set<int> cake_types;
+    {
+        std::unordered_map<int, int> last_occurrence;
 
-    for(int i = 0; i < num_cakes; i++) {
-        cake_types.insert(cakes[i]);
+        for(int i = 0; i < num_cakes; i++) {
+            if(last_occurrence.find(cakes[i]) != last_occurrence.end()) {
+                prev_occurrence[i] = last_occurrence[cakes[i]];
+            }
 
-        max_score[0][i] = (int)cake_types.size();
+            last_occurrence[cakes[i]] = i;
+        }
     }
 
-    for(int i_box = 1; i_box < num_boxes; i_box++) {
-        for(int i_cake = 0; i_cake < num_cakes; i_cake++) {
-            max_score[i_box % 2][i_cake] = 0;
+    std::vector<int> max_score((size_t)num_cakes + 1, INT32_MIN);
 
-            for(int box_start = 1; box_start < i_cake; box_start++) {
-                int max_prev_score = max_score[(i_box - 1) % 2][box_start - 1];
+    max_score[0] = 0;
 
-                std::set<int> box_cakes;
+    for(int i_box = 0; i_box < num_boxes; i_box++) {
+        max_segtree t(max_score);
 
-                for(int i = box_start; i <= i_cake; i++) {
-                    box_cakes.insert(cakes[i]);
-                }
+        for(int i_cake = 0; i_cake <= num_cakes; i_cake++) {
+            max_score[i_cake] = t.get_max(0, i_cake - 1);
 
-                int this_score = max_prev_score + (int)box_cakes.size();
-
-                if(this_score > max_score[i_box % 2][i_cake]) {
-                    max_score[i_box % 2][i_cake] = this_score;
-                }
+            if(i_cake != num_cakes) {
+                t.increment_range(prev_occurrence[i_cake] + 1, i_cake);
             }
         }
     }
 
-    std::cout << max_score[(num_boxes - 1) % 2][num_cakes - 1] << std::endl;
+    std::cout << max_score[num_cakes] << std::endl;
 }
