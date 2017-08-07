@@ -7,13 +7,9 @@ class max_segtree // stub for segment tree
     std::vector<int> xs;
 
 public:
-    max_segtree(const std::vector<int>& init) : xs(init.size())
+    max_segtree(const std::vector<int>& init) : xs(init)
     {
-        // Replace with copy-constructor
 
-        for(int i = 0; i < init.size(); i++) {
-            xs[i] = init[i];
-        }
     }
 
     int get_max(int start, int end)
