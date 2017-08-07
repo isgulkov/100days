@@ -67,17 +67,31 @@ int main()
         }
     }
 
-    std::vector<int> max_score((size_t)num_cakes + 1, INT32_MIN);
+    /**
+     * Each max_score[i] stores maximum score achievable by putting the first `i` cakes into the current number of boxes
+     */
+    std::vector<int> max_score((size_t)num_cakes + 1, 0);
 
-    max_score[0] = 0;
-
-    for(int i_box = 0; i_box < num_boxes; i_box++) {
+    for(int i_box = 1; i_box <= num_boxes; i_box++) {
+        /**
+         * Before `i_cake`th step elements [0; i_cake] of the segment tree will hold
+         *   T[0] = 0
+         *   T[i] = dp(i_box - 1, i) + score(i, i_cake - 1),
+         * where dp(x, y) is the maximum score achievable by packing first `y` cakes into `x` boxes, and score(x, y) is
+         * the score of a box encompassing cakes [x; y].
+         *
+         * Therefore dp(i_box, i_cake) will be equal to the maximum of elements [0; i_cake] of this segment tree.
+         */
         max_segtree t(max_score);
 
         for(int i_cake = 0; i_cake <= num_cakes; i_cake++) {
             max_score[i_cake] = t.get_max(0, i_cake - 1);
 
             if(i_cake != num_cakes) {
+                /**
+                 * The addition of (i_cake - 1)th cake to the last box will only increment only the T(i)s where the last
+                 * box doesn't have cakes of type cakes[i_cake - 1].
+                 */
                 t.increment_range(prev_occurrence[i_cake] + 1, i_cake);
             }
         }
