@@ -26,7 +26,7 @@ int minimum_additions(fraction proj, fraction target)
         }
     }
 
-    if(left * target.a - proj.a > left * target.b - proj.b) {
+    if(left == INT32_MAX / std::max(target.a, target.b)) {
         return -1;
     }
     else {
