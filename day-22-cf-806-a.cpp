@@ -12,7 +12,7 @@ int minimum_additions(fraction proj, fraction target)
     int left = 1;
     int right = INT32_MAX / std::max(target.a, target.b);
 
-    while(right - left > 1) {
+    while(right != left) {
         int mid = left + (right - left) / 2;
 
         int num_diff = mid * target.a - proj.a;
@@ -22,15 +22,15 @@ int minimum_additions(fraction proj, fraction target)
             right = mid;
         }
         else {
-            left = mid;
+            left = mid + 1;
         }
     }
 
-    if(right * target.a - proj.a > right * target.b - proj.b) {
+    if(left * target.a - proj.a > left * target.b - proj.b) {
         return -1;
     }
     else {
-        return right * target.b - proj.b;
+        return left * target.b - proj.b;
     }
 }
 
