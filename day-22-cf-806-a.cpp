@@ -1,4 +1,5 @@
 #include <iostream>
+#include <climits>
 
 struct fraction
 {
@@ -10,7 +11,7 @@ struct fraction
 long long minimum_additions(fraction proj, fraction target)
 {
     long long left = 1;
-    long long right = LONG_LONG_MAX / std::max(target.a, target.b);
+    long long right = LLONG_MAX / std::max(target.a, target.b);
 
     while(right != left) {
         long long mid = left + (right - left) / 2;
@@ -26,7 +27,7 @@ long long minimum_additions(fraction proj, fraction target)
         }
     }
 
-    if(left == LONG_LONG_MAX / std::max(target.a, target.b)) {
+    if(left == LLONG_MAX / std::max(target.a, target.b)) {
         return -1;
     }
     else {
