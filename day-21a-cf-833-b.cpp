@@ -2,34 +2,117 @@
 #include <vector>
 #include <unordered_map>
 
-class max_segtree // stub for segment tree
+class max_segtree
 {
-    std::vector<int> xs;
+    struct segtree_node
+    {
+        int maxval, change;
+
+        int l, r;
+
+        segtree_node* left;
+        segtree_node* right;
+
+        segtree_node(int l, int r, const std::vector<int>& values) : change(0), l(l), r(r)
+        {
+            if(l == r) {
+                maxval = values[l];
+
+                left = nullptr;
+                right = nullptr;
+            }
+            else {
+                int mid = (l + r) / 2;
+
+                left = new segtree_node(l, mid, values);
+                right = new segtree_node(mid + 1, r, values);
+
+                maxval = std::max(left->maxval, right->maxval);
+            }
+        }
+
+        int get_max(int start, int end)
+        {
+            if(change != 0) {
+                push_change();
+            }
+
+            if(start == l && end == r) {
+                return maxval;
+            }
+            else {
+                int mid = (l + r) / 2;
+
+                if(end <= mid) {
+                    return left->get_max(start, end);
+                }
+                else if(start > mid) {
+                    return right->get_max(start, end);
+                }
+                else {
+                    return std::max(
+                            left->get_max(start, mid),
+                            right->get_max(mid + 1, end)
+                    );
+                }
+            }
+        }
+
+        void push_change()
+        {
+            if(left != nullptr /* && right != nullptr */) {
+                left->change += change;
+                right->change += change;
+            }
+
+            maxval += change;
+            change = 0;
+        }
+
+        void increment_range(int start, int end)
+        {
+            if(change != 0) {
+                push_change();
+            }
+
+            if(start == l && end == r) {
+                change += 1;
+            }
+            else {
+                int mid = (l + r) / 2;
+
+                if(end <= mid) {
+                    left->increment_range(start, end);
+                }
+                else if(start > mid) {
+                    right->increment_range(start, end);
+                }
+                else {
+                    left->increment_range(start, mid);
+                    right->increment_range(mid + 1, end);
+                }
+
+                maxval = std::max(left->get_max(l, mid), right->get_max(mid + 1, r));
+            }
+        }
+    };
+
+    segtree_node* root;
 
 public:
-    max_segtree(const std::vector<int>& init) : xs(init)
+    max_segtree(const std::vector<int>& init)
     {
-
+        root = new segtree_node(0, (int)init.size() - 1, init);
     }
 
     int get_max(int start, int end)
     {
-        int result = INT32_MIN;
-
-        for(int i = start; i <= end; i++) {
-            if(xs[i] > result) {
-                result = xs[i];
-            }
-        }
-
-        return result;
+        return root->get_max(start, end);
     }
 
     void increment_range(int start, int end)
     {
-        for(int i = start; i <= end; i++) {
-            xs[i] += 1;
-        }
+        root->increment_range(start, end);
     }
 };
 
@@ -81,7 +164,9 @@ int main()
         max_segtree t(max_score);
 
         for(int i_cake = 0; i_cake <= num_cakes; i_cake++) {
-            max_score[i_cake] = t.get_max(0, i_cake - 1);
+            if(i_cake != 0) {
+                max_score[i_cake] = t.get_max(0, i_cake - 1);
+            }
 
             if(i_cake != num_cakes) {
                 /**
