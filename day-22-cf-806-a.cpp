@@ -7,16 +7,16 @@ struct fraction
     fraction(int a, int b) : a(a), b(b) { }
 };
 
-int minimum_additions(fraction proj, fraction target)
+long long minimum_additions(fraction proj, fraction target)
 {
-    int left = 1;
-    int right = INT32_MAX / std::max(target.a, target.b);
+    long long left = 1;
+    long long right = LONG_LONG_MAX / std::max(target.a, target.b);
 
     while(right != left) {
-        int mid = left + (right - left) / 2;
+        long long mid = left + (right - left) / 2;
 
-        int num_diff = mid * target.a - proj.a;
-        int denom_diff = mid * target.b - proj.b;
+        long long num_diff = mid * target.a - proj.a;
+        long long denom_diff = mid * target.b - proj.b;
 
         if(0 <= num_diff && num_diff <= denom_diff) {
             right = mid;
@@ -26,7 +26,7 @@ int minimum_additions(fraction proj, fraction target)
         }
     }
 
-    if(left == INT32_MAX / std::max(target.a, target.b)) {
+    if(left == LONG_LONG_MAX / std::max(target.a, target.b)) {
         return -1;
     }
     else {
