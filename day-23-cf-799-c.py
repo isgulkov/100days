@@ -1,14 +1,30 @@
+from bisect import bisect_left
 
 def best_pair_score(fountains, max_cost):
+    fountains.sort(key=lambda f: -f[1])
+
+    fountain_costs = map(lambda f: f[1], fountains)
+
+    # For each index in `fountains` store the best score of a fountain of this fountain's cost or smaller
+    best_score_under = []
+
+    current_best = 0
+
+    for f in reversed(fountains):
+        if f[0] > current_best:
+            current_best = f[0]
+
+        best_score_under.append(current_best)
+
+    best_score_under.reverse()
+
     best_score = 0
 
-    for i in xrange(len(fountains)):
-        for j in xrange(i + 1, len(fountains)):
-            a = fountains[i]
-            b = fountains[j]
+    for i in xrange(len(fountains) - 1):
+        j = bisect_left(fountain_costs, max_cost - fountains[i][1], lo=(i + 1))
 
-            if a[1] + b[1] <= max_cost and a[0] + b[0] > best_score:
-                best_score = a[0] + b[0]
+        if j != len(fountains):
+            best_score = max(best_score, fountains[i][0] + best_score_under[j])
 
     return best_score
 
