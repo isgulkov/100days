@@ -30,7 +30,7 @@ public:
     bool merge_components(int u, int v)
     {
         if(find(u) != find(v)) {
-            parent[u] = v;
+            parent[parent[u]] = v;
 
             num_components -= 1;
 
