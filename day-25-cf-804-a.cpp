@@ -3,7 +3,6 @@
 
 class union_find
 {
-public: // remove
     int num_nodes;
     int num_components;
 
