@@ -14,10 +14,18 @@ class Point:
         return "(%.2f, %.2f)" % (self.x, self.y, )
 
 class Line:
-    def __init__(self, p1, p2):
-        self.a = p2.y - p1.y
-        self.b = p2.x - p1.x
-        self.c = p1.x * p2.y - p2.x * p1.y
+    def __init__(self, a, b, c):
+        self.a = a
+        self.b = b
+        self.c = c
+
+    @staticmethod
+    def from_points(p1, p2):
+        a = p2.y - p1.y
+        b = p2.x - p1.x
+        c = p1.x * p2.y - p2.x * p1.y
+
+        return Line(a, b, c)
 
     def __str__(self):
         return "[%.2fx + %.2fy + %.2f = 0]" % (self.a, self.b, self.c, )
@@ -32,6 +40,6 @@ for i in [1, 2, 3]:
 
     ps.append(Point(x, y))
 
-print Line(ps[0], ps[1]), Line(ps[0], ps[2]), Line(ps[1], ps[2])
+print Line.from_points(ps[0], ps[1]), Line.from_points(ps[0], ps[2]), Line.from_points(ps[1], ps[2])
 
 print midpoint(ps[0], ps[1]), midpoint(ps[1], ps[2])
