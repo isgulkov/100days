@@ -3,7 +3,7 @@ s = raw_input()
 
 max_dropped_chars = int(raw_input())
 
-symbol_freq = {chr(i): 0 for i in xrange(ord('a'), ord('z'))}
+symbol_freq = {chr(i): 0 for i in xrange(ord('a'), ord('z') + 1)}
 
 for c in s:
     symbol_freq[c] += 1
