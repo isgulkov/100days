@@ -88,7 +88,7 @@ int main()
         /**
          * ...edges s.t. u + v = (n + 1) + `edge_cost`
          */
-        for(int u = edge_cost + 1; u < n - edge_cost; u++) {
+        for(int u = edge_cost + 1; u <= n; u++) {
             int v = (n + 1) + edge_cost - u;
 
             if(c.merge_components(u - 1, v - 1)) {
