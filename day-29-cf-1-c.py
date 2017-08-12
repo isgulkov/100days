@@ -44,6 +44,21 @@ class Line:
 
         return Line._from_vector_and_point((a_new, b_new, ), p)
 
+    @staticmethod
+    def _det(a00, a01, a10, a11):
+        return a00 * a11 - a01 * a10
+
+    def intersect_with(self, other):
+        delta = self._det(self.a, other.b, self.b, other.a)
+
+        if delta == 0.0:
+            raise Exception("ne peresekayutsia")
+
+        x = self._det(self.c, self.b, other.c, other.b)
+        y = self._det(self.a, self.c, other.a, other.c)
+
+        return Point(x, y)
+
     def __str__(self):
         return "[%.2fx + %.2fy + %.2f = 0]" % (self.a, self.b, self.c, )
 
@@ -66,3 +81,5 @@ m2 = midpoint(ps[1], ps[2])
 print l1, l2
 
 print l1.get_perp(m1), l2.get_perp(m2)
+
+print l1.get_perp(m1).intersect_with(l2.get_perp(m2))
