@@ -111,8 +111,17 @@ def angle(a, o, b):
     else:
         return phi
 
-def regular_poligon_area(r_big, num_sides):
-    return num_sides / 2.0 * r_big ** 2 * sin(2.0 * pi / num_sides)
+# Returns where it is possible for a `num-sides`-sided regular polygon to have some vertices at angles `alpha` and
+# `beta` between each other
+def regular_polygon_possible(num_vertices, alpha, beta):
+    if alpha > beta:
+        alpha, beta = beta, alpha
+
+    return True
+
+def regular_polygon_area(r_big, num_vertices):
+    return num_vertices / 2.0 * r_big ** 2 * sin(2.0 * pi / num_vertices)
+
 
 ps = []
 
@@ -132,7 +141,13 @@ center = l1.get_perp(m1).intersect_with(l2.get_perp(m2))
 alpha = angle(ps[0], center, ps[1])
 beta =  angle(ps[0], center, ps[2])
 
-if alpha > beta:
-    alpha, beta = beta, alpha
-
 print alpha, beta
+
+num_vertices = None
+
+for i in xrange(3, 101):
+    if regular_polygon_possible(i, alpha, beta):
+        num_vertices = i
+        break
+
+print regular_polygon_area(abs(ps[0] - center), num_vertices)
