@@ -21,11 +21,28 @@ class Line:
 
     @staticmethod
     def from_points(p1, p2):
-        a = p2.y - p1.y
+        a = p1.y - p2.y
         b = p2.x - p1.x
-        c = p1.x * p2.y - p2.x * p1.y
 
-        return Line(a, b, c)
+        return Line._from_vector_and_point((a, b, ), p1)
+
+    @staticmethod
+    def _from_vector_and_point((vx, vy, ), p):
+        return Line(vx, vy, - vx * p.x - vy * p.y)
+
+    @staticmethod
+    def _perp_vector(a, b):
+        if b == 0:
+            return 0.0, 1.0
+        else:
+            b_new = - 1.0 * a / b
+
+            return 1.0, b_new
+
+    def get_perp(self, p):
+        a_new, b_new = self._perp_vector(self.a, self.b)
+
+        return Line._from_vector_and_point((a_new, b_new, ), p)
 
     def __str__(self):
         return "[%.2fx + %.2fy + %.2f = 0]" % (self.a, self.b, self.c, )
@@ -40,6 +57,12 @@ for i in [1, 2, 3]:
 
     ps.append(Point(x, y))
 
-print Line.from_points(ps[0], ps[1]), Line.from_points(ps[0], ps[2]), Line.from_points(ps[1], ps[2])
+l1 = Line.from_points(ps[0], ps[1])
+l2 = Line.from_points(ps[1], ps[2])
 
-print midpoint(ps[0], ps[1]), midpoint(ps[1], ps[2])
+m1 = midpoint(ps[0], ps[1])
+m2 = midpoint(ps[1], ps[2])
+
+print l1, l2
+
+print l1.get_perp(m1), l2.get_perp(m2)
