@@ -1,17 +1,28 @@
+from math import sqrt, acos, pi, sin
 
 class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
+    def dot(self, other):
+        return self.x * other.x + self.y * other.y
+
     def __add__(self, other):
         return Point(self.x + other.x, self.y + other.y)
 
-    def __mul__(self, alpha):
-        return Point(self.x * alpha, self.y * alpha)
+    def __sub__(self, other):
+        return Point(self.x - other.x, self.y - other.y)
+
+    def __mul__(self, other):
+        # Multiply by number
+        return Point(self.x * other, self.y * other)
 
     def __str__(self):
         return "(%.2f, %.2f)" % (self.x, self.y, )
+
+    def __abs__(self):
+        return sqrt(self.x ** 2 + self.y ** 2)
 
 class Line:
     '''
@@ -88,6 +99,21 @@ class Line:
 def midpoint(p1, p2):
     return (p1 + p2) * 0.5
 
+# Returns radian measure of angle AOB, measured clockwise
+def angle(a, o, b):
+    oa = a - o
+    ob = b - o
+
+    phi = acos(1.0 * oa.dot(ob) / abs(oa) / abs(ob))
+
+    if oa.y * ob.x - oa.x * ob.y < 0: # `ob` is counterclockwise to `oa`
+        return 2.0 * pi - phi
+    else:
+        return phi
+
+def regular_poligon_area(r_big, num_sides):
+    return num_sides / 2.0 * r_big ** 2 * sin(2.0 * pi / num_sides)
+
 ps = []
 
 for i in [1, 2, 3]:
@@ -101,8 +127,12 @@ l2 = Line.from_points(ps[1], ps[2])
 m1 = midpoint(ps[0], ps[1])
 m2 = midpoint(ps[1], ps[2])
 
-print l1, l2
+center = l1.get_perp(m1).intersect_with(l2.get_perp(m2))
 
-print l1.get_perp(m1), l2.get_perp(m2)
+alpha = angle(ps[0], center, ps[1])
+beta =  angle(ps[0], center, ps[2])
 
-print l1.get_perp(m1).intersect_with(l2.get_perp(m2))
+if alpha > beta:
+    alpha, beta = beta, alpha
+
+print alpha, beta
