@@ -1,4 +1,16 @@
 #include <iostream>
+#include <vector>
+
+int gcd(int a, int b)
+{
+    while(b) {
+        a %= b;
+
+        std::swap(a, b);
+    }
+
+    return a;
+}
 
 int main()
 {
@@ -9,15 +21,37 @@ int main()
     int total_ops = 0;
     int current_odd_streak = 0;
 
-    /**
-     * Count the number of operations needed to turn every element even
-     */
+    std::vector<int> xs;
 
     while(n--) {
         int x;
 
         std::cin >> x;
 
+        xs.push_back(x);
+    }
+
+    /**
+     * Compute GCD of the numbers to check if it isn't one already
+     */
+
+    int common_gcd = xs[0];
+
+    for(int x : xs) {
+        common_gcd = gcd(common_gcd, x);
+    }
+
+    if(common_gcd > 1) {
+        std::cout << "YES" << std::endl << 0 << std::endl;
+
+        return 0;
+    }
+
+    /**
+     * Count the number of operations needed to turn every element even
+     */
+
+    for(int x : xs) {
         if(x % 2 == 1) {
             current_odd_streak += 1;
         }
@@ -43,7 +77,5 @@ int main()
 
     total_ops += (current_odd_streak + 1) / 2 + current_odd_streak % 2;
 
-    std::cout << "YES" << std::endl;
-
-    std::cout << total_ops << std::endl;
+    std::cout << "YES" << std::endl << total_ops << std::endl;
 }
