@@ -117,11 +117,17 @@ def regular_polygon_possible(num_vertices, alpha, beta):
     if alpha > beta:
         alpha, beta = beta, alpha
 
-    return True
+    enc = 0
+
+    for i in xrange(1, num_vertices):
+        for phi in (alpha, beta, ):
+            if abs(phi - i * 2.0 * pi / num_vertices) < 0.0001:
+                enc += 1
+
+    return enc == 2
 
 def regular_polygon_area(r_big, num_vertices):
     return num_vertices / 2.0 * r_big ** 2 * sin(2.0 * pi / num_vertices)
-
 
 ps = []
 
@@ -140,8 +146,6 @@ center = l1.get_perp(m1).intersect_with(l2.get_perp(m2))
 
 alpha = angle(ps[0], center, ps[1])
 beta =  angle(ps[0], center, ps[2])
-
-print alpha, beta
 
 num_vertices = None
 
