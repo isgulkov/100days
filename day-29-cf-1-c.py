@@ -14,11 +14,17 @@ class Point:
         return "(%.2f, %.2f)" % (self.x, self.y, )
 
 class Line:
+    '''
+    Build line from coefficients A, B, C of its equation "Ax + By + C = 0"
+    '''
     def __init__(self, a, b, c):
         self.a = a
         self.b = b
         self.c = c
 
+    '''
+    Build line from two points on it
+    '''
     @staticmethod
     def from_points(p1, p2):
         a = p1.y - p2.y
@@ -26,10 +32,16 @@ class Line:
 
         return Line._from_vector_and_point((a, b, ), p1)
 
+    '''
+    Build line from direction vector and point on the line
+    '''
     @staticmethod
     def _from_vector_and_point((vx, vy, ), p):
         return Line(vx, vy, - vx * p.x - vy * p.y)
 
+    '''
+    Returns vertor perpendicular to the given one (s.t. their dot product is zero)
+    '''
     @staticmethod
     def _perp_vector(a, b):
         if b == 0:
@@ -39,15 +51,26 @@ class Line:
 
             return 1.0, b_new
 
+    '''
+    Returns a line perpendicular to the current one that goes through point `p`
+    '''
     def get_perp(self, p):
         a_new, b_new = self._perp_vector(self.a, self.b)
 
         return Line._from_vector_and_point((a_new, b_new, ), p)
 
+    '''
+    Returns the determinant the following matrix:
+    [ `a00` `a01` ]
+    [ `a10` `a11` ]
+    '''
     @staticmethod
     def _det(a00, a01, a10, a11):
         return a00 * a11 - a01 * a10
 
+    '''
+    Returns the intersection point between the current line and `other`
+    '''
     def intersect_with(self, other):
         delta = self._det(self.a, other.b, self.b, other.a)
 
