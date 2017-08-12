@@ -1,5 +1,17 @@
 #include <iostream>
 
+int ops_for_streak(int len)
+{
+    /**
+     * Every two adjacent odd elements can be turned into two even elements in one op. One odd element that
+     * is adjacent to two even ones can be turned even in two ops
+     *
+     * So odd streak of odd length contributes 2 more ops than a streak that is one element shorter
+     */
+
+    return len / 2 + (len % 2) * 2;
+}
+
 int main()
 {
     int n;
@@ -22,16 +34,11 @@ int main()
             current_odd_streak += 1;
         }
         else {
-            /**
-             * Every two adjacent odd elements can be turned into two even elements in one op. One odd element that
-             * is adjacent to two even ones can be turned even in two ops
-             */
-
-            total_ops += (current_odd_streak + 1) / 2;
+            total_ops += ops_for_streak(current_odd_streak);
         }
     }
 
-    total_ops += (current_odd_streak + 1) / 2;
+    total_ops += ops_for_streak(current_odd_streak);
 
     std::cout << "YES" << std::endl;
 
