@@ -83,13 +83,13 @@ class Line:
     Returns the intersection point between the current line and `other`
     '''
     def intersect_with(self, other):
-        delta = self._det(self.a, other.b, self.b, other.a)
+        delta = self._det(self.a, self.b, other.a, other.b)
 
         if delta == 0.0:
             raise Exception("ne peresekayutsia")
 
-        x = self._det(self.c, self.b, other.c, other.b)
-        y = self._det(self.a, self.c, other.a, other.c)
+        x = - self._det(self.c, self.b, other.c, other.b) / delta
+        y = - self._det(self.a, self.c, other.a, other.c) / delta
 
         return Point(x, y)
 
@@ -149,7 +149,7 @@ beta =  angle(ps[0], center, ps[2])
 
 num_vertices = None
 
-for i in xrange(3, 101):
+for i in xrange(3, 100 + 1):
     if regular_polygon_possible(i, alpha, beta):
         num_vertices = i
         break
