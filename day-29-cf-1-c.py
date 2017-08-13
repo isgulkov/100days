@@ -128,7 +128,7 @@ def regular_polygon_possible(num_vertices, alpha, beta):
 
     for i in xrange(1, num_vertices):
         for phi in (alpha, beta, ):
-            if abs(phi - i * 2.0 * pi / num_vertices) < 2.0 * pi / 1750:
+            if abs(phi - i * 2.0 * pi / num_vertices) < 2.0 * pi / 2500:
                 enc += 1
 
     return enc == 2
