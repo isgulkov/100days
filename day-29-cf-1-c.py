@@ -19,7 +19,7 @@ class Point:
         return Point(self.x * other, self.y * other)
 
     def __str__(self):
-        return "(%.2f, %.2f)" % (self.x, self.y, )
+        return "{%.2f, %.2f}" % (self.x, self.y, )
 
     def __abs__(self):
         return sqrt(self.x ** 2 + self.y ** 2)
@@ -94,7 +94,7 @@ class Line:
         return Point(x, y)
 
     def __str__(self):
-        return "[%.2fx + %.2fy + %.2f = 0]" % (self.a, self.b, self.c, )
+        return "%.2fx + %.2fy + %.2f == 0" % (self.a, self.b, self.c, )
 
 def midpoint(p1, p2):
     return (p1 + p2) * 0.5
