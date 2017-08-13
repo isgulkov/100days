@@ -71,7 +71,7 @@ class Line:
         return Line._from_vector_and_point((a_new, b_new, ), p)
 
     '''
-    Returns the determinant the following matrix:
+    Returns the determinant of following matrix:
     [ `a00` `a01` ]
     [ `a10` `a11` ]
     '''
