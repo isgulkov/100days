@@ -104,7 +104,14 @@ def angle(a, o, b):
     oa = a - o
     ob = b - o
 
-    phi = acos(1.0 * oa.dot(ob) / abs(oa) / abs(ob))
+    cos_phi = 1.0 * oa.dot(ob) / abs(oa) / abs(ob)
+
+    if cos_phi < -1.0:
+        cos_phi = -1.0
+    elif cos_phi > 1.0:
+        cos_phi = 1.0
+
+    phi = acos(cos_phi)
 
     if oa.y * ob.x - oa.x * ob.y < 0: # `ob` is counterclockwise to `oa`
         return 2.0 * pi - phi
