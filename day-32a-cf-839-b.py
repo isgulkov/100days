@@ -31,7 +31,7 @@ if len(filter(lambda x: x >= 4, groups)) != 0:
 # Subproblem:
 # distribute groups of 1, 2 and 3 people over leftover quads and doubles
 
-# Distribute all groups of 3 first over quads, then over doubles (because a quad is less useful than two doubles)
+# Distribute all groups of 3 over quads
 
 for i in filter(lambda x: groups[x] == 3, xrange(num_groups)):
     if num_quads == 0:
@@ -40,12 +40,14 @@ for i in filter(lambda x: groups[x] == 3, xrange(num_groups)):
     groups[i] = 0
     num_quads -= 1
 
+# If that couldn't be done, place two people of every group of 3 on a double
+
 for i in filter(lambda x: groups[x] == 3, xrange(num_groups)):
     if num_doubles == 0:
         break
 
-    groups[i] = 0
-    num_doubles -= 2
+    groups[i] -= 2
+    num_doubles -= 1
 
 # If we coudn't distribute all groups of 3, the problem is infeasible
 
