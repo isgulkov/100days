@@ -98,13 +98,36 @@ else:
                 num_doubles -= 1
                 groups[i] = 0
 
+        # On every two quads, we can place three groups of 2:
+        # [1 1 - 3]
+        # [2 2 - 3]
+
+        two_groups = filter(lambda i: groups[i] == 2, xrange(num_groups))
+
+        for i, j, k in zip(
+            two_groups[:len(two_groups) / 3],
+            two_groups[len(two_groups) / 3:len(two_groups) / 3 * 2],
+            two_groups[len(two_groups) / 3 * 2:]
+            ):
+            if num_quads < 2:
+                break
+
+            groups[i] = 0
+            groups[j] = 0
+            groups[k] = 0
+
+            num_quads -= 2
+
+        # At most two groups of 2 remain, which requires two quads, or less than two quads are available -- either way,
+        # at this point we can only place one group of 2 per quad
+
         for i in xrange(num_groups):
             if num_quads == 0:
                 break
 
             if groups[i] == 2:
-                num_quads -= 1
                 groups[i] = 0
+                num_quads -= 1
 
     elif len(filter(lambda x: x == 1, groups)) != 0:
         # Subproblem:
