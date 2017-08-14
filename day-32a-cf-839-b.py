@@ -34,18 +34,18 @@ if len(filter(lambda x: x >= 4, groups)) != 0:
 # Distribute all groups of 3 first over quads, then over doubles (because a quad is less useful than two doubles)
 
 for i in filter(lambda x: groups[x] == 3, xrange(num_groups)):
-    if quads == 0:
+    if num_quads == 0:
         break
 
     groups[i] = 0
-    quads -= 1
+    num_quads -= 1
 
 for i in filter(lambda x: groups[x] == 3, xrange(num_groups)):
-    if doubles == 0:
+    if num_doubles == 0:
         break
 
     groups[i] = 0
-    doubles -= 2
+    num_doubles -= 2
 
 # If we coudn't distribute all groups of 3, the problem is infeasible
 
@@ -60,13 +60,84 @@ if len(filter(lambda x: x == 3, groups)) != 0:
 # Distribute pairs of 1 and 2 groups over quads, thus filling the quads up
 
 for i, j in zip(
-    filter(lambda x: groups[x] == 1, xrange(num_groups)),
-    filter(lambda x: groups[x] == 2, xrange(num_groups))
+    filter(lambda i: groups[i] == 1, xrange(num_groups)),
+    filter(lambda i: groups[i] == 2, xrange(num_groups))
     ):
 
-    if quads == 0:
+    if num_quads == 0:
         break
 
     groups[i] = 0
     groups[j] = 0
 
+if num_quads == 0:
+    # Subproblem:
+    # distribute groups of 1 and 2 over the remaining doubles
+
+    for i in xrange(num_groups):
+        if num_doubles == 0:
+            break
+
+        if groups[i] == 1 or groups[i] == 2:
+            groups[i] = 0
+            num_doubles -= 1
+else:
+    # There are quads left, but either groups of 1 or groups of 2 are gone (or both)
+
+    if len(filter(lambda x: x == 2, groups)) != 0:
+        # Subproblem:
+        # distribute groups of 2 over the remaining quads and doubles
+
+        for i in xrange(num_groups):
+            if num_doubles == 0:
+                break
+
+            if groups[i] == 2:
+                num_doubles -= 1
+                groups[i] = 0
+
+        for i in xrange(num_groups):
+            if num_quads == 0:
+                break
+
+            if groups[i] == 2:
+                num_quads -= 1
+                groups[i] = 0
+
+    elif len(filter(lambda x: x == 1, groups)) != 0:
+        # Subproblem:
+        # distribute groups of 1 over the remaining quads and doubles
+
+        for i in xrange(num_groups):
+            if num_doubles == 0:
+                break
+
+            if groups[i] == 1:
+                num_doubles -= 1
+                groups[i] = 0
+
+        one_groups = filter(lambda i: groups[i] == 1, xrange(num_groups))
+
+        for i, j in zip(one_groups[:len(one_groups) / 2], one_groups[len(one_groups) / 2:]):
+            if num_quads == 0:
+                break
+
+            groups[i] = 0
+            groups[j] = 0
+
+            quads -= 1
+
+        if num_quads != 0:
+            for i in xrange(num_groups):
+                if groups[i] == 1:
+                    groups[i] = 0
+                    num_quads -= 1
+
+                    break
+
+# If anything has remained after the distribution, the problem is infeasible
+
+if sum(groups) == 0:
+    print "YES"
+else:
+    print "NO"
