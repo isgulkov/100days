@@ -125,7 +125,7 @@ else:
             groups[i] = 0
             groups[j] = 0
 
-            quads -= 1
+            num_quads -= 1
 
         if num_quads != 0:
             for i in xrange(num_groups):
