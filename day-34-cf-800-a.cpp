@@ -74,7 +74,7 @@ int main()
         return 0;
     }
 
-    long double l = 0.0L, r = 1000.0L * 1000.0L * 1000.0L;
+    long double l = 0.0L, r = 1000.0L * 1000.0L * 1000.0L * 1000.0L;
 
     while(r - l > 0.001L * 0.001L * 0.001L) {
         long double mid = l + (r - l) / 2.0L;
