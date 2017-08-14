@@ -23,7 +23,7 @@ bool express_as_sum_of_3_fractions(int n, long long& x, long long& y, long long&
 
             long long denom = 2 * x * y - n * (x + y);
 
-            if(num % denom != 0) {
+            if(denom == 0 || num % denom != 0) {
                 continue;
             }
 
