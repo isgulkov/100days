@@ -20,8 +20,8 @@ for i in xrange(num_groups):
     num_doubles -= occupiable_doubles
     groups[i] -= 2 * occupiable_doubles
 
-# If there are groups of 4 and up left, seating is infeasible
-# (not sure if this even possible, but doesn't hurt to check :>)
+# If there are groups of 4 and up left, problem is infeasible
+# (not sure if this even possible under the assignment conditions, but doesn't hurt to check :>)
 
 if len(filter(lambda x: x >= 4, groups)) != 0:
     print "NO"
@@ -30,5 +30,28 @@ if len(filter(lambda x: x >= 4, groups)) != 0:
 
 # Subproblem:
 # distribute groups of 0, 1, 2 and 3 people over lefover quads and doubles
+
+# Distribute all groups of 3 first over quads, then over doubles (because a quad is less useful than two doubles)
+
+for i in filter(lambda x: groups[x] == 3, xrange(num_groups)):
+    if quads == 0:
+        break
+
+    groups[i] = 0
+    quads -= 1
+
+for i in filter(lambda x: groups[x] == 3, xrange(num_groups)):
+    if doubles == 0:
+        break
+
+    groups[i] = 0
+    doubles -= 2
+
+# If we coudn't distribute all groups of 3, the problem is infeasible
+
+if len(filter(lambda x: x == 3, groups)) != 0:
+    print "NO"
+
+    exit(0)
 
 
