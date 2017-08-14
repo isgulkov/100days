@@ -72,6 +72,8 @@ for i, j in zip(
     groups[i] = 0
     groups[j] = 0
 
+    num_quads -= 1
+
 if num_quads == 0:
     # Subproblem:
     # distribute groups of 1 and 2 over the remaining doubles
