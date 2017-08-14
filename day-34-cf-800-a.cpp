@@ -8,15 +8,18 @@ class devices
     std::vector<int> power;
     std::vector<int> initial_charge;
 
+    int num_devices;
     int charge_power;
 
 public:
-    devices(int charge_power) : charge_power(charge_power) { }
+    devices(int charge_power) : num_devices(0), charge_power(charge_power) { }
 
     void add_device(int p, int c)
     {
         power.push_back(p);
         initial_charge.push_back(c);
+
+        num_devices += 1;
     }
 
     bool can_work_indefinitely()
@@ -28,14 +31,26 @@ public:
 
     bool can_work_for(long double time)
     {
-        return true;
+        /**
+         * For each device, calculate the minimum time it has to be charged during `time` to keep it alive, and sum
+         * those up
+         */
+
+        long double total_min_charing_time = 0.0L;
+
+        for(int i = 0; i < num_devices; i++) {
+            long double min_charging_time = (time * power[i] - initial_charge[i]) / charge_power;
+
+            total_min_charing_time += std::max(0.0L, min_charging_time);
+        }
+
+        /**
+         * If the total time devices have to be charged is greater than `time`, the devices can't work for `time`
+         */
+
+        return total_min_charing_time <= time;
     }
 };
-
-bool possible_to_work_for(double time, std::vector<int>& power, std::vector<int>& initial_charge)
-{
-    return true;
-}
 
 int main()
 {
@@ -72,5 +87,5 @@ int main()
         }
     }
 
-    std::cout << std::ios::fixed << std::setprecision(20) << l << std::endl;
+    std::cout << l + (r - l) / 2.0L << std::endl;
 }
