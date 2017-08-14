@@ -29,7 +29,7 @@ if len(filter(lambda x: x >= 4, groups)) != 0:
     exit(0)
 
 # Subproblem:
-# distribute groups of 0, 1, 2 and 3 people over lefover quads and doubles
+# distribute groups of 1, 2 and 3 people over leftover quads and doubles
 
 # Distribute all groups of 3 first over quads, then over doubles (because a quad is less useful than two doubles)
 
@@ -54,4 +54,19 @@ if len(filter(lambda x: x == 3, groups)) != 0:
 
     exit(0)
 
+# Subproblem:
+# distribute groups of 1 and 2 over leftover quads and doubles
+
+# Distribute pairs of 1 and 2 groups over quads, thus filling the quads up
+
+for i, j in zip(
+    filter(lambda x: groups[x] == 1, xrange(num_groups)),
+    filter(lambda x: groups[x] == 2, xrange(num_groups))
+    ):
+
+    if quads == 0:
+        break
+
+    groups[i] = 0
+    groups[j] = 0
 
