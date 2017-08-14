@@ -8,10 +8,10 @@ int main()
 
     std::cin >> num_words;
 
-    std::vector<int> costs((size_t)num_words);
+    std::vector<int> reversal_costs((size_t)num_words);
 
     for(int i = 0; i < num_words; i++) {
-        std::cin >> costs[i];
+        std::cin >> reversal_costs[i];
     }
 
     std::vector<std::string> words((size_t)num_words);
@@ -38,7 +38,7 @@ int main()
     std::vector<int> min_reversed((size_t)num_words);
 
     min_original[0] = 0;
-    min_reversed[0] = 1;
+    min_reversed[0] = reversal_costs[0];
 
     for(int i = 1; i < num_words; i++) {
         min_original[i] = INT32_MAX;
@@ -54,10 +54,11 @@ int main()
         min_reversed[i] = INT32_MAX;
 
         if(reversed_words[i] >= words[i - 1] && min_original[i - 1] != INT32_MAX) {
-            min_reversed[i] = std::min(min_reversed[i], min_original[i - 1] + 1);
+            min_reversed[i] = std::min(min_reversed[i], min_original[i - 1] + reversal_costs[i]);
         }
+
         if(reversed_words[i] >= reversed_words[i - 1] && min_reversed[i - 1] != INT32_MAX) {
-            min_reversed[i] = std::min(min_reversed[i], min_reversed[i - 1] + 1);
+            min_reversed[i] = std::min(min_reversed[i], min_reversed[i - 1] + reversal_costs[i]);
         }
     }
 
