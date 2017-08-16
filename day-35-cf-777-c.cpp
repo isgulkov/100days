@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <set>
 
 int main()
 {
@@ -23,16 +22,29 @@ int main()
     }
 
     /**
-     * For every column, store starting indices of all sorted intervals on it
+     * For each `l` store farthest_end[l] s.t. for any `r` <= farthest_end[l] there is a sorted interval [l; r] in some
+     * of the columns
      */
-    std::vector<std::set<int>> sorted_intervals((size_t)num_cols);
+    std::vector<int> farthest_end((size_t)num_rows, -1);
 
     for(int i = 0; i < num_cols; i++) {
-        sorted_intervals[i].insert(0);
+        int begin = 0;
 
-        for(int j = 1; j < num_rows; j++) {
-            if(grid[j - 1][i] > grid[j][i]) {
-                sorted_intervals[i].insert(j);
+        for(int j = 1; j <= num_rows; j++) {
+            if(j == num_rows || grid[j - 1][i] > grid[j][i]) {
+                /**
+                 * A sorted interval ends at index j - 1 at the current column
+                 */
+
+                int end = j - 1;
+
+                for(int k = begin; k < j; k++) {
+                    if(end > farthest_end[k]) {
+                        farthest_end[k] = end;
+                    }
+                }
+
+                begin = j;
             }
         }
     }
@@ -46,17 +58,7 @@ int main()
 
         std::cin >> l >> r;
 
-        bool sorted_column_exists = false;
-
-        for(int i = 0; i < num_cols; i++) {
-            if(sorted_intervals[i].lower_bound(l) == sorted_intervals[i].lower_bound(r)) {
-                sorted_column_exists = true;
-
-                break;
-            }
-        }
-
-        if(sorted_column_exists) {
+        if(farthest_end[l - 1] >= r - 1) {
             std::cout << "Yes" << std::endl;
         }
         else {
