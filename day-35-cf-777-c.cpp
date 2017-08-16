@@ -37,12 +37,30 @@ int main()
         }
     }
 
-    for(int i = 0; i < num_cols; i++) {
-        for(int x : sorted_intervals[i]) {
-            std::cout << x << " ";
+    int num_requests;
+
+    std::cin >> num_requests;
+
+    while(num_requests--) {
+        int l, r;
+
+        std::cin >> l >> r;
+
+        bool sorted_column_exists = false;
+
+        for(int i = 0; i < num_cols; i++) {
+            if(sorted_intervals[i].lower_bound(l) == sorted_intervals[i].lower_bound(r)) {
+                sorted_column_exists = true;
+
+                break;
+            }
         }
 
-        std::cout << std::endl;
+        if(sorted_column_exists) {
+            std::cout << "Yes" << std::endl;
+        }
+        else {
+            std::cout << "No" << std::endl;
+        }
     }
-
 }
