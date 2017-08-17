@@ -21,6 +21,15 @@ int main()
      */
 
     while(current_sum < target_sum) {
+        if(size > 1000 * 1000 * 1000 / current_gcd) {
+            /**
+             * In this case the following expression may overflow, but the sum is guaranteed to be more than the target,
+             * which is below 10^10, so it's ok
+             */
+
+            continue;
+        }
+
         current_sum = current_gcd * size * (size + 1) / 2;
 
         /**
@@ -35,5 +44,19 @@ int main()
         current_gcd += 1;
     }
 
-    std::cout << max_gcd << std::endl;
+    if(max_gcd == -1) {
+        std::cout << max_gcd << std::endl;
+    }
+    else {
+        for(int i = 1; i < size; i++) {
+            std::cout << max_gcd * i << " ";
+
+            target_sum -= max_gcd * i;
+        }
+
+        /**
+         * Dump anything that's left into the last element
+         */
+        std::cout << target_sum << std::endl;
+    }
 }
