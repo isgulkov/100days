@@ -46,8 +46,6 @@ int main()
             if(current_gcd > max_gcd && current_sum <= target_sum) {
                 max_gcd = current_gcd;
             }
-
-            current_gcd += 1;
         }
     }
 
