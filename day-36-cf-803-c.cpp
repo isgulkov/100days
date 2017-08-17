@@ -2,41 +2,38 @@
 #include <vector>
 #include <cmath>
 
-typedef unsigned long long uint64;
+typedef long long int64;
 
 int main()
 {
-    unsigned long long sum, size;
+    long long target_sum, size;
 
-    std::cin >> sum >> size;
+    std::cin >> target_sum >> size;
+
+    int max_gcd = -1;
+
+    int64 current_sum = 0;
+    int current_gcd = 1;
 
     /**
-     * If the sum of numbers 1 to n is greater than sum, there isn't a strictly increasing sequence of positive numbers
-     * of given size with given sum of elements
-     *
-     * First clause is added to avoid "size * (size + 1)" overflowing in 64-bit integer. Maximum `size` that can fit
-     * into the second equation with `sum` <= 10^10 is about 141 000 anyway
+     * As the progression must be strictly increasing and all elements must be divisible by `current_gcd`, to achieve a
+     * gcd of `current_gcd`, we need at least the following arithmetic progression: `current_gcd` .. n * `current_gcd`
      */
-    if(size > 1 * 1000 * 1000 * 1000 || size * (size + 1) / 2 > sum) {
-        std::cout << -1 << std::endl;
 
-        return 0;
+    while(current_sum < target_sum) {
+        current_sum = current_gcd * size * (size + 1) / 2;
+
+        /**
+         * The current such progression has the target sum or we can achieve the target sum by distributing excess
+         * part of the target sum in chunks of size `current_gcd` across the elements
+         */
+
+        if(current_sum <= target_sum && target_sum % current_gcd == 0) {
+            max_gcd = current_gcd;
+        }
+
+        current_gcd += 1;
     }
 
-    std::vector<uint64> xs(size);
-
-    for(uint64 i = 0; i < size; i++) {
-        xs[i] = i + 1;
-        sum -= i + 1;
-    }
-
-    // Do something
-
-    xs[size - 1] += sum;
-
-    for(uint64 x : xs) {
-        std::cout << x << " ";
-    }
-
-    std::cout << std::endl;
+    std::cout << max_gcd << std::endl;
 }
