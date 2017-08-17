@@ -4,7 +4,7 @@
 
 int main()
 {
-    long long sum, size;
+    unsigned long long sum, size;
 
     std::cin >> sum >> size;
 
@@ -21,5 +21,15 @@ int main()
         return 0;
     }
 
+    std::vector<int> xs(size);
 
+    for(int i = 0; i < size; i++) {
+        xs[i] = i + 1;
+    }
+
+    for(int x : xs) {
+        std::cout << x << " ";
+    }
+
+    std::cout << std::endl;
 }
