@@ -20,20 +20,22 @@ int main()
      * gcd of `current_gcd`, we need at least the following arithmetic progression: `current_gcd` .. n * `current_gcd`
      */
 
+    if(size > 1000 * 1000) {
+        /**
+         * With big enough `size` expressions in the following code may oveflow over the 64-bit integer, but maximum
+         * `size` for which a sequence is achievable with `target_sum` at the maximum 10^10 is about 141 000 anyway
+         */
+
+        std::cout << -1 << std::endl;
+
+        return 0;
+    }
+
     while(current_sum < target_sum) {
-        if(size > 1000 * 1000 * 1000 / current_gcd) {
-            /**
-             * In this case the following expression may overflow, but the sum is guaranteed to be more than the target,
-             * which is below 10^10, so it's ok
-             */
-
-            continue;
-        }
-
         current_sum = current_gcd * size * (size + 1) / 2;
 
         /**
-         * The current such progression has the target sum or we can achieve the target sum by distributing excess
+         * The current such progression has the target sum or we can achieve the target sum by distributing the excess
          * part of the target sum in chunks of size `current_gcd` across the elements
          */
 
