@@ -10,14 +10,11 @@ int main()
 
     std::cin >> target_sum >> size;
 
-    int max_gcd = -1;
-
-    int64 current_sum = 0;
-    int current_gcd = 1;
+    int64 max_gcd = -1;
 
     /**
      * As the progression must be strictly increasing and all elements must be divisible by `current_gcd`, to achieve a
-     * gcd of `current_gcd`, we need at least the following arithmetic progression: `current_gcd` .. n * `current_gcd`
+     * gcd of `current_gcd`, we need at least the following arithmetic progression: g .. n * g, where g is its GCD
      */
 
     if(size > 1000 * 1000) {
@@ -31,19 +28,27 @@ int main()
         return 0;
     }
 
-    while(current_sum < target_sum) {
-        current_sum = current_gcd * size * (size + 1) / 2;
+    /**
+     * The target sum must be divisible by the GCD, so iterate over all divisors
+     */
 
-        /**
-         * The current such progression has the target sum or we can achieve the target sum by distributing the excess
-         * part of the target sum in chunks of size `current_gcd` across the elements
-         */
-
-        if(current_sum <= target_sum && target_sum % current_gcd == 0) {
-            max_gcd = current_gcd;
+    for(int64 i = 1; i * i <= target_sum; i++) {
+        if(target_sum % i != 0) {
+            continue;
         }
 
-        current_gcd += 1;
+        /**
+         * For every divisor less than the square root of the number, there is exactly one greater than it
+         */
+        for(int64 current_gcd : { i, target_sum / i}) {
+            int64 current_sum = current_gcd * size * (size + 1) / 2;
+
+            if(current_gcd > max_gcd && current_sum <= target_sum) {
+                max_gcd = current_gcd;
+            }
+
+            current_gcd += 1;
+        }
     }
 
     if(max_gcd == -1) {
