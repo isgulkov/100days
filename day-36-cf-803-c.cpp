@@ -2,6 +2,8 @@
 #include <vector>
 #include <cmath>
 
+typedef unsigned long long uint64;
+
 int main()
 {
     unsigned long long sum, size;
@@ -21,13 +23,18 @@ int main()
         return 0;
     }
 
-    std::vector<int> xs(size);
+    std::vector<uint64> xs(size);
 
-    for(int i = 0; i < size; i++) {
+    for(uint64 i = 0; i < size; i++) {
         xs[i] = i + 1;
+        sum -= i + 1;
     }
 
-    for(int x : xs) {
+    // Do something
+
+    xs[size - 1] += sum;
+
+    for(uint64 x : xs) {
         std::cout << x << " ";
     }
 
