@@ -178,8 +178,6 @@ int main()
 
         bool trapped = m.comes_into_trap(trap, in, out);
 
-        std::cout << in << " " << out << std::endl;
-
         if(!trapped) {
             std::cout << -1 << std::endl;
 
