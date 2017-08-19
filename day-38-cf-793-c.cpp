@@ -220,6 +220,15 @@ int main()
     rect trap(x_one, y_one, x_another, y_another);
 
     if(trap.empty_area()) {
+        /**
+         * The area of the box is zero, so no mice would be able to be caught.
+         *
+         * This is handled separately because of the crutch written to handle the corner intersection cases — duplicate
+         * intersection times are removed, so in the case when the box is degenerate into a line and in and out times
+         * are equal, one of the is removed as duplicate and the case gets wrongly handled and "mouse comes out of the
+         * trap"
+         */
+
         std::cout << -1 << std::endl;
 
         return 0;
