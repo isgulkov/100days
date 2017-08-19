@@ -22,89 +22,57 @@ public:
     long long get_sum_of_jump_path_lengths()
     {
         long long sum_paths = 0LL;
+        long long total_needs = 0LL;
 
-        std::vector<int> all_remainders((size_t)jump_distance, 0);
+        subtree_info tree_result = get_remainders_and_count_nodes(0, -1, 0, sum_paths, total_needs);
 
-        get_remainders_and_count_nodes(0, -1, sum_paths, all_remainders);
-
-        long long sum_remainders = 0LL;
-
-        for(int i = 0; i < jump_distance; i++) {
-            sum_remainders += i * all_remainders[i];
-        }
-
-        return sum_paths / jump_distance + (num_nodes * (num_nodes - 1) / 2 - sum_remainders) / jump_distance;
+        return (sum_paths + total_needs) / jump_distance;
     }
 
 private:
-    struct remainders_and_counts
+    struct subtree_info
     {
-        std::vector<int> remainders;
+        std::vector<int> root_remainers;
 
-        int subtree_nodes;
+        int node_count;
 
-        remainders_and_counts(int jump_distance) : remainders((size_t)jump_distance, 0) { }
+        subtree_info(int jump_distance) : root_remainers((size_t)jump_distance, 0) { }
     };
 
-    remainders_and_counts get_remainders_and_count_nodes(int u, int parent, long long& sum_paths,
-                                                         std::vector<int>& all_remainders)
+    subtree_info get_remainders_and_count_nodes(int u, int parent, int depth, long long& sum_paths, long long& total_needs)
     {
-        remainders_and_counts result(jump_distance);
+        subtree_info result(jump_distance);
 
-        result.subtree_nodes = 1;
+        result.node_count = 1;
 
         for(int v : adj_lists[u]) {
             if(v == parent) {
                 continue;
             }
 
-            std::cout << "---------- Going from " << (u + 1) << " into " << (v + 1) << std::endl;
-
-            remainders_and_counts subtree_result = get_remainders_and_count_nodes(v, u, sum_paths, all_remainders);
-
-            result.remainders[1] += 1;
-
-            for(int i = 0; i < jump_distance; i++) {
-                result.remainders[(i + 1) % jump_distance] += subtree_result.remainders[i];
-            }
+            subtree_info subtree_result = get_remainders_and_count_nodes(v, u, depth + 1, sum_paths, total_needs);
 
             /**
              * Add to the sum of all path lengths how many paths go through edge "u -> v"
              */
-            sum_paths += subtree_result.subtree_nodes * (num_nodes - subtree_result.subtree_nodes);
+            sum_paths += subtree_result.node_count * (num_nodes - subtree_result.node_count);
 
-            result.subtree_nodes += subtree_result.subtree_nodes;
-        }
+            result.node_count += subtree_result.node_count;
 
-        std::vector<int> subtree_rems((size_t)jump_distance, 0);
+            for(int i = 0; i < jump_distance; i++) {
+                for(int j = 0; j < jump_distance; j++) {
+                    int needs = jump_distance - ((i + j - 2 * depth) % jump_distance + jump_distance) % jump_distance;
 
-        for(int i = 0; i < jump_distance; i++) {
-            for(int j = 0; j < jump_distance; j++) {
-                all_remainders[(i + j) % jump_distance] += result.remainders[i] * result.remainders[j];
+                    total_needs += needs * subtree_result.root_remainers[i] * result.root_remainers[j];
+                }
+            }
 
-                subtree_rems[(i + j) % jump_distance] += result.remainders[i] * result.remainders[j];
+            for(int i = 0; i < jump_distance; i++) {
+                result.root_remainers[(i + 1) % jump_distance] += subtree_result.root_remainers[i];
             }
         }
 
-        std::cout << "Subtree " << (u + 1) << " result" << std::endl;
-
-        std::cout << " Num nodes: " << result.subtree_nodes << std::endl;
-
-        std::cout << " Root-going path rems: ";
-
-        for(int x : result.remainders) {
-            std::cout << x << " ";
-        }
-
-        std::cout << std::endl;
-
-        std::cout << " Subtree-local path rems: ";
-
-        for(int x : subtree_rems) {
-            std::cout << x << " ";
-        }
-
-        std::cout << std::endl;
+        result.root_remainers[1 % jump_distance] += 1;
 
         return result;
     }
