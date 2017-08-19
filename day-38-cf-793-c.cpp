@@ -59,21 +59,22 @@ class mouse
                  * Check if the path will intersect the segment of the left side of the trap, not just the line it lies
                  * on
                  */
+
                 long double y_at_x_left = y_start + intersect_x_left * v_y;
 
                 if(trap.y_bottom < y_at_x_left && y_at_x_left < trap.y_top) {
                     result.push_back(intersect_x_left);
                 }
-                else if((trap.y_bottom == y_at_x_left || y_at_x_left == trap.y_top) && (v_x && v_y)) {
-                    /**
-                     * Special case:
-                     * * if speed vector of the mouse is parallel to one (or both) of the sides, mouse will go along one
-                     * of the sides, going by the trap;
-                     * * otherwise, mouse comes into the trap through a corner
-                     *
-                     * NOTE: won't work if mouse just scratches by the corner. Let's hope they won't test for this
-                     */
-                    result.push_back(intersect_x_left);
+                if(v_x && v_y) {
+                    if(y_at_x_left == trap.y_bottom && (v_x > 0 == v_y > 0)) {
+                        /**
+                         * Mouse comes in our out of the trap through bottom left corner
+                         */
+                        result.push_back(intersect_x_left);
+                    }
+                    else if(y_at_x_left == trap.y_top && (v_x > 0 == v_y < 0)) {
+                        result.push_back(intersect_x_left);
+                    }
                 }
             }
         }
@@ -87,8 +88,13 @@ class mouse
                 if(trap.x_left < x_at_y_bottom && x_at_y_bottom < trap.x_right) {
                     result.push_back(intersect_y_bottom);
                 }
-                else if((trap.x_left == x_at_y_bottom || x_at_y_bottom == trap.x_right) && (v_x && v_y)) {
-                    result.push_back(intersect_y_bottom);
+                if(v_x && v_y) {
+                    if(x_at_y_bottom == trap.x_left && (v_x > 0 == v_y > 0)) {
+                        result.push_back(intersect_y_bottom);
+                    }
+                    else if(x_at_y_bottom == trap.x_right && (v_x < 0 == v_y > 0)) {
+                        result.push_back(intersect_y_bottom);
+                    }
                 }
             }
         }
@@ -97,17 +103,18 @@ class mouse
             long double intersect_x_right = (trap.x_right - x_start) * 1.0L / v_x;
 
             if(!std::isinf(intersect_x_right) && intersect_x_right >= 0) {
-                /**
-                 * Check if the path will intersect the segment of the left side of the trap, not just the line it lies
-                 * on
-                 */
                 long double y_at_x_right = y_start + intersect_x_right * v_y;
 
                 if(trap.y_bottom < y_at_x_right && y_at_x_right < trap.y_top) {
                     result.push_back(intersect_x_right);
                 }
-                else if((trap.y_bottom == y_at_x_right || y_at_x_right == trap.y_top) && (v_x && v_y)) {
-                    result.push_back(intersect_x_right);
+                if(v_x && v_y) {
+                    if(y_at_x_right == trap.y_bottom && (v_x < 0 == v_y > 0)) {
+                        result.push_back(intersect_x_right);
+                    }
+                    else if(y_at_x_right == trap.y_top && (v_x < 0 == v_y < 0)) {
+                        result.push_back(intersect_x_right);
+                    }
                 }
             }
         }
@@ -121,8 +128,13 @@ class mouse
                 if(trap.x_left < x_at_y_top && x_at_y_top < trap.x_right) {
                     result.push_back(intersect_y_top);
                 }
-                else if((trap.x_left == x_at_y_top || x_at_y_top == trap.x_right) && (v_x && v_y)) {
-                    result.push_back(intersect_y_top);
+                if(v_x && v_y) {
+                    if(x_at_y_top == trap.x_left && (v_x > 0 == v_y < 0)) {
+                        result.push_back(intersect_y_top);
+                    }
+                    else if(x_at_y_top == trap.x_right && (v_x < 0 == v_y < 0)) {
+                        result.push_back(intersect_y_top);
+                    }
                 }
             }
         }
