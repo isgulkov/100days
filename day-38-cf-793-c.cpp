@@ -8,15 +8,34 @@ class mouse
 
 public:
     mouse(int x_start, int y_start, int v_x, int v_y) : x_start(x_start), y_start(y_start), v_x(v_x), v_y(v_y) { }
+
+    bool comes_into_trap(rect& trap, long double& in, long double& out)
+    {
+        return false;
+    }
 };
 
 class rect
 {
-    int x_one, y_one, x_another, y_another;
+    int x_left, y_bottom, x_right, y_top;
 
 public:
-    rect(int x_one, int y_one, int x_another, int y_another) : x_one(x_one), y_one(y_one), x_another(x_another),
-                                                               y_another(y_another) { }
+    rect(int x_one, int y_one, int x_another, int y_another)
+    {
+        x_left = x_one;
+        x_right = x_another;
+
+        if(x_left > x_right) {
+            std::swap(x_left, x_right);
+        }
+
+        y_bottom = y_one;
+        y_top = y_another;
+
+        if(y_bottom > y_top) {
+            std::swap(y_bottom, y_top);
+        }
+    }
 };
 
 int main()
