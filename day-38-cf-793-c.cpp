@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <algorithm>
 #include <cmath>
@@ -195,7 +196,7 @@ int main()
     }
 
     if(max_come_in < min_come_out) {
-        std::cout << (max_come_in + (min_come_out - max_come_in) / 2.0L) << std::endl;
+        std::cout << std::setprecision(20) << (max_come_in + (min_come_out - max_come_in) / 2.0L) << std::endl;
     }
     else {
         std::cout << -1 << std::endl;
