@@ -139,6 +139,23 @@ class mouse
             }
         }
 
+        /**
+         * Remove duplicates from the list.
+         *
+         * Duplicates happen only when path intersects corners. This duplicate corner intersection check could be done
+         * when processing corner intersections, but it's simpler to do here
+         */
+
+        for(int i = 0; i < result.size(); i++) {
+            for(int j = i + 1; j < result.size(); j++) {
+                if(result[i] == result[j]) {
+                    std::swap(result[j], result.back());
+
+                    result.pop_back();
+                }
+            }
+        }
+
         std::sort(result.begin(), result.end());
 
         return result;
