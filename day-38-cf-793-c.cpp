@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 class mouse
 {
@@ -9,6 +10,35 @@ class mouse
     bool starts_inside(rect& trap)
     {
         return trap.x_left < x_start && x_start < trap.x_right && trap.y_bottom < y_start && y_start < trap.y_top;
+    }
+
+    /**
+     * Returns vector of all points in time when path of the mouse intersects with some of the lines that form the
+     * trap's rectangle
+     */
+    std::vector<long double> intersection_points(rect& trap)
+    {
+        long double intersect_x_left = (trap.x_left - x_start) * 1.0L / v_x;
+
+        long double intersect_y_bottom = (trap.y_bottom - y_start) * 1.0L / v_y;
+
+        long double intersect_x_right = (trap.x_right - x_start) * 1.0L / v_x;
+
+        long double intersect_y_top = (trap.y_top - y_start) * 1.0L / v_y;
+
+        std::vector<long double> result;
+
+        result.reserve(4);
+
+        for(long double t : { intersect_x_left, intersect_y_bottom, intersect_x_right, intersect_y_top }) {
+            if(t >= 0) {
+                result.push_back(t);
+            }
+        }
+
+        std::sort(result.begin(), result.end());
+
+        return result;
     }
 
 public:
