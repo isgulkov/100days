@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cmath>
 
 struct rect
 {
@@ -59,7 +60,7 @@ class mouse
                  */
                 long double y_at_x_left = y_start + intersect_x_left * v_y;
 
-                if(trap.y_bottom < y_at_x_left && y_at_x_left < trap.y_top) {
+                if(trap.y_bottom <= y_at_x_left && y_at_x_left <= trap.y_top) {
                     result.push_back(intersect_x_left);
                 }
             }
@@ -71,7 +72,7 @@ class mouse
             if(intersect_y_bottom >= 0) {
                 long double x_at_y_bottom = x_start + intersect_y_bottom * v_x;
 
-                if(trap.x_left < x_at_y_bottom && x_at_y_bottom < trap.x_right) {
+                if(trap.x_left <= x_at_y_bottom && x_at_y_bottom <= trap.x_right) {
                     result.push_back(intersect_y_bottom);
                 }
             }
@@ -87,7 +88,7 @@ class mouse
                  */
                 long double y_at_x_right = y_start + intersect_x_right * v_y;
 
-                if(trap.y_bottom < y_at_x_right && y_at_x_right < trap.y_top) {
+                if(trap.y_bottom <= y_at_x_right && y_at_x_right <= trap.y_top) {
                     result.push_back(intersect_x_right);
                 }
             }
@@ -99,7 +100,7 @@ class mouse
             if(intersect_y_top >= 0) {
                 long double x_at_y_top = x_start + intersect_y_top * v_x;
 
-                if(trap.x_left < x_at_y_top && x_at_y_top < trap.x_right) {
+                if(trap.x_left <= x_at_y_top && x_at_y_top <= trap.x_right) {
                     result.push_back(intersect_y_top);
                 }
             }
@@ -169,14 +170,36 @@ int main()
         mice.push_back(mouse(x, y, vx, vy));
     }
 
-    for(mouse& m : mice) {
-        long double a, b;
+    long double max_come_in = 0.0L;
+    long double min_come_out = HUGE_VALL;
 
-        if(m.comes_into_trap(trap, a, b)) {
-            std::cout << "1 " << a << " " << b << std::endl;
+    for(mouse& m : mice) {
+        long double in, out;
+
+        bool trapped = m.comes_into_trap(trap, in, out);
+
+        std::cout << in << " " << out << std::endl;
+
+        if(!trapped) {
+            std::cout << -1 << std::endl;
+
+            return 0;
         }
         else {
-            std::cout << "0" << std::endl;
+            if(in > max_come_in) {
+                max_come_in = in;
+            }
+
+            if(out < min_come_out) {
+                min_come_out = out;
+            }
         }
+    }
+
+    if(max_come_in < min_come_out) {
+        std::cout << (max_come_in + (min_come_out - max_come_in) / 2.0L) << std::endl;
+    }
+    else {
+        std::cout << -1 << std::endl;
     }
 }
