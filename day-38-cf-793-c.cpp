@@ -24,6 +24,11 @@ struct rect
             std::swap(y_bottom, y_top);
         }
     }
+
+    bool empty_area()
+    {
+        return (x_right - x_left) * (y_top - y_bottom) == 0;
+    }
 };
 
 class mouse
@@ -213,6 +218,12 @@ int main()
     std::cin >> x_one >> y_one >> x_another >> y_another;
 
     rect trap(x_one, y_one, x_another, y_another);
+
+    if(trap.empty_area()) {
+        std::cout << -1 << std::endl;
+
+        return 0;
+    }
 
     std::vector<mouse> mice;
 
