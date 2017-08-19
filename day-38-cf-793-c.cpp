@@ -6,6 +6,11 @@ class mouse
     int x_start, y_start;
     int v_x, v_y;
 
+    bool starts_inside(rect& trap)
+    {
+        return trap.x_left < x_start && x_start < trap.x_right && trap.y_bottom < y_start && y_start < trap.y_top;
+    }
+
 public:
     mouse(int x_start, int y_start, int v_x, int v_y) : x_start(x_start), y_start(y_start), v_x(v_x), v_y(v_y) { }
 
@@ -15,11 +20,10 @@ public:
     }
 };
 
-class rect
+struct rect
 {
     int x_left, y_bottom, x_right, y_top;
 
-public:
     rect(int x_one, int y_one, int x_another, int y_another)
     {
         x_left = x_one;
