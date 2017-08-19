@@ -170,10 +170,14 @@ public:
 
         if(intersection_points.size() == 0) {
             /**
-             * Mouse goes by the trap completely
+             * Mouse doesn't intersect the borders of the box, just either goes by the trap completely or starts inside
+             * of it and doesn't move
              */
 
-            return false;
+            in = 0.0L;
+            out = HUGE_VALL;
+
+            return starts_inside(trap);
         }
         else if(intersection_points.size() == 1) {
             /**
