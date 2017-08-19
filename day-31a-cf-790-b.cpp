@@ -79,7 +79,7 @@ private:
                 for(int j = 0; j < jump_distance; j++) {
                     int deficit = (2 * jump_distance - (i + j + 1)) % jump_distance;
 
-                    total_deficit += deficit * subtree_result.root_remainers[i] * result.root_remainers[j];
+                    total_deficit += (long long)deficit * subtree_result.root_remainers[i] * result.root_remainers[j];
                 }
             }
 
