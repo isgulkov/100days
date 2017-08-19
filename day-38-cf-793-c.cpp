@@ -57,7 +57,7 @@ class mouse
                  * Check if the path will intersect the segment of the left side of the trap, not just the line it lies
                  * on
                  */
-                long double y_at_x_left = y_start + intersect_x_left + v_y;
+                long double y_at_x_left = y_start + intersect_x_left * v_y;
 
                 if(trap.y_bottom < y_at_x_left && y_at_x_left < trap.y_top) {
                     result.push_back(intersect_x_left);
@@ -69,7 +69,7 @@ class mouse
             long double intersect_y_bottom = (trap.y_bottom - y_start) * 1.0L / v_y;
 
             if(intersect_y_bottom >= 0) {
-                long double x_at_y_bottom = x_start + intersect_y_bottom + v_x;
+                long double x_at_y_bottom = x_start + intersect_y_bottom * v_x;
 
                 if(trap.x_left < x_at_y_bottom && x_at_y_bottom < trap.x_right) {
                     result.push_back(intersect_y_bottom);
@@ -85,7 +85,7 @@ class mouse
                  * Check if the path will intersect the segment of the left side of the trap, not just the line it lies
                  * on
                  */
-                long double y_at_x_right = y_start + intersect_x_right + v_y;
+                long double y_at_x_right = y_start + intersect_x_right * v_y;
 
                 if(trap.y_bottom < y_at_x_right && y_at_x_right < trap.y_top) {
                     result.push_back(intersect_x_right);
@@ -97,7 +97,7 @@ class mouse
             long double intersect_y_top = (trap.y_top - y_start) * 1.0L / v_y;
 
             if(intersect_y_top >= 0) {
-                long double x_at_y_top = x_start + intersect_y_top + v_x;
+                long double x_at_y_top = x_start + intersect_y_top * v_x;
 
                 if(trap.x_left < x_at_y_top && x_at_y_top < trap.x_right) {
                     result.push_back(intersect_y_top);
