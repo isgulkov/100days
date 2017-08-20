@@ -54,9 +54,15 @@ int main()
         }
 
         while(next_occurrence_index == occurrences[next_min_char - 'a'].size()) {
-            for(next_min_char += 1; occurrences[next_min_char - 'a'].empty(); next_min_char++) { }
+            for(next_min_char += 1; occurrences[next_min_char - 'a'].empty() && next_min_char <= 'z'; next_min_char++) {
 
-            while(b_stack.back() == next_min_char) {
+            }
+
+            if(next_min_char > 'z') {
+                break;
+            }
+
+            while(!b_stack.empty() && b_stack.back() == next_min_char) {
                 c_stack.push_back(b_stack.back());
 
                 b_stack.pop_back();
