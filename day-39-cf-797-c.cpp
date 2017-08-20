@@ -30,6 +30,51 @@ int main()
     std::vector<char> b_stack;
     std::vector<char> c_stack;
 
+    char next_min_char;
+
+    for(next_min_char = 'a'; occurrences[next_min_char - 'a'].empty(); next_min_char++) { }
+
+    int next_occurrence_index = 0;
+
+    while(!a_stack.empty()) {
+        while(a_stack.size() > occurrences[next_min_char - 'a'][next_occurrence_index]) {
+            b_stack.push_back(a_stack.back());
+
+            a_stack.pop_back();
+        }
+
+        c_stack.push_back(b_stack.back());
+
+        b_stack.pop_back();
+
+        next_occurrence_index += 1;
+
+        if(a_stack.empty()) {
+            break;
+        }
+
+        while(next_occurrence_index == occurrences[next_min_char - 'a'].size()) {
+            for(next_min_char += 1; occurrences[next_min_char - 'a'].empty(); next_min_char++) { }
+
+            while(b_stack.back() == next_min_char) {
+                c_stack.push_back(b_stack.back());
+
+                b_stack.pop_back();
+            }
+
+            while(occurrences[next_min_char - 'a'][next_occurrence_index] >= a_stack.size()
+                  && next_occurrence_index >= occurrences[next_min_char - 'a'].size()) {
+                next_occurrence_index += 1;
+            }
+        }
+    }
+
+    while(!b_stack.empty()) {
+        c_stack.push_back(b_stack.back());
+
+        b_stack.pop_back();
+    }
+
     for(char c : c_stack) {
         std::cout << c;
     }
