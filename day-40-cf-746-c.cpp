@@ -37,6 +37,8 @@ int main()
          */
 
         ride_time = tram_pace * ((tram_range - tram_origin) + (tram_range - igor_origin));
+
+        tram_direction *= -1;
     }
     else if(tram_direction == -1 && tram_origin < igor_origin) {
         /**
@@ -44,6 +46,8 @@ int main()
          */
 
         ride_time = tram_pace * (tram_origin + igor_origin);
+
+        tram_direction *= -1;
     }
     else {
         /**
