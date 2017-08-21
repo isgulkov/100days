@@ -1,24 +1,11 @@
 #include <iostream>
 #include <vector>
-#include <unordered_map>
 #include <unordered_set>
-
-struct pair_hash {
-    template <class T1, class T2>
-    std::size_t operator () (const std::pair<T1,T2> &p) const {
-        auto h1 = std::hash<T1>{}(p.first);
-        auto h2 = std::hash<T2>{}(p.second);
-
-        return h1 ^ h2;
-    }
-};
 
 class graph
 {
     std::vector<int> node_values;
-    std::vector<std::vector<int>> adj_lists;
-
-    std::unordered_map<std::pair<int, int>, int, pair_hash> edge_ids;
+    std::vector<std::vector<std::pair<int, int>>> adj_lists;
 
     int num_nodes;
     int num_edges;
@@ -34,11 +21,12 @@ public:
 
     void add_edge(int u, int v)
     {
-        adj_lists[u].push_back(v);
-        adj_lists[v].push_back(u);
+        /**
+         * Store the sequential id of the edge together with the destination node
+         */
 
-        edge_ids[std::make_pair(u, v)] = num_edges;
-        edge_ids[std::make_pair(v, u)] = num_edges;
+        adj_lists[u].push_back(std::make_pair(v, num_edges));
+        adj_lists[v].push_back(std::make_pair(u, num_edges));
 
         num_edges += 1;
     }
@@ -74,7 +62,7 @@ private:
             for(int i = 0; i < num_nodes; i++) {
                 if(node_values[i] == -1) {
                     /**
-                     * If the sum is odd, put just one "1" in some node
+                     * If the sum is odd, put just one "1" in any one node
                      */
 
                     new_values[i] = current_remainder;
@@ -90,21 +78,26 @@ private:
         }
     }
 
-    void dfs_spanning_tree(int u, int parent, std::vector<int>& selected_edge_ids, std::unordered_set<int>& visited,
+    void dfs_spanning_tree(int u, int parent, int edge_id, std::vector<int>& selected_edge_ids, std::unordered_set<int>& visited,
                            std::vector<int>& new_node_values)
     {
         visited.insert(u);
 
-        for(int v : adj_lists[u]) {
+        for(std::pair<int, int> p : adj_lists[u]) {
+            int v = p.first;
+
             if(visited.find(v) != visited.end()) {
                 continue;
             }
 
-            dfs_spanning_tree(v, u, selected_edge_ids, visited, new_node_values);
+            dfs_spanning_tree(v, u, p.second, selected_edge_ids, visited, new_node_values);
         }
 
         if(new_node_values[u] == 1) {
-            selected_edge_ids.push_back(edge_ids[std::make_pair(u, parent)]);
+            /**
+             * Add the edge `parent` -> `u` to the resulting graph
+             */
+            selected_edge_ids.push_back(edge_id);
 
             new_node_values[parent] = (new_node_values[parent] + 1) % 2;
         }
@@ -121,7 +114,7 @@ public:
 
         std::unordered_set<int> visited;
 
-        dfs_spanning_tree(0, -1, selected_edge_ids, visited, evened_node_values);
+        dfs_spanning_tree(0, -1, -1, selected_edge_ids, visited, evened_node_values);
 
         return true;
     }
