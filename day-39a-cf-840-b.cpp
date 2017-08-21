@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 
 struct pair_hash {
     template <class T1, class T2>
@@ -19,10 +20,12 @@ class graph
 
     std::unordered_map<std::pair<int, int>, int, pair_hash> edge_ids;
 
+    int num_nodes;
     int num_edges;
 
 public:
-    graph(int num_nodes) : node_values((size_t)num_nodes), adj_lists((size_t)num_nodes), num_edges(0) { }
+    graph(int num_nodes) : node_values((size_t)num_nodes), adj_lists((size_t)num_nodes), num_edges(0),
+                           num_nodes(num_nodes) { }
 
     void set_node_value(int u, int value)
     {
@@ -40,8 +43,71 @@ public:
         num_edges += 1;
     }
 
+private:
+    bool make_sum_even(std::vector<int>& new_values)
+    {
+        /**
+         * Check if it is possible make sum of the node values even (as has to be the sum of all node degrees in a
+         * graph) by replacing "-1"s by "0"s and "1"s; and if it is, store the new node values in `new_values`
+         */
+
+        int current_remainder = 0;
+        int num_negative_ones = 0;
+
+        for(int i = 0; i < num_nodes; i++) {
+            if(node_values[i] != -1) {
+                current_remainder += node_values[i];
+            }
+            else {
+                num_negative_ones += 1;
+            }
+        }
+
+        current_remainder %= 2;
+
+        if(current_remainder == 1 && num_negative_ones != 0) {
+            return false;
+        }
+        else {
+            for(int i = 0; i < num_nodes; i++) {
+                if(node_values[i] == -1) {
+                    /**
+                     * If the sum is odd, put just one "1" in some node
+                     */
+
+                    new_values[i] = current_remainder;
+
+                    current_remainder = 0;
+                }
+                else {
+                    new_values[i] = node_values[i];
+                }
+            }
+
+            return true;
+        }
+    }
+
+    void dfs_spanning_tree(std::vector<int>& selected_edge_ids, std::unordered_set<int>& visited)
+    {
+
+    }
+
+public:
     bool good_subset_possible(std::vector<int>& selected_edge_ids)
     {
+        std::vector<int> new_values;
+
+        if(!make_sum_even(new_values)) {
+            return false;
+        }
+
+
+
+        std::unordered_set<int> visited;
+
+        dfs_spanning_tree(selected_edge_ids, visited);
+
         return false;
     }
 };
