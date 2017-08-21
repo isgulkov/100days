@@ -20,16 +20,53 @@ int main()
     int walking_time = std::abs(igor_origin - igor_destination) * igor_pace;
 
     /**
-     * Time it takes for Igor and the tram to meet and then for the tram to reach Igor's destination
+     * Time it takes for the tram to get to Igor's destination
      */
     int ride_time;
 
-    {
-        int time_meet_left = 1000;
+    if(tram_direction == 1 && tram_origin <= igor_origin) {
+        /**
+         * Tram catches Igor before reaching end of the line
+         */
 
-        int time_meet_right = 1000;
+        ride_time = tram_pace * std::abs(tram_origin - igor_destination);
 
-        ride_time = std::min(time_meet_left, time_meet_right);
+        if(igor_destination < tram_origin) {
+            /**
+             * Tram has to make a round-trip to the end of the line
+             */
+
+            ride_time += 2 * tram_pace * (tram_range - tram_origin);
+        }
+    }
+    else if(tram_direction == -1 && tram_origin >= igor_origin) {
+        /**
+         * Tram catches Igor before reaching the beginning of the line
+         */
+
+        ride_time = tram_pace * std::abs(tram_origin - igor_destination);
+
+        if(igor_destination > tram_origin) {
+            /**
+             * Tram has to make a round-trip to the beginning of the line
+             */
+
+            ride_time += 2 * tram_pace * tram_origin;
+        }
+    }
+    else if(tram_direction == 1 && tram_origin > igor_origin) {
+        /**
+         * Tram has to make a round-trip to catch Igor
+         */
+
+        ride_time = tram_pace * ((tram_range - tram_origin) + tram_range + igor_destination);
+    }
+    else if(tram_direction == -1 && tram_origin < igor_destination) {
+        /**
+         * same
+         */
+
+        ride_time = tram_pace * (tram_origin + tram_range + (tram_range - igor_destination));
     }
 
     std::cout << std::min(walking_time, ride_time) << std::endl;
