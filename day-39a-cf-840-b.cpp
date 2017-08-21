@@ -146,7 +146,7 @@ int main()
         std::cout << selected_edges.size() << std::endl;
 
         for(int s : selected_edges) {
-            std::cout << (s - 1) << std::endl;
+            std::cout << (s + 1) << std::endl;
         }
     }
     else {
