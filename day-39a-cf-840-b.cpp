@@ -65,10 +65,12 @@ private:
 
         current_remainder %= 2;
 
-        if(current_remainder == 1 && num_negative_ones != 0) {
+        if(current_remainder == 1 && num_negative_ones == 0) {
             return false;
         }
         else {
+            new_values.resize((size_t)num_nodes);
+
             for(int i = 0; i < num_nodes; i++) {
                 if(node_values[i] == -1) {
                     /**
