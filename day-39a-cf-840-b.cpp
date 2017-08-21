@@ -90,27 +90,43 @@ private:
         }
     }
 
-    void dfs_spanning_tree(std::vector<int>& selected_edge_ids, std::unordered_set<int>& visited)
+    void dfs_spanning_tree(int u, int parent, std::vector<int>& selected_edge_ids, std::unordered_set<int>& visited,
+                           std::vector<int> new_node_values)
     {
+        visited.insert(u);
 
+        for(int v : adj_lists[u]) {
+            if(visited.find(v) != visited.end()) {
+                continue;
+            }
+
+            dfs_spanning_tree(v, u, selected_edge_ids, visited, new_node_values);
+
+            if(new_node_values[u] == 1) {
+                selected_edge_ids.push_back(edge_ids[std::make_pair(u, parent)]);
+            }
+        }
     }
 
 public:
     bool good_subset_possible(std::vector<int>& selected_edge_ids)
     {
-        std::vector<int> new_values;
+        std::vector<int> evened_node_values;
 
-        if(!make_sum_even(new_values)) {
+        if(!make_sum_even(evened_node_values)) {
             return false;
         }
 
-
+        /**
+         * The question of why if it's possible to make the sum of values even, then it is possible to select edges
+         * accordingly needs more research...
+         */
 
         std::unordered_set<int> visited;
 
-        dfs_spanning_tree(selected_edge_ids, visited);
+        dfs_spanning_tree(0, -1, selected_edge_ids, visited, evened_node_values);
 
-        return false;
+        return true;
     }
 };
 
