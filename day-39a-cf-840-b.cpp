@@ -78,8 +78,8 @@ private:
         }
     }
 
-    void dfs_spanning_tree(int u, int parent, int edge_id, std::vector<int>& selected_edge_ids, std::unordered_set<int>& visited,
-                           std::vector<int>& new_node_values)
+    void select_good_subgraph_edges(int u, int parent, int edge_id, std::vector<int>& selected_edge_ids,
+                                    std::unordered_set<int>& visited, std::vector<int>& node_parity)
     {
         visited.insert(u);
 
@@ -87,20 +87,42 @@ private:
             int v = p.first;
 
             if(visited.find(v) != visited.end()) {
+                /**
+                 * Only consider adding edges on a spanning tree
+                 */
+
                 continue;
             }
 
-            dfs_spanning_tree(v, u, p.second, selected_edge_ids, visited, new_node_values);
+            int new_edge_id = p.second;
+
+            select_good_subgraph_edges(v, u, new_edge_id, selected_edge_ids, visited, node_parity);
         }
 
-        if(new_node_values[u] == 1) {
+        /**
+         * Even node needs an odd number of adjacent edges, add to the resulting graph the edge to its ancestor in the
+         * spanning tree
+         */
+
+        if(node_parity[u] == 1) {
             /**
-             * Add the edge `parent` -> `u` to the resulting graph
+             * Add the edge by which we came unto `u`, `parent` -> `u` to the resulting graph
              */
             selected_edge_ids.push_back(edge_id);
 
-            new_node_values[parent] = (new_node_values[parent] + 1) % 2;
+            /**
+             * Parent node now has one more edge adjacent to it, so whatever parity was needed for that node now chages
+             */
+            node_parity[parent] = (node_parity[parent] + 1) % 2;
         }
+
+        /**
+         * If the node only needs an even number of adjacent edges, just leave it disconnected.
+         *
+         * Thus, we can always satisfy the condition for the current node and, therefore, current subtree of the
+         * spanning tree. At the root of the spanning tree we will always end up with 0, as by adding each edge we
+         * decrease the sum of all node degrees by 2, and the sum is even from the start
+         */
     }
 
 public:
@@ -109,12 +131,17 @@ public:
         std::vector<int> evened_node_values;
 
         if(!make_sum_even(evened_node_values)) {
+            /**
+             * If the sum of node parities can't be made even, a subgraph with the desired node parities is not
+             * possible: sum of all node degrees in an unoriented graph is even (each edge contributes 2 to the sum)
+             */
+
             return false;
         }
 
         std::unordered_set<int> visited;
 
-        dfs_spanning_tree(0, -1, -1, selected_edge_ids, visited, evened_node_values);
+        select_good_subgraph_edges(0, -1, -1, selected_edge_ids, visited, evened_node_values);
 
         return true;
     }
