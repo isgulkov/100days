@@ -66,7 +66,7 @@ private:
             /**
              * Add to the sum of all path lengths the number of paths that go through edge "u -> v"
              */
-            sum_paths += subtree_result.node_count * (num_nodes - subtree_result.node_count);
+            sum_paths += 1LL * subtree_result.node_count * (num_nodes - subtree_result.node_count);
 
             result.node_count += subtree_result.node_count;
 
