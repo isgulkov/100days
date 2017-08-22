@@ -42,7 +42,7 @@ public:
 private:
     struct subtree_info
     {
-        std::vector<int> root_remainers;
+        std::vector<long long> root_remainers;
         int node_count;
 
         subtree_info(int jump_distance) : root_remainers((size_t)jump_distance, 0) { }
@@ -77,9 +77,9 @@ private:
              */
             for(int i = 0; i < jump_distance; i++) {
                 for(int j = 0; j < jump_distance; j++) {
-                    int deficit = (2 * jump_distance - (i + j + 1)) % jump_distance;
+                    long long deficit = (2 * jump_distance - (i + j + 1)) % jump_distance;
 
-                    total_deficit += (long long)deficit * subtree_result.root_remainers[i] * result.root_remainers[j];
+                    total_deficit += deficit * subtree_result.root_remainers[i] * result.root_remainers[j];
                 }
             }
 
