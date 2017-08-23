@@ -52,7 +52,7 @@ public:
     int64_t get_binomial(int64_t n, int64_t k)
     {
         if(k > n) {
-            throw -1;
+            return 0;
         }
 
         while(num_rows <= n) {
