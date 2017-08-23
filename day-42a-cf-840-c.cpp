@@ -28,14 +28,16 @@ bool is_square(int64_t x)
     return l * l == x;
 }
 
-class binomial_calculator
+class binomial_mod_p_calculator
 {
     std::vector<std::vector<int64_t>> pascal_rows;
 
     int num_rows = 0;
 
+    int64_t p;
+
 public:
-    binomial_calculator()
+    binomial_mod_p_calculator(int64_t p) : p(p)
     {
         pascal_rows.push_back({ 1 });
 
@@ -43,13 +45,13 @@ public:
     }
 
     /**
-     * Returns binomial coefficient C(n, k)
+     * Returns binomial coefficient C(`n`, `k`) modulo `p`
      *
      * Time complexity: O(1) (amortized for max(n) * max(k) requests, where max(n) is the largest `n` among a sequence
      *                        of requests)
      *                  O(n) (amortized for max(n) requests)
      */
-    int64_t get_binomial(int64_t n, int64_t k)
+    int64_t get_binomial(int n, int k)
     {
         if(k > n) {
             return 0;
@@ -68,7 +70,7 @@ public:
             last_row[0] = 1;
 
             for(int i = 1; i < last_row.size() - 1; i++) {
-                last_row[i] = prev_row[i - 1] + prev_row[i];
+                last_row[i] = (prev_row[i - 1] + prev_row[i]) % p;
             }
 
             last_row[last_row.size() - 1] = 1;
@@ -166,9 +168,9 @@ int main()
 
     int total_placed = group_sizes[0];
 
-    binomial_calculator bc;
-
     const int64_t P = 1000 * 1000 * 1000 + 7;
+
+    binomial_mod_p_calculator bc(P);
 
     for(int i_group = 1; i_group < num_groups; i_group++) {
         for(int n_bad = 0; n_bad < total_placed; n_bad++) {
