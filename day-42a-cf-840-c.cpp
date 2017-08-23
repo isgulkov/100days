@@ -9,7 +9,7 @@
 bool is_square(int64_t x)
 {
     int64_t l = 0;
-    int64_t r = x;
+    int64_t r = std::min(x, 1000LL * 1000 * 3000); // Around sqrt(INT64_MAX), avoids false positives due to overflow
 
     while(l < r) {
         int64_t mid = l + (r - l) / 2;
