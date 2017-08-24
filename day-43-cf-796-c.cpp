@@ -99,8 +99,8 @@ int main()
         b.add_edge(u - 1, v - 1);
     }
 
-    int l = -1000 * 1000 * 1000;
-    int r = 1000 * 1000 * 1000;
+    int l = INT32_MIN / 2;
+    int r = INT32_MAX / 2;
 
     while(l < r) {
         int mid = l + (r - l) / 2;
