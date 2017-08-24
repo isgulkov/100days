@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 class bank_network
 {
@@ -20,6 +21,43 @@ public:
     void set_security(int u, int value)
     {
         security[u] = value;
+    }
+
+
+private:
+    bool can_be_hacked_with(int u, int parent, int depth, int power)
+    {
+        int security_increase = depth <= 1 ? depth : 2;
+
+        if(security[u] + security_increase > power) {
+            return false;
+        }
+
+        bool result = true;
+
+        for(int v : adj_lists[u]) {
+            if(v == parent) {
+                continue;
+            }
+
+            result &= can_be_hacked_with(v, u, depth + 1, power);
+        }
+
+        return result;
+    }
+
+public:
+    bool can_be_hacked_with(int power)
+    {
+        int most_secure_node = 0;
+
+        for(int i = 0; i < num_nodes; i++) {
+            if(security[i] > security[most_secure_node]) {
+                most_secure_node = i;
+            }
+        }
+
+        return can_be_hacked_with(most_secure_node, -1, 0, power);
     }
 };
 
@@ -47,5 +85,19 @@ int main()
         b.add_edge(u - 1, v - 1);
     }
 
+    int l = -1000 * 1000 * 1000;
+    int r = 1000 * 1000 * 1000;
 
+    while(l < r) {
+        int mid = l + (r - l) / 2;
+
+        if(b.can_be_hacked_with(mid)) {
+            r = mid;
+        }
+        else {
+            l = mid + 1;
+        }
+    }
+
+    std::cout << l << std::endl;
 }
