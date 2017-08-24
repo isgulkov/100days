@@ -53,6 +53,8 @@ private:
     {
         eccentricity.resize((size_t)num_nodes);
 
+        std::vector<bool> visited((size_t)num_nodes, false);
+
         std::vector<int> this_layer;
 
         for(int u = 0; u < num_nodes; u++) {
@@ -62,10 +64,10 @@ private:
 
             if(adj_lists[u].size() == 1) {
                 this_layer.push_back(u);
+
+                visited[u] = true;
             }
         }
-
-        std::unordered_set<int> visited;
 
         int i_current_layer = 0;
 
@@ -75,11 +77,11 @@ private:
             for(int u : this_layer) {
                 eccentricity[u] = i_current_layer;
 
-                visited.insert(u);
-
                 for(int v : adj_lists[u]) {
-                    if(visited.find(v) == visited.end()) {
+                    if(!visited[v]) {
                         next_layer.push_back(v);
+
+                        visited[v] = true;
                     }
                 }
             }
