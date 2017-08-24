@@ -1,4 +1,4 @@
-#include <iostream>
+#include <cstdio>
 #include <vector>
 #include <algorithm>
 #include <unordered_set>
@@ -135,14 +135,14 @@ int main()
 {
     int num_banks;
 
-    std::cin >> num_banks;
+    scanf("%d", &num_banks);
 
     bank_network b(num_banks);
 
     for(int i = 0; i < num_banks; i++) {
         int security;
 
-        std::cin >> security;
+        scanf("%d", &security);
 
         b.set_security(i, security);
     }
@@ -150,7 +150,7 @@ int main()
     for(int i = 0; i < num_banks - 1; i++) {
         int u, v;
 
-        std::cin >> u >> v;
+        scanf("%d %d", &u, &v);
 
         b.add_edge(u - 1, v - 1);
     }
@@ -169,5 +169,5 @@ int main()
         }
     }
 
-    std::cout << l << std::endl;
+    printf("%d\n", l);
 }
