@@ -33,31 +33,45 @@ private:
             return false;
         }
 
-        bool result = true;
-
         for(int v : adj_lists[u]) {
             if(v == parent) {
                 continue;
             }
 
-            result &= can_be_hacked_with(v, u, depth + 1, power);
+            if(!can_be_hacked_with(v, u, depth + 1, power)) {
+                return false;
+            }
         }
 
-        return result;
+        return true;
     }
 
 public:
     bool can_be_hacked_with(int power)
     {
-        int most_secure_node = 0;
+        std::vector<int> most_secure_nodes { 0 };
+        int greatest_security = security[0];
 
         for(int i = 0; i < num_nodes; i++) {
-            if(security[i] > security[most_secure_node]) {
-                most_secure_node = i;
+            if(security[i] > greatest_security) {
+                greatest_security = security[i];
+
+                most_secure_nodes.clear();
+
+                most_secure_nodes.push_back(i);
+            }
+            else if(security[i] == greatest_security) {
+                most_secure_nodes.push_back(i);
             }
         }
 
-        return can_be_hacked_with(most_secure_node, -1, 0, power);
+        for(int u : most_secure_nodes) {
+            if(can_be_hacked_with(u, -1, 0, power)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 };
 
