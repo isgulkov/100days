@@ -44,67 +44,57 @@ private:
         }
 
         std::sort(max_subtree_costs.begin(), max_subtree_costs.end());
+        std::reverse(max_subtree_costs.begin(), max_subtree_costs.end());
 
+        /**
+         * Select at most `max_visits` - 1 best through subtrees (s.t. we can visit all them and come back out)
+         */
         int64_t max_total_through_cost = 0;
 
-        int64_t min_through = 0;
-
-        int64_t max_deadend_cost = 0;
-        int64_t max_deadend_through = 0;
-
-        /**
-         * Select `max_visits` most costly subtrees to calculate the maximum cost that can be accumulated by going in a
-         * and out of every sub-subtree
-         */
-
-        for(int i = 0; i < std::min((int)max_subtree_costs.size(), max_visits); i++) {
-            std::pair<int64_t, int64_t> p = max_subtree_costs[max_subtree_costs.size() - i - 1];
-
-            max_total_through_cost += p.first;
-
-            if(p.second > max_deadend_cost) {
-                /**
-                 * Among the subtrees selected thus far, maintain both the costs of the one with the largest "dead end
-                 * cost", so we can later substitute its through value for its dead end value in the final dead end sum
-                 */
-                max_deadend_cost = p.second;
-                max_deadend_through = p.first;
-            }
-
-            /**
-             * Maintain the smallest through value, so if we later find a subtree with the largest dead end value
-             * outside the ones we selected, we can substitute that for this in the final dead end sum
-             */
-
-            min_through = p.first;
-        }
-
-        /**
-         * See if there are any better candidates for the dead end subtree than ones that we have selected for their max
-         * through value
-         */
-        for(int i = 0; i < max_subtree_costs.size(); i++) {
+        for(int i = 0; i < std::min((int)max_subtree_costs.size(), max_visits - 1); i++) {
             std::pair<int64_t, int64_t> p = max_subtree_costs[i];
 
-            if(p.second > max_deadend_cost) {
-                max_deadend_cost = p.second;
-
-                /**
-                 * If there is one, we will substitute it for the subtree with the smallest through value we have
-                 * selected
-                 */
-                max_deadend_through = min_through;
-            }
+            max_total_through_cost += p.first;
         }
 
-        int64_t max_total_deadend_cost = max_total_through_cost - max_deadend_through + max_deadend_cost;
+        int64_t max_total_deadend_cost = 0;
+
+        /**
+         * Select the best dead end subtree (s.t. we end up in that subtree in the end)
+         */
+        for(int i = 0; i < max_subtree_costs.size(); i++) {
+            std::pair<int64_t, int64_t>& p = max_subtree_costs[i];
+
+            int64_t max_total_deadend_with_this;
+
+            if(i < std::min((int)max_subtree_costs.size(), max_visits - 1)) {
+                /**
+                 * If this subtree is one of the best through ones, add make this one dead end instead of through and
+                 * add another best through one if available
+                 */
+
+                max_total_deadend_with_this = max_total_through_cost - p.first + p.second;
+
+                if(max_subtree_costs.size() >= max_visits) {
+                    max_total_deadend_with_this += max_subtree_costs[max_visits - 1].first;
+                }
+            }
+            else {
+                /**
+                 * If this subtree is not one of the best through ones, just add it to the pile
+                 */
+
+                max_total_deadend_with_this = max_total_through_cost + p.second;
+            }
+
+            if(max_total_deadend_with_this > max_total_deadend_cost) {
+                max_total_deadend_cost = max_total_deadend_with_this;
+            }
+        }
 
         /**
          * Remove the subtree with the smallest through value if we can't afford it
          */
-        if(max_subtree_costs.size() >= max_visits) {
-            max_total_through_cost -= min_through;
-        }
 
         return std::make_pair(max_total_through_cost, max_total_deadend_cost);
     }
