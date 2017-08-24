@@ -1,11 +1,14 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <unordered_set>
 
 class bank_network
 {
     std::vector<std::vector<int>> adj_lists;
     std::vector<int> security;
+
+    std::vector<int> eccentricity;
 
     int num_nodes;
 
@@ -46,9 +49,55 @@ private:
         return true;
     }
 
+    void compute_eccentricity()
+    {
+        eccentricity.resize((size_t)num_nodes);
+
+        std::vector<int> this_layer;
+
+        for(int u = 0; u < num_nodes; u++) {
+            /**
+             * Start from leaves
+             */
+
+            if(adj_lists[u].size() == 1) {
+                this_layer.push_back(u);
+            }
+        }
+
+        std::unordered_set<int> visited;
+
+        int i_current_layer = 0;
+
+        std::vector<int> next_layer;
+
+        while(!this_layer.empty()) {
+            for(int u : this_layer) {
+                eccentricity[u] = i_current_layer;
+
+                visited.insert(u);
+
+                for(int v : adj_lists[u]) {
+                    if(visited.find(v) == visited.end()) {
+                        next_layer.push_back(v);
+                    }
+                }
+            }
+
+            this_layer = next_layer;
+            next_layer.clear();
+
+            i_current_layer += 1;
+        }
+    }
+
 public:
     bool can_be_hacked_with(int power)
     {
+        if(eccentricity.empty()) {
+            compute_eccentricity();
+        }
+
         std::vector<int> most_secure_nodes { 0 };
         int greatest_security = security[0];
 
@@ -61,7 +110,14 @@ public:
                 most_secure_nodes.push_back(i);
             }
             else if(security[i] == greatest_security) {
-                most_secure_nodes.push_back(i);
+                if(eccentricity[i] > eccentricity[most_secure_nodes[0]]) {
+                    most_secure_nodes.clear();
+
+                    most_secure_nodes.push_back(i);
+                }
+                else if(eccentricity[i] == eccentricity[most_secure_nodes[0]]) {
+                    most_secure_nodes.push_back(i);
+                }
             }
         }
 
