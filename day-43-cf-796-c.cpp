@@ -8,8 +8,6 @@ class bank_network
     std::vector<std::vector<int>> adj_lists;
     std::vector<int> security;
 
-    std::vector<int> eccentricity;
-
     int num_nodes;
 
 public:
@@ -26,105 +24,46 @@ public:
         security[u] = value;
     }
 
-
-private:
-    bool can_be_hacked_with(int u, int parent, int depth, int power)
-    {
-        int security_increase = depth <= 1 ? depth : 2;
-
-        if(security[u] + security_increase > power) {
-            return false;
-        }
-
-        for(int v : adj_lists[u]) {
-            if(v == parent) {
-                continue;
-            }
-
-            if(!can_be_hacked_with(v, u, depth + 1, power)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    void compute_eccentricity()
-    {
-        eccentricity.resize((size_t)num_nodes);
-
-        std::vector<bool> visited((size_t)num_nodes, false);
-
-        std::vector<int> this_layer;
-
-        for(int u = 0; u < num_nodes; u++) {
-            /**
-             * Start from leaves
-             */
-
-            if(adj_lists[u].size() == 1) {
-                this_layer.push_back(u);
-
-                visited[u] = true;
-            }
-        }
-
-        int i_current_layer = 0;
-
-        std::vector<int> next_layer;
-
-        while(!this_layer.empty()) {
-            for(int u : this_layer) {
-                eccentricity[u] = i_current_layer;
-
-                for(int v : adj_lists[u]) {
-                    if(!visited[v]) {
-                        next_layer.push_back(v);
-
-                        visited[v] = true;
-                    }
-                }
-            }
-
-            this_layer = next_layer;
-            next_layer.clear();
-
-            i_current_layer += 1;
-        }
-    }
-
 public:
     bool can_be_hacked_with(int power)
     {
-        if(eccentricity.empty()) {
-            compute_eccentricity();
-        }
+        /**
+         * Collect vector of nodes that are "not completely hackable" (i.e. can't be hacked if distance from the
+         * original hack to them is 2 or greater)
+         */
 
-        std::vector<int> most_secure_nodes { 0 };
-        int greatest_security = security[0];
+        std::vector<int> not_completely_hackable;
 
-        for(int i = 0; i < num_nodes; i++) {
-            if(security[i] > greatest_security) {
-                greatest_security = security[i];
-
-                most_secure_nodes.clear();
-
-                most_secure_nodes.push_back(i);
-            }
-            else if(security[i] == greatest_security) {
-                if(eccentricity[i] > eccentricity[most_secure_nodes[0]]) {
-                    most_secure_nodes.clear();
-
-                    most_secure_nodes.push_back(i);
-                }
-                else if(eccentricity[i] == eccentricity[most_secure_nodes[0]]) {
-                    most_secure_nodes.push_back(i);
-                }
+        for(int u = 0; u < num_nodes; u++) {
+            if(security[u] + 2 > power) {
+                not_completely_hackable.push_back(u);
             }
         }
 
-        for(int u : most_secure_nodes) {
-            if(can_be_hacked_with(u, -1, 0, power)) {
+        for(int u = 0; u < num_nodes; u++) {
+            /**
+             * See if the node and all its neighbours:
+             * * are hackable at the current `power`;
+             * * represent the whole "not completely hackable" set.
+             */
+
+            if(security[u] > power) {
+                continue;
+            }
+
+            int nch_neighourhood = security[u] + 2 > power;
+
+            for(int v : adj_lists[u]) {
+                if(security[v] + 1 > power) {
+                    continue;
+                }
+
+                if(security[v] + 2 > power) {
+                    nch_neighourhood += 1;
+                }
+            }
+
+            if(nch_neighourhood == not_completely_hackable.size()) {
                 return true;
             }
         }
