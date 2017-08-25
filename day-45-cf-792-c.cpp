@@ -1,6 +1,36 @@
 #include <iostream>
 #include <algorithm>
 
+void print_skipping_indices(std::string& s, int i_skip, int j_skip)
+{
+    bool skip_leading_zeroes = (i_skip == 0);
+
+    for(int i = 0; i < s.length(); i++) {
+        if(i == i_skip || i == j_skip) {
+            continue;
+        }
+        else if(skip_leading_zeroes && s[i] == '0') {
+            continue;
+        }
+        else {
+            skip_leading_zeroes = false;
+
+            std::cout << s[i];
+        }
+    }
+
+    if(skip_leading_zeroes) {
+        /**
+         * If after printing the whole number we're still skipping leading zeroes, it means that the whole number
+         * consisted of leading zeroes and has been skipped — must leave at least one "0" behind for the number to be valid
+         */
+
+        std::cout << 0;
+    }
+
+    std::cout << std::endl;
+}
+
 int main()
 {
     std::string s;
@@ -82,57 +112,34 @@ int main()
         return 0;
     }
 
-//    std::cout << i_one_removal << std::endl;
-//    std::cout << i_two_removals_a << " " << i_two_removals_b << std::endl;
+    bool one_removal_possible = (i_one_removal != -1) && s.length() > 1;
+    bool two_removals_possible = (i_two_removals_a != -1) && s.length() > 2;
 
-    int l_zeroes_1 = 0;
-
-    if(i_one_removal == 0) {
-        for(l_zeroes_1 = 0; l_zeroes_1 < s.length() && s[1 + l_zeroes_1] == '0'; l_zeroes_1++) { }
-    }
-
-    int l_zeroes_2 = 0;
-
-    if(i_two_removals_a == 0) {
-        for(l_zeroes_2 = 0; l_zeroes_2 < s.length() && s[1 + l_zeroes_2] == '0'; l_zeroes_2++) { }
-    }
-
-    if(s.length() > 1 && i_one_removal != -1 && (l_zeroes_1 + 1 < l_zeroes_2 + 2 || i_two_removals_a == -1)) {
-        int i = 0;
-
-        if(l_zeroes_1 != 0) {
-            i = std::min(l_zeroes_1 + 1, (int)s.length() - 1);
-        }
-
-        for( ; i < s.length(); i++) {
-            if(i != i_one_removal) {
-                std::cout << s[i];
-            }
-        }
-
-        std::cout << std::endl;
-    }
-    else if(s.length() > 2 && i_two_removals_a != -1 && (l_zeroes_2 + 2 <= l_zeroes_1 + 1 || i_one_removal == -1)) {
-        int i = 0;
-
-        if(l_zeroes_2 != 0) {
-            i = l_zeroes_2 + 1;
-        }
-
-        for( ; i < s.length(); i++) {
-            if(i != i_two_removals_a && i != i_two_removals_b) {
-                std::cout << s[i];
-            }
-        }
-
-        std::cout << std::endl;
-    }
-    else {
+    if(!one_removal_possible && !two_removals_possible) {
         if(there_are_zeroes) {
             std::cout << 0 << std::endl;
         }
         else {
             std::cout << -1 << std::endl;
+        }
+    }
+    else if(!one_removal_possible) {
+        print_skipping_indices(s, i_two_removals_a, i_two_removals_b);
+    }
+    else if(!two_removals_possible) {
+        print_skipping_indices(s, i_one_removal, INT32_MIN);
+    }
+    else {
+        /**
+         * If both one removal and two removals are possible, check whichever one of them doesn't produce leading zeroes
+         * (it can't be the case for both at the same time)
+         */
+
+        if(i_one_removal == 0 && s[1] == '0') {
+            print_skipping_indices(s, i_two_removals_a, i_two_removals_b);
+        }
+        else {
+            print_skipping_indices(s, i_one_removal, INT32_MIN);
         }
     }
 }
