@@ -10,13 +10,13 @@ struct list_node
 
 list_node send_ask_request(int index)
 {
-    std::cout << "? " << (index + 1) << std::endl;
+    std::cout << "? " << index << std::endl;
 
     int value, next;
 
     std::cin >> value >> next;
 
-    return { value, next - 1 };
+    return { value, next };
 }
 
 int main()
@@ -35,7 +35,7 @@ int main()
      */
 
     for(int i = 0; i < 999; i++) {
-        int random_index = (rand() + rand()) % num_items;
+        int random_index = 1 + (rand() + rand()) % num_items;
 
         list_node node = send_ask_request(random_index);
 
