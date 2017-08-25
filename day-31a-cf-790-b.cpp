@@ -2,7 +2,7 @@
 #include <vector>
 #include <numeric>
 
-class tree
+class bank_network
 {
     int num_nodes;
     int jump_distance;
@@ -10,7 +10,7 @@ class tree
     std::vector<std::vector<int>> adj_lists;
 
 public:
-    tree(int num_nodes, int jump_distance) : num_nodes(num_nodes), jump_distance(jump_distance),
+    bank_network(int num_nodes, int jump_distance) : num_nodes(num_nodes), jump_distance(jump_distance),
                                              adj_lists((size_t)num_nodes) { }
 
     void add_edge(int u, int v)
@@ -98,7 +98,7 @@ int main()
 
     std::cin >> num_nodes >> jump_distance;
 
-    tree t(num_nodes, jump_distance);
+    bank_network t(num_nodes, jump_distance);
 
     for(int i = 0; i < num_nodes - 1; i++) {
         int u, v;
