@@ -21,10 +21,26 @@ result = daily_increase
 # So, for the granary to be emptied on a day `daily_increase` + j, we need it to contain less grain than
 # `daily_increase` + j:
 #   `max_capacity` - sum(1, j - 1) <= `daily_increase` + j, or
-#   `max_capacity` - `daily_increase` - sum(1, j) <= 0.
-# Solving that for j, we get the formula below.
+#   `max_capacity` - `daily_increase` - j * (j + 1) / 2 <= 0.
+#
+# Find smallest such j using binary search
 
-result += int(ceil(0.5 * (sqrt(1 - 8 * daily_increase + 8 * max_capacity) - 1.0)))
+l = 0
+r = 10 ** 18
+
+while r - l > 0:
+    mid = l + (r - l) / 2
+
+    # print l, mid, r
+
+    day_start_amout = max_capacity - daily_increase - mid * (mid + 1) / 2
+
+    if day_start_amout <= 0:
+        r = mid
+    elif day_start_amout > 0:
+        l = mid + 1
+
+result += l
 
 # Also consider the case if sparrows will at some point empty the granary in one day without overpowering the
 # `daily_increase`
