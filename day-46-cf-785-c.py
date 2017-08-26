@@ -2,7 +2,13 @@ from math import ceil, sqrt
 
 max_capacity, daily_increase = map(int, raw_input().split(' '))
 
+if daily_increase > max_capacity:
+    # Amount of grain can't be increase beyond capacity and the formula below break down with such numbers
+
+    daily_increase = max_capacity
+
 # Number of days after which sparrows will start to overcome the daily increase
+
 result = daily_increase
 
 # Number of days after which sparrows will empty the granary when they steal more grain than `daily_increase`
@@ -20,4 +26,9 @@ result = daily_increase
 
 result += int(ceil(0.5 * (sqrt(1 - 8 * daily_increase + 8 * max_capacity) - 1.0)))
 
-print min(max_capacity, result)
+# Also consider the case if sparrows will at some point empty the granary in one day without overpowering the
+# `daily_increase`
+
+result = min(max_capacity, result)
+
+print result
