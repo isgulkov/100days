@@ -7,8 +7,9 @@ for a, b, c in ((a, b, c), (b, a, c), (c, a, b)):
     for a_increase in xrange(total_increase + 1):
         bc_max_increase = min(total_increase - a_increase, a + a_increase - (b + c))
 
-        for bc_increase in xrange(0, bc_max_increase + 1):
-            num_invalid_triples += (bc_increase + 1)
+        if bc_max_increase >= 0:
+            # Same logic as below
+            num_invalid_triples += (bc_max_increase + 1) * (bc_max_increase + 2) / 2
 
 # The total number of all possible triples of sum less than or equal `total_increase` equals the number of ways to
 # divide a sequence of `total_increase` elements into four parts, which is:
