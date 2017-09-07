@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <map>
 
 int main()
 {
@@ -30,7 +31,13 @@ int main()
         total_delay_cost -= unit_delay_costs[i] * (i + 1);
     }
 
-    std::vector<int> departure_time((size_t)num_flights, -1);
+    std::multimap<int, int> flights_by_cost;
+
+    for(int i = 0; i < initial_delay; i++) {
+        flights_by_cost.insert(std::make_pair(unit_delay_costs[i], i));
+    }
+
+    std::vector<int> departure_time((size_t)num_flights);
 
     for(int t = initial_delay; t < num_flights + initial_delay; t++) {
         /**
@@ -53,21 +60,16 @@ int main()
          *     `t1` * `i` + `t2` * `j` <= `t1` * `j` + `t2` * `i`.
          */
 
-        int max_i = -1;
-
-        for(int i = 0; i <= std::min(num_flights - 1, t); i++) {
-            if(departure_time[i] != -1) {
-                /**
-                 * Flight has already been chosen to depart by time `t`
-                 */
-
-                continue;
-            }
-
-            if(max_i == -1 || unit_delay_costs[i] > unit_delay_costs[max_i]) {
-                max_i = i;
-            }
+        if(t < num_flights) {
+            flights_by_cost.insert(std::make_pair(unit_delay_costs[t], t));
         }
+
+        auto biggest_element = flights_by_cost.end();
+        biggest_element--;
+
+        int max_i = biggest_element->second;
+
+        flights_by_cost.erase(biggest_element);
 
         departure_time[max_i] = t;
         total_delay_cost += unit_delay_costs[max_i] * (t + 1);
