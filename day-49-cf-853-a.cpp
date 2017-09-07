@@ -28,7 +28,7 @@ int main()
      */
 
     for(int i = 0; i < num_flights; i++) {
-        total_delay_cost -= unit_delay_costs[i] * (i + 1);
+        total_delay_cost -= 1LL * unit_delay_costs[i] * (i + 1);
     }
 
     std::multimap<int, int> flights_by_cost;
@@ -72,7 +72,7 @@ int main()
         flights_by_cost.erase(biggest_element);
 
         departure_time[max_i] = t;
-        total_delay_cost += unit_delay_costs[max_i] * (t + 1);
+        total_delay_cost += 1LL * unit_delay_costs[max_i] * (t + 1);
     }
 
     std::cout << total_delay_cost << std::endl;
