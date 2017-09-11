@@ -2,18 +2,20 @@
 #include <vector>
 #include <algorithm>
 
-int power_mod_p(int64_t a, int k, int p)
+int power_mod_p(int a, int k, int p)
 {
-    int64_t result = 1;
+    int64_t result = 1LL;
+
+    int64_t current_binary_power = a;
 
     while(k) {
         if(k & 1) {
-            result *= a;
+            result *= current_binary_power;
             result %= p;
         }
 
-        a *= a;
-        a %= p;
+        current_binary_power *= current_binary_power;
+        current_binary_power %= p;
 
         k >>= 1;
     }
