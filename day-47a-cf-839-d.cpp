@@ -50,7 +50,9 @@ int main()
     for(int i = 2; i <= MAX_STRENGTH; i++) {
         for(int k = 2; i * k <= MAX_STRENGTH; k++) {
             /**
-             * Numbers divisible by k * i are also divisible by i
+             * Numbers divisible by k * i are also divisible by i.
+             *
+             * Thus, for any number `j`, all its divisors `i` will contribute to the `j`'s result
              */
 
             num_multiples_of[i] += num_multiples_of[i * k];
