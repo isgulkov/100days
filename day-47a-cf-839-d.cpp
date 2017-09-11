@@ -1,5 +1,25 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
+
+int power_mod_p(int64_t a, int k, int p)
+{
+    int64_t result = 1;
+
+    while(k) {
+        if(k & 1) {
+            result *= a;
+            result %= p;
+        }
+
+        a *= a;
+        a %= p;
+
+        k >>= 1;
+    }
+
+    return (int)(result % p);
+}
 
 int main()
 {
@@ -12,4 +32,65 @@ int main()
     for(int i = 0; i < num_soldiers; i++) {
         std::cin >> strengths[i];
     }
+
+    /**
+     * For each `i` in [2; MAX_STRENGTH] calculate how many strengths are divisible by `i`
+     */
+
+    const int MAX_STRENGTH = *std::max_element(strengths.begin(), strengths.end());
+
+    std::vector<int> num_multiples_of((size_t)(MAX_STRENGTH + 1), 0);
+
+    for(int i = 0; i < num_soldiers; i++) {
+        num_multiples_of[strengths[i]] += 1;
+    }
+
+    for(int i = 2; i <= MAX_STRENGTH; i++) {
+        for(int k = 2; i * k <= MAX_STRENGTH; k++) {
+            /**
+             * Numbers divisible by k * i are also divisible by i
+             */
+
+            num_multiples_of[i] += num_multiples_of[i * k];
+        }
+    }
+
+    /**
+     * For every potential GCD, calculate the sum of sizes for subsets with that GCD (modulo P)
+     */
+
+    const int P = 1000 * 1000 * 1000 + 7;
+
+    std::vector<int> total_size_with_gcd((size_t)(MAX_STRENGTH + 1), 0);
+
+    for(int i = MAX_STRENGTH; i >= 1; i--) {
+        if(num_multiples_of[i] == 0) {
+            continue;
+        }
+
+        /**
+         * Sum of sizes for subsets where all strengths are divisible by `i`
+         */
+        int64_t num_subsets = 1LL * num_multiples_of[i] * power_mod_p(2, num_multiples_of[i] - 1, P);
+
+        for(int k = 2; i * k <= MAX_STRENGTH; k++) {
+            /**
+             * Subtract the figures for all `k` * `i`, as such subsets will have the higher GCD `k` * `i` instead of `i`
+             */
+
+            num_subsets -= total_size_with_gcd[i * k];
+            num_subsets %= P;
+        }
+
+        total_size_with_gcd[i] = (int)(num_subsets % P);
+    }
+
+    int64_t result = 0;
+
+    for(int i = 2; i <= MAX_STRENGTH; i++) {
+        result += i * total_size_with_gcd[i];
+        result %= P;
+    }
+
+    std::cout << (result + P) % P << std::endl;
 }
