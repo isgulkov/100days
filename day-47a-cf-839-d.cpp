@@ -73,18 +73,18 @@ int main()
         /**
          * Sum of sizes for subsets where all strengths are divisible by `i`
          */
-        int64_t num_subsets = 1LL * num_multiples_of[i] * power_mod_p(2, num_multiples_of[i] - 1, P);
+        int64_t total_elements = 1LL * num_multiples_of[i] * power_mod_p(2, num_multiples_of[i] - 1, P);
 
         for(int k = 2; i * k <= MAX_STRENGTH; k++) {
             /**
              * Subtract the figures for all `k` * `i`, as such subsets will have the higher GCD `k` * `i` instead of `i`
              */
 
-            num_subsets -= total_size_with_gcd[i * k];
-            num_subsets %= P;
+            total_elements -= total_size_with_gcd[i * k];
+            total_elements %= P;
         }
 
-        total_size_with_gcd[i] = (int)(num_subsets % P);
+        total_size_with_gcd[i] = (int)(total_elements % P);
     }
 
     int64_t result = 0;
