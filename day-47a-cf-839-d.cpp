@@ -90,7 +90,7 @@ int main()
     int64_t result = 0;
 
     for(int i = 2; i <= MAX_STRENGTH; i++) {
-        result += i * total_size_with_gcd[i];
+        result += 1LL * i * total_size_with_gcd[i];
         result %= P;
     }
 
