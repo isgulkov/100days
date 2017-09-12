@@ -21,13 +21,22 @@ public:
     int get_minimum_route_cost(int u, int v)
     {
         /**
-         * Get all possible cycle costs, as any cycle can be traversed on any route with its cost getting XOR'd into the
-         * route cost
+         * Get the cost of a some route from `u` to `v`. Because of the nature of XOR cost function, any route between
+         * two vertices can be made to have another route's cost by traversing cycles if such exist in the graph
+         */
+        int some_route_cost = get_any_route_cost(u, v);
+
+        /**
+         * Get all possible cycle costs, as any cycle can be traversed in addition to any existing route with its cost
+         * getting XOR'd into the route's cost. The cost of reaching the cycle from vertices of the initial route is
+         * negated as it gets XOR'd twice
          */
         std::unordered_set<int> cycle_costs = get_all_cycle_costs();
 
-        int some_route_cost = get_any_route_cost(u, v);
-
+        /**
+         * Treating cycle costs as 32-bit vectors over Z/2, perform a Gaussian elimination on the cycle cost, thus
+         * forming a basis of this vector system, which is needed for efficient route cost minimization
+         */
         std::vector<int> basis = perform_gaussian_elimination(cycle_costs);
 
         /**
