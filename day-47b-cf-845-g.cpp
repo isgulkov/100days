@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_set>
+#include <algorithm>
 
 class graph
 {
@@ -19,16 +20,77 @@ public:
 
     int get_minimum_route_cost(int u, int v)
     {
+        /**
+         * Get all possible cycle costs, as any cycle can be traversed on any route with its cost getting XOR'd into the
+         * route cost
+         */
         std::unordered_set<int> cycle_costs = get_all_cycle_costs();
 
         int some_route_cost = get_any_route_cost(u, v);
 
-        // TODO: minimize route cost by xoring it with some cycle costs
+        std::vector<int> basis = perform_gaussian_elimination(cycle_costs);
+
+        /**
+         * Zero out as many of the most significant bits of the route cost as possible
+         */
+        for(int i_b = 0, col = 0; i_b < basis.size() && col < 32; col++) {
+            if(bit_from_left(some_route_cost, col) && bit_from_left(basis[i_b], col)) {
+                some_route_cost ^= basis[i_b++];
+            }
+        }
 
         return some_route_cost;
     }
 
 private:
+    /**
+     * Perform gaussian elimination on binary vectors presented in form of 32-bit integers
+     */
+    static std::vector<int> perform_gaussian_elimination(std::unordered_set<int> vectors)
+    {
+        std::vector<int> vs;
+
+        for(int v : vectors) {
+            vs.push_back(v);
+        }
+
+        int first_untouched_row = 0;
+
+        for(int col = 0; col < 32; col++) {
+            int nonzero_row = -1;
+
+            for(int i_row = first_untouched_row; i_row < vs.size(); i_row++) {
+                if(bit_from_left(vs[i_row], col)) {
+                    nonzero_row = i_row;
+                    break;
+                }
+            }
+
+            if(nonzero_row == -1) {
+                continue;
+            }
+
+            for(int i_row = 0; i_row < vs.size(); i_row++) {
+                if(i_row == nonzero_row) {
+                    continue;
+                }
+
+                if(bit_from_left(vs[i_row], col)) {
+                    vs[i_row] ^= vs[nonzero_row];
+                }
+            }
+
+            std::swap(vs[nonzero_row], vs[first_untouched_row++]);
+        }
+
+        return vs;
+    }
+
+    static bool bit_from_left(int x, int pos)
+    {
+        return ((x >> (31 - pos)) & 1) != 0;
+    }
+
     int get_any_route_cost(int u, int v)
     {
         std::vector<bool> visited((size_t)num_nodes, false);
@@ -84,7 +146,7 @@ private:
 
             if(current_route_cost[v] != -1) {
                 /**
-                 * Found a cycle
+                 * Reached a previously visited vertex -- found a cycle
                  */
 
                 int cycle_cost = weight ^ current_route_cost[v] ^ current_route_cost[u];
