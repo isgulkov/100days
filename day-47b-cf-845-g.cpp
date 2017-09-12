@@ -21,10 +21,49 @@ public:
     {
         std::unordered_set<int> cycle_costs = get_all_cycle_costs();
 
-        return 0;
+        int some_route_cost = get_any_route_cost(u, v);
+
+        // TODO: minimize route cost by xoring it with some cycle costs
+
+        return some_route_cost;
     }
 
 private:
+    int get_any_route_cost(int u, int v)
+    {
+        std::vector<bool> visited((size_t)num_nodes, false);
+
+        return dfs_any_route(u, v, visited);
+    }
+
+    int dfs_any_route(int u, int target, std::vector<bool>& visited)
+    {
+        visited[u] = true;
+
+        if(u == target) {
+            return 0;
+        }
+
+        for(std::pair<int, int> pv : adj_lists[u]) {
+            int v = pv.first;
+
+            if(visited[v]) {
+                continue;
+            }
+
+
+            int weight = pv.second;
+
+            int v_result = dfs_any_route(v, target, visited);
+
+            if(v_result != -1) {
+                return weight ^ v_result;
+            }
+        }
+
+        return -1;
+    }
+
     std::unordered_set<int> get_all_cycle_costs()
     {
         std::vector<int> current_route_cost((size_t)num_nodes, -1); // Also functions as "visited"
@@ -41,7 +80,6 @@ private:
     {
         for(std::pair<int, int> pv : adj_lists[u]) {
             int v = pv.first;
-
             int weight = pv.second;
 
             if(current_route_cost[v] != -1) {
