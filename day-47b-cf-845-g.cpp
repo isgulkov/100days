@@ -52,11 +52,12 @@ public:
     }
 
 private:
-    /**
-     * Perform gaussian elimination on binary vectors presented in form of 32-bit integers
-     */
     static std::vector<int> perform_gaussian_elimination(std::unordered_set<int> vectors)
     {
+        /**
+         * Perform gaussian elimination on Z/2 vectors presented in form of 32-bit integers
+         */
+
         std::vector<int> vs;
 
         for(int v : vectors) {
@@ -75,21 +76,29 @@ private:
                 }
             }
 
-            if(nonzero_row == -1) {
-                continue;
-            }
+            if(nonzero_row != -1) {
+                std::swap(vs[first_untouched_row], vs[nonzero_row]);
 
-            for(int i_row = 0; i_row < vs.size(); i_row++) {
-                if(i_row == nonzero_row) {
-                    continue;
+                for(int i_row = 0; i_row < vs.size(); i_row++) {
+                    if(i_row == first_untouched_row) {
+                        continue;
+                    }
+
+                    if(bit_from_left(vs[i_row], col)) {
+                        vs[i_row] ^= vs[first_untouched_row];
+                    }
                 }
 
-                if(bit_from_left(vs[i_row], col)) {
-                    vs[i_row] ^= vs[nonzero_row];
-                }
+                first_untouched_row += 1;
             }
+        }
 
-            std::swap(vs[nonzero_row], vs[first_untouched_row++]);
+        /**
+         * Remove zero vectors from the resulting basis
+         */
+
+        while(vs.back() == 0) {
+            vs.pop_back();
         }
 
         return vs;
