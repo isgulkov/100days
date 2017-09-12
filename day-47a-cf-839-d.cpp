@@ -73,7 +73,11 @@ int main()
         }
 
         /**
-         * Sum of sizes for subsets where all strengths are divisible by `i`
+         * Sum of sizes for subsets where all strengths are divisible by `i`:
+         *   1 * C(n, 1) + 2 * C(n, 2) + ... + n * C(n, n),
+         * where n = num_multiples_of[`i`], C(n, k) is the number of subsets of size k, so the sum of sizes of such
+         * subsets is k * C(n, k). After simplification the above expression becomes
+         *   n * (C(n - 1, 0) + ... + C(n - 1, n - 1)) = n * 2^(n - 1)
          */
         int64_t total_elements = 1LL * num_multiples_of[i] * power_mod_p(2, num_multiples_of[i] - 1, P);
 
