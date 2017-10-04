@@ -43,8 +43,12 @@ public:
          * Zero out as many of the most significant bits of the route cost as possible
          */
         for(int i_b = 0, col = 0; i_b < basis.size() && col < 32; col++) {
-            if(bit_from_left(some_route_cost, col) && bit_from_left(basis[i_b], col)) {
-                some_route_cost ^= basis[i_b++];
+            if(bit_from_left(basis[i_b], col)) {
+                if(bit_from_left(some_route_cost, col)) {
+                    some_route_cost ^= basis[i_b];
+                }
+
+                i_b += 1;
             }
         }
 
